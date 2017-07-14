@@ -14,24 +14,26 @@ Sequelize 是一个基于 promise 的 Node.js ORM, 目前支持 Postgres, MySQL,
 
 ## 文档
 
-- [Getting started](getting-started.md)
-- [Model definition](models-definition.md)
-- [Model usage](models-usage.md)
-- [Querying](querying.md)
-- [Instances](instances.md)
-- [Associations](associations.md)
-- [Transactions](transactions.md)
-- [Scopes](scopes.md)
-- [Hooks](hooks.md)
-- [Raw queries](raw-queries.md)
-- [Migrations](migrations.md)
-- [Upgrade to V4](upgrade-to-v4.md)
-- [Working with legacy tables](legacy.md)
+- [Getting started - 入门](getting-started.md)
+- [Model definition - 模型定义](models-definition.md)
+- [Model usage - 模型使用](models-usage.md)
+- [Querying - 查询](querying.md)
+- [Instances - 实例](instances.md)
+- [Associations - 关联](associations.md)
+- [Transactions - 事务](transactions.md)
+- [Scopes - 作用域](scopes.md)
+- [Hooks - 钩子](hooks.md)
+- [Raw queries - 原始查询](raw-queries.md)
+- [Migrations - 迁移](migrations.md)
+- [Upgrade to V4 - 升级到 V4](upgrade-to-v4.md)
+- [Working with legacy tables - 使用遗留表](legacy.md)
 
 
-- [Basic usage](usage.md)
+
 
 ## 使用示例
+
+[Basic usage - 基本用法](usage.md)
 
 ```js
 const Sequelize = require('sequelize');
