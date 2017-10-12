@@ -1,22 +1,22 @@
-# Model usage
+# 模型使用
 
-## Data retrieval / Finders
+## 数据检索/查找器
 
-Finder methods are intended to query data from the database. They do *not* return plain objects but instead return model instances. Because finder methods return model instances you can call any model instance member on the result as described in the documentation for [*instances*](/manual/tutorial/instances.html).
+Finder 方法旨在从数据库查询数据。 他们 **不** 返回简单的对象，而是返回模型实例。 因为 finder 方法返回模型实例，您可以按照  [*实例*](/manual/tutorial/instances.html) 的文档中所述，为结果调用任何模型实例成员。
+ 
+在本文中，我们将探讨 finder 方法可以做什么:
 
-In this document we'll explore what finder methods can do:
-
-### `find` - Search for one specific element in the database
+### `find` - 搜索数据库中的一个特定元素
 ```js
-// search for known ids
+// 搜索已知的ids
 Project.findById(123).then(project => {
-  // project will be an instance of Project and stores the content of the table entry
-  // with id 123. if such an entry is not defined you will get null
+  // project 将是 Project的一个实例，并具有在表中存为 id 123 条目的内容。
+  // 如果没有定义这样的条目，你将获得null
 })
 
-// search for attributes
+// 搜索属性
 Project.findOne({ where: {title: 'aProject'} }).then(project => {
-  // project will be the first entry of the Projects table with the title 'aProject' || null
+  // project 将是 Projects 表中 title 为 'aProject'  的第一个条目 || null
 })
 
 
@@ -24,16 +24,18 @@ Project.findOne({
   where: {title: 'aProject'},
   attributes: ['id', ['name', 'title']]
 }).then(project => {
-  // project will be the first entry of the Projects table with the title 'aProject' || null
-  // project.title will contain the name of the project
+  // project 将是 Projects 表中 title 为 'aProject'  的第一个条目 || null
+  // project.title 将包含 project 的 name
 })
 ```
 
-### `findOrCreate` - Search for a specific element or create it if not available
+### `findOrCreate` - 搜索特定元素或创建它（如果不可用）
 
-The method `findOrCreate` can be used to check if a certain element already exists in the database. If that is the case the method will result in a respective instance. If the element does not yet exist, it will be created.
+方法 `findOrCreate` 可用于检查数据库中是否已存在某个元素。 如果是这种情况，则该方法将生成相应的实例。 如果元素不存在，将会被创建。
 
-Let's assume we have an empty database with a `User` model which has a `username` and a `job`.
+如果是这种情况，则该方法将导致相应的实例。 如果元素不存在，将会被创建。
+
+假设我们有一个空的数据库，一个 `User` 模型有一个 `username` 和 `job`。
 
 ```js
 User
@@ -45,7 +47,7 @@ User
     console.log(created)
 
     /*
-     findOrCreate returns an array containing the object that was found or created and a boolean that will be true if a new object was created and false if not, like so:
+    findOrCreate 返回一个包含已找到或创建的对象的数组，找到或创建的对象和一个布尔值，如果创建一个新对象将为true，否则为false，像这样:
 
     [ {
         username: 'sdepold',
@@ -56,12 +58,13 @@ User
       },
       true ]
 
- In the example above, the "spread" on line 39 divides the array into its 2 parts and passes them as arguments to the callback function defined beginning at line 39, which treats them as "user" and "created" in this case. (So "user" will be the object from index 0 of the returned array and "created" will equal "true".)
+在上面的例子中，".spread" 将数组分成2部分，并将它们作为参数传递给回调函数，在这种情况下将它们视为 "user" 和 "created" 。（所以“user”将是返回数组的索引0的对象，并且 "created" 将等于 "true"。）
     */
   })
 ```
 
-The code created a new instance. So when we already have an instance ...
+代码创建了一个新的实例。 所以当我们已经有一个实例了 ...
+
 ```js
 User.create({ username: 'fnord', job: 'omnomnom' })
   .then(() => User.findOrCreate({where: {username: 'fnord'}, defaults: {job: 'something else'}}))
@@ -72,7 +75,7 @@ User.create({ username: 'fnord', job: 'omnomnom' })
     console.log(created)
 
     /*
-    In this example, findOrCreate returns an array like this:
+    在这个例子中，findOrCreate 返回一个如下的数组：
     [ {
         username: 'fnord',
         job: 'omnomnom',
@@ -82,21 +85,21 @@ User.create({ username: 'fnord', job: 'omnomnom' })
       },
       false
     ]
-    The array returned by findOrCreate gets spread into its 2 parts by the "spread" on line 69, and the parts will be passed as 2 arguments to the callback function beginning on line 69, which will then treat them as "user" and "created" in this case. (So "user" will be the object from index 0 of the returned array and "created" will equal "false".)
+    由findOrCreate返回的数组通过 ".spread" 扩展为两部分，并且这些部分将作为2个参数传递给回调函数，在这种情况下将其视为 "user" 和 "created" 。（所以“user”将是返回数组的索引0的对象，并且 "created" 将等于 "false"。）
     */
   })
 ```
 
-... the existing entry will not be changed. See the `job` of the second user, and the fact that created was false.
+...现有条目将不会更改。 看到第二个用户的 "job"，并且实际上创建操作是假的。
 
-### `findAndCountAll` - Search for multiple elements in the database, returns both data and total count
+### `findAndCountAll` - 在数据库中搜索多个元素，返回数据和总计数
 
-This is a convenience method that combines`findAll` and `count` (see below) this is useful when dealing with queries related to pagination where you want to retrieve data with a `limit` and `offset` but also need to know the total number of records that match the query:
+这是一个方便的方法，它结合了 `findAll` 和 `count`（见下文），当处理与分页相关的查询时，这是有用的，你想用 `limit` 和 `offset` 检索数据，但也需要知道总数与查询匹配的记录数：
 
-The success handler will always receive an object with two properties:
+处理程序成功将始终接收具有两个属性的对象：
 
-* `count` - an integer, total number records matching the where clause
-* `rows` - an array of objects, the records matching the where clause, within the limit and offset range
+* `count` - 一个整数，总数记录匹配where语句
+* `rows` - 一个数组对象，记录在limit和offset范围内匹配where语句，
 
 ```js
 Project
@@ -115,9 +118,10 @@ Project
   });
 ```
 
-`findAndCountAll` also supports includes. Only the includes that are marked as `required` will be added to the count part:
+`findAndCountAll`  也支持 include。 只有标记为 `required` 的 include 将被添加到计数部分：
 
-Suppose you want to find all users who have a profile attached:
+假设您想查找附有个人资料的所有用户：
+
 ```js
 User.findAndCountAll({
   include: [
@@ -127,7 +131,7 @@ User.findAndCountAll({
 });
 ```
 
-Because the include for `Profile` has `required` set it will result in an inner join, and only the users who have a profile will be counted. If we remove `required` from the include, both users with and without profiles will be counted. Adding a `where` clause to the include automatically makes it required:
+因为 `Profile` 的 include 有 `required` 设置，这将导致内部连接，并且只有具有 profile 的用户将被计数。 如果我们从 include 中删除`required`，那么有和没有 profile 的用户都将被计数。 在include中添加一个 `where` 语句会自动使它成为 required：
 
 ```js
 User.findAndCountAll({
@@ -138,67 +142,67 @@ User.findAndCountAll({
 });
 ```
 
-The query above will only count users who have an active profile, because `required` is implicitly set to true when you add a where clause to the include.
+上面的查询只会对具有 active profile 的用户进行计数，因为在将 where 语句添加到 include 时，`required` 被隐式设置为 true。
 
+传递给 `findAndCountAll` 的 options 对象与 `findAll` 相同（如下所述）。
 
-The options object that you pass to `findAndCountAll` is the same as for `findAll` (described below).
-
-### `findAll` - Search for multiple elements in the database
+### `findAll` - 搜索数据库中的多个元素
 ```js
-// find multiple entries
+// 找到多个条目
 Project.findAll().then(projects => {
-  // projects will be an array of all Project instances
+  // projects 将是所有 Project 实例的数组
 })
 
-// also possible:
+// 也可以：
 Project.all().then(projects => {
-  // projects will be an array of all Project instances
+  // projects 将是所有 Project 实例的数组
 })
 
-// search for specific attributes - hash usage
+// 搜索特定属性 - 使用哈希
 Project.findAll({ where: { name: 'A Project' } }).then(projects => {
-  // projects will be an array of Project instances with the specified name
+  // projects将是一个具有指定 name 的 Project 实例数组
 })
 
-// search within a specific range
+// 在特定范围内进行搜索
 Project.findAll({ where: { id: [1,2,3] } }).then(projects => {
-  // projects will be an array of Projects having the id 1, 2 or 3
-  // this is actually doing an IN query
+  // projects将是一系列具有 id 1,2 或 3 的项目
+  // 这实际上是在做一个 IN 查询
 })
 
 Project.findAll({
   where: {
     id: {
-      [Op.and]: {a: 5},           // AND (a = 5)
-      [Op.or]: [{a: 5}, {a: 6}],  // (a = 5 OR a = 6)
+      [Op.and]: {a: 5},           // 且 (a = 5)
+      [Op.or]: [{a: 5}, {a: 6}],  // (a = 5 或 a = 6)
       [Op.gt]: 6,                // id > 6
       [Op.gte]: 6,               // id >= 6
       [Op.lt]: 10,               // id < 10
       [Op.lte]: 10,              // id <= 10
       [Op.ne]: 20,               // id != 20
-      [Op.between]: [6, 10],     // BETWEEN 6 AND 10
-      [Op.notBetween]: [11, 15], // NOT BETWEEN 11 AND 15
-      [Op.in]: [1, 2],           // IN [1, 2]
-      [Op.notIn]: [1, 2],        // NOT IN [1, 2]
-      [Op.like]: '%hat',         // LIKE '%hat'
-      [Op.notLike]: '%hat',       // NOT LIKE '%hat'
-      [Op.iLike]: '%hat',         // ILIKE '%hat' (case insensitive)  (PG only)
-      [Op.notILike]: '%hat',      // NOT ILIKE '%hat'  (PG only)
-      [Op.overlap]: [1, 2],       // && [1, 2] (PG array overlap operator)
-      [Op.contains]: [1, 2],      // @> [1, 2] (PG array contains operator)
-      [Op.contained]: [1, 2],     // <@ [1, 2] (PG array contained by operator)
-      [Op.any]: [2,3]            // ANY ARRAY[2, 3]::INTEGER (PG only)
+      [Op.between]: [6, 10],     // 在 6 和 10 之间
+      [Op.notBetween]: [11, 15], // 不在 11 和 15 之间
+      [Op.in]: [1, 2],           // 在 [1, 2] 之中
+      [Op.notIn]: [1, 2],        // 不在 [1, 2] 之中
+      [Op.like]: '%hat',         // 包含 '%hat'
+      [Op.notLike]: '%hat',       // 不包含 '%hat'
+      [Op.iLike]: '%hat',         // 包含 '%hat' (不区分大小写)  (仅限 PG)
+      [Op.notILike]: '%hat',      // 不包含 '%hat'  (仅限 PG)
+      [Op.overlap]: [1, 2],       // && [1, 2] (PG数组重叠运算符)
+      [Op.contains]: [1, 2],      // @> [1, 2] (PG数组包含运算符)
+      [Op.contained]: [1, 2],     // <@ [1, 2] (PG数组包含于运算符)
+      [Op.any]: [2,3],            // 任何数组[2, 3]::INTEGER (仅限 PG)
     },
     status: {
-      [Op.not]: false           // status NOT FALSE
+      [Op.not]: false,           // status 不为 FALSE
     }
   }
 })
 ```
 
-### Complex filtering / OR / NOT queries
+### 复合过滤 / OR / NOT 查询
 
-It's possible to do complex where queries with multiple levels of nested AND, OR and NOT conditions. In order to do that you can use `or`, `and` or `not` `Operators`:
+你可以使用多层嵌套的 AND，OR 和 NOT 条件进行一个复合的 where 查询。 为了做到这一点，你可以使用  `or` ， `and` 或 `not` `运算符`:
+
 
 ```js
 Project.findOne({
@@ -224,7 +228,7 @@ Project.findOne({
 })
 ```
 
-Both pieces of code will generate the following:
+这两段代码将生成以下内容：
 
 ```sql
 SELECT *
@@ -236,7 +240,7 @@ WHERE (
 LIMIT 1;
 ```
 
-`not` example:
+`not` 示例:
 
 ```js
 Project.findOne({
@@ -250,7 +254,7 @@ Project.findOne({
 });
 ```
 
-Will generate:
+将生成:
 
 ```sql
 SELECT *
@@ -262,77 +266,77 @@ WHERE (
 LIMIT 1;
 ```
 
-### Manipulating the dataset with limit, offset, order and group
+### 用限制，偏移，顺序和分组操作数据集
 
-To get more relevant data, you can use limit, offset, order and grouping:
+要获取更多相关数据，可以使用限制，偏移，顺序和分组：
 
 ```js
-// limit the results of the query
+// 限制查询的结果
 Project.findAll({ limit: 10 })
 
-// step over the first 10 elements
+// 跳过前10个元素
 Project.findAll({ offset: 10 })
 
-// step over the first 10 elements, and take 2
+// 跳过前10个元素，并获取2个
 Project.findAll({ offset: 10, limit: 2 })
 ```
 
-The syntax for grouping and ordering are equal, so below it is only explained with a single example for group, and the rest for order. Everything you see below can also be done for group
+分组和排序的语法是相同的，所以下面只用一个单独的例子来解释分组，而其余的则是排序。 您下面看到的所有内容也可以对分组进行
 
 ```js
 Project.findAll({order: 'title DESC'})
-// yields ORDER BY title DESC
+// 生成 ORDER BY title DESC
 
 Project.findAll({group: 'name'})
-// yields GROUP BY name
+// 生成 GROUP BY name
 ```
 
-Notice how in the two examples above, the string provided is inserted verbatim into the query, i.e. column names are not escaped. When you provide a string to order/group, this will always be the case. If you want to escape column names, you should provide an array of arguments, even though you only want to order/group by a single column
+请注意，在上述两个示例中，提供的字符串逐字插入到查询中，所以不会转义列名称。 当你向 order / group 提供字符串时，将始终如此。 如果要转义列名，您应该提供一个参数数组，即使您只想通过单个列进行 order / group
 
 ```js
 something.findOne({
   order: [
     'name',
-    // will return `name`
+    // 将返回 `name`
     'username DESC',
-    // will return `username DESC` -- i.e. don't do it!
+    // 将返回 `username DESC` -- 不要这样做
     ['username', 'DESC'],
-    // will return `username` DESC
+    // 将返回 `username` DESC
     sequelize.fn('max', sequelize.col('age')),
-    // will return max(`age`)
+    // 将返回 max(`age`)
     [sequelize.fn('max', sequelize.col('age')), 'DESC'],
-    // will return max(`age`) DESC
+    // 将返回 max(`age`) DESC
     [sequelize.fn('otherfunction', sequelize.col('col1'), 12, 'lalala'), 'DESC'],
-    // will return otherfunction(`col1`, 12, 'lalala') DESC
+    // 将返回 otherfunction(`col1`, 12, 'lalala') DESC
     [sequelize.fn('otherfunction', sequelize.fn('awesomefunction', sequelize.col('col'))), 'DESC']
-    // will return otherfunction(awesomefunction(`col`)) DESC, This nesting is potentially infinite!
+    // 将返回 otherfunction(awesomefunction(`col`)) DESC，这个嵌套是可以无限的！
   ]
 })
 ```
 
-To recap, the elements of the order/group array can be the following:
+回顾一下，order / group数组的元素可以是以下内容：
 
-* String - will be quoted
-* Array - first element will be quoted, second will be appended verbatim
+* String - 将被引用
+* Array - 第一个元素将被引用，第二个将被逐字地追加
 * Object -
-  * Raw will be added verbatim without quoting
-  * Everything else is ignored, and if raw is not set, the query will fail
-* Sequelize.fn and Sequelize.col returns functions and quoted cools
+  * raw 将被添加逐字引用
+  * 如果未设置 raw，一切都被忽略，查询将失败
+* Sequelize.fn 和 Sequelize.col 返回函数和引用的列
 
-### Raw queries
+### 原始查询
 
-Sometimes you might be expecting a massive dataset that you just want to display, without manipulation. For each row you select, Sequelize creates an instance with functions for update, delete, get associations etc. If you have thousands of rows, this might take some time. If you only need the raw data and don't want to update anything, you can do like this to get the raw data.
+有时候，你可能会期待一个你想要显示的大量数据集，而无需操作。 对于你选择的每一行，Sequelize 创建一个具有更新，删除和获取关联等功能的实例。如果您有数千行，则可能需要一些时间。 如果您只需要原始数据，并且不想更新任何内容，您可以这样做来获取原始数据。
 
 ```js
-// Are you expecting a massive dataset from the DB,
-// and don't want to spend the time building DAOs for each entry?
-// You can pass an extra query option to get the raw data instead:
+// 你期望从数据库的一个巨大的数据集,
+// 并且不想花时间为每个条目构建DAO？
+// 您可以传递一个额外的查询参数来取代原始数据：
 Project.findAll({ where: { ... }, raw: true })
 ```
 
-### `count` - Count the occurrences of elements in the database
+### `count` - 计算数据库中元素的出现次数
 
-There is also a method for counting database objects:
+还有一种数据库对象计数的方法：
 
 ```js
 Project.count().then(c => {
@@ -344,70 +348,69 @@ Project.count({ where: {'id': {[Op.gt]: 25}} }).then(c => {
 })
 ```
 
-### `max` - Get the greatest value of a specific attribute within a specific table
+### `max` - 获取特定表中特定属性的最大值
 
-And here is a method for getting the max value of an attribute:f
+这里是获取属性的最大值的方法：
 
 ```js
 /*
-  Let's assume 3 person objects with an attribute age.
-  The first one is 10 years old,
-  the second one is 5 years old,
-  the third one is 40 years old.
+   我们假设3个具有属性年龄的对象。
+   第一个是10岁，
+   第二个是5岁，
+   第三个是40岁。
 */
 Project.max('age').then(max => {
-  // this will return 40
+  // 将返回 40
 })
 
 Project.max('age', { where: { age: { [Op.lt]: 20 } } }).then(max => {
-  // will be 10
+  // 将会是 10
 })
 ```
 
-### `min` - Get the least value of a specific attribute within a specific table
+### `min` - 获取特定表中特定属性的最小值
 
-And here is a method for getting the min value of an attribute:
+这里是获取属性的最小值的方法：
 
 ```js
 /*
-  Let's assume 3 person objects with an attribute age.
-  The first one is 10 years old,
-  the second one is 5 years old,
-  the third one is 40 years old.
+   我们假设3个具有属性年龄的对象。
+   第一个是10岁，
+   第二个是5岁，
+   第三个是40岁。
 */
 Project.min('age').then(min => {
-  // this will return 5
+  // 将返回 5
 })
 
 Project.min('age', { where: { age: { [Op.gt]: 5 } } }).then(min => {
-  // will be 10
+  // 将会是 10
 })
 ```
 
-### `sum` - Sum the value of specific attributes
+### `sum` - 特定属性的值求和
 
-In order to calculate the sum over a specific column of a table, you can
-use the `sum` method.
+为了计算表的特定列的总和，可以使用“sum”方法。
 
 ```js
 /*
-  Let's assume 3 person objects with an attribute age.
-  The first one is 10 years old,
-  the second one is 5 years old,
-  the third one is 40 years old.
+   我们假设3个具有属性年龄的对象。
+   第一个是10岁，
+   第二个是5岁，
+   第三个是40岁。
 */
 Project.sum('age').then(sum => {
-  // this will return 55
+  // 将返回 55
 })
 
 Project.sum('age', { where: { age: { [Op.gt]: 5 } } }).then(sum => {
-  // will be 50
+  // 将会是 50
 })
 ```
 
-## Eager loading
+## 预加载
 
-When you are retrieving data from the database there is a fair chance that you also want to get associations with the same query - this is called eager loading. The basic idea behind that, is the use of the attribute `include` when you are calling `find` or `findAll`. Lets assume the following setup:
+当你从数据库检索数据时，也想同时获得与之相关联的查询，这被称为预加载。这个基本思路就是当你调用 `find` 或 `findAll` 时使用  `include` 属性。让我们假设以下设置：
 
 ```js
 const User = sequelize.define('user', { name: Sequelize.STRING })
@@ -419,11 +422,11 @@ User.hasMany(Task)
 User.hasMany(Tool, { as: 'Instruments' })
 
 sequelize.sync().then(() => {
-  // this is where we continue ...
+  // 这是我们继续的地方 ...
 })
 ```
 
-OK. So, first of all, let's load all tasks with their associated user.
+首先，让我们用它们的关联 user 加载所有的 task。
 
 ```js
 Task.findAll({ include: [ User ] }).then(tasks => {
@@ -447,9 +450,9 @@ Task.findAll({ include: [ User ] }).then(tasks => {
 })
 ```
 
-Notice that the accessor (the `User` property in the resulting instance) is singular because the association is one-to-something.
+请注意，访问者（结果实例中的 `User` 属性）是单数形式，因为关联是一对一的。
 
-Next thing: Loading of data with many-to-something associations!
+接下来的事情：用多对一的关联加载数据！
 
 ```js
 User.findAll({ include: [ Task ] }).then(users => {
@@ -473,10 +476,9 @@ User.findAll({ include: [ Task ] }).then(users => {
 })
 ```
 
-Notice that the accessor (the `Tasks` property in the resulting instance) is plural because the association is many-to-something.
+请注意，访问者（结果实例中的  `Tasks`  属性）是复数形式，因为关联是多对一的。
 
-
-If an association is aliased (using the `as` option), you must specify this alias when including the model. Notice how the user's `Tool`s are aliased as `Instruments` above. In order to get that right you have to specify the model you want to load, as well as the alias:
+如果关联是别名的（使用 `as` 参数），则在包含模型时必须指定此别名。 注意用户的  `Tool` 如何被别名为 `Instruments`。 为了获得正确的权限，您必须指定要加载的模型以及别名：
 
 ```js
 User.findAll({ include: [{ model: Tool, as: 'Instruments' }] }).then(users => {
@@ -500,7 +502,7 @@ User.findAll({ include: [{ model: Tool, as: 'Instruments' }] }).then(users => {
 })
 ```
 
-You can also include by alias name by specifying a string that matches the association alias:
+您还可以通过指定与关联别名匹配的字符串来包含别名：
 
 ```js
 User.findAll({ include: ['Instruments'] }).then(users => {
@@ -544,7 +546,7 @@ User.findAll({ include: [{ association: 'Instruments' }] }).then(users => {
 })
 ```
 
-When eager loading we can also filter the associated model using `where`. This will return all `User`s in which the `where` clause of `Tool` model matches rows.
+当预加载时，我们也可以使用 `where` 过滤关联的模型。 这将返回 `Tool` 模型中所有与 `where` 语句匹配的行的`User`。
 
 ```js
 User.findAll({
@@ -588,12 +590,11 @@ User.findAll({
   })
 ```
 
-When an eager loaded model is filtered using `include.where` then `include.required` is implicitly set to
-`true`. This means that an inner join is done returning parent models with any matching children.
+当使用 `include.where` 过滤一个预加载的模型时，`include.required` 被隐式设置为 `true`。 这意味着内部联接完成返回具有任何匹配子项的父模型。
 
-### Top level where with eagerly loaded models
+### 使用预加载模型的顶层 WHERE
 
-To move the where conditions from an included model from the `ON` condition to the top level `WHERE` you can use the `'$nested.column$'` syntax:
+将模型的 `WHERE` 条件从 `ON` 条件的 include 模式移动到顶层，你可以使用 `'$nested.column$'` 语法：
 
 ```js
 User.findAll({
@@ -638,17 +639,17 @@ User.findAll({
     */
 ```
 
-### Including everything
+### 包括所有
 
-To include all attributes, you can pass a single object with `all: true`:
+要包含所有属性，您可以使用 `all：true` 传递单个对象：
 
 ```js
 User.findAll({ include: [{ all: true }]});
 ```
 
-### Including soft deleted records
+### 包括软删除的记录
 
-In case you want to eager load soft deleted records you can do that by setting `include.paranoid` to `false`
+如果想要加载软删除的记录，可以通过将 `include.paranoid` 设置为 `false` 来实现
 
 ```js
 User.findAll({
@@ -660,9 +661,9 @@ User.findAll({
 });
 ```
 
-### Ordering Eager Loaded Associations
+### 排序预加载关联
 
-In the case of a one-to-many relationship.
+在一对多关系的情况下。
 
 ```js
 Company.findAll({ include: [ Division ], order: [ [ Division, 'name' ] ] });
@@ -681,7 +682,7 @@ Company.findAll({
 });
 ```
 
-In the case of many-to-many joins, you are also able to sort by attributes in the through table.
+在多对多关系的情况下，您还可以通过表中的属性进行排序。
 
 ```js
 Company.findAll({
@@ -690,8 +691,9 @@ Company.findAll({
 });
 ```
 
-### Nested eager loading
-You can use nested eager loading to load all related models of a related model:
+### 嵌套预加载
+
+您可以使用嵌套的预加载来加载相关模型的所有相关模型：
 
 ```js
 User.findAll({
@@ -724,7 +726,7 @@ User.findAll({
 })
 ```
 
-This will produce an outer join. However, a `where` clause on a related model will create an inner join and return only the instances that have matching sub-models. To return all parent instances, you should add `required: false`.
+这将产生一个外连接。 但是，相关模型上的 `where` 语句将创建一个内部连接，并仅返回具有匹配子模型的实例。 要返回所有父实例，您应该添加 `required: false`。
 
 ```js
 User.findAll({
@@ -744,9 +746,9 @@ User.findAll({
 })
 ```
 
-The query above will return all users, and all their instruments, but only those teachers associated with `Woodstock Music School`.
+以上查询将返回所有用户及其所有乐器，但只会返回与 `Woodstock Music School` 相关的老师。
 
-Include all also supports nested loading:
+包括所有也支持嵌套加载：
 
 ```js
 User.findAll({ include: [{ all: true, nested: true }]});

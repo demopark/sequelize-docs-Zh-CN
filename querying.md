@@ -1,8 +1,8 @@
-# Querying
+# 查询
 
-## Attributes
+## 属性
 
-To select only some attributes, you can use the `attributes` option. Most often, you pass an array:
+想要只选择某些属性，可以使用 `attributes` 选项。 通常是传递一个数组：
 
 ```js
 Model.findAll({
@@ -13,7 +13,7 @@ Model.findAll({
 SELECT foo, bar ...
 ```
 
-Attributes can be renamed using a nested array:
+属性可以使用嵌套数组来重命名：
 
 ```js
 Model.findAll({
@@ -24,7 +24,7 @@ Model.findAll({
 SELECT foo, bar AS baz ...
 ```
 
-You can use `sequelize.fn` to do aggregations:
+也可以使用 `sequelize.fn` 来进行聚合：
 
 ```js
 Model.findAll({
@@ -35,9 +35,9 @@ Model.findAll({
 SELECT COUNT(hats) AS no_hats ...
 ```
 
-When using aggregation function, you must give it an alias to be able to access it from the model. In the example above you can get the number of hats with `instance.get('no_hats')`.
+使用聚合功能时，必须给它一个别名，以便能够从模型中访问它。 在上面的例子中，您可以使用  `instance.get('no_hats')` 获得帽子数量。
 
-Sometimes it may be tiresome to list all the attributes of the model if you only want to add an aggregation:
+有时，如果您只想添加聚合，则列出模型的所有属性可能令人厌烦：
 
 ```js
 // This is a tiresome way of getting the number of hats...
@@ -54,7 +54,7 @@ Model.findAll({
 SELECT id, foo, bar, baz, quz, COUNT(hats) AS no_hats ...
 ```
 
-Similarly, it's also possible to remove a selected few attributes:
+同样，它也可以删除一些指定的属性：
 
 ```js
 Model.findAll({
@@ -68,13 +68,13 @@ SELECT id, foo, bar, quz ...
 
 ## Where
 
-Whether you are querying with findAll/find or doing bulk updates/destroys you can pass a `where` object to filter the query.
+无论您是通过 findAll/find 或批量 updates/destroys 进行查询，都可以传递一个 `where` 对象来过滤查询。
 
-`where` generally takes an object from attribute:value pairs, where value can be primitives for equality matches or keyed objects for other operators.
+`where` 通常用 attribute:value 键值对获取一个对象，其中 value 可以是匹配等式的数据或其他运算符的键值对象。
 
-It's also possible to generate complex AND/OR conditions by nesting sets of `or` and `and` `Operators`.
+也可以通过嵌套 `or` 和 `and` `运算符` 的集合来生成复杂的 AND/OR 条件。
 
-### Basics
+### 基础
 ```js
 const Op = Sequelize.Op;
 
@@ -117,53 +117,51 @@ Post.findAll({
 // SELECT * FROM post WHERE char_length(status) = 6;
 ```
 
-### Operators
+### 操作符
 
-Sequelize exposes symbol operators that can be used for to create more complex comparisons -
+Sequelize 可用于创建更复杂比较的符号运算符 -
+
 ```js
 const Op = Sequelize.Op
 
-[Op.and]: {a: 5}           // AND (a = 5)
-[Op.or]: [{a: 5}, {a: 6}]  // (a = 5 OR a = 6)
-[Op.gt]: 6,                // > 6
-[Op.gte]: 6,               // >= 6
-[Op.lt]: 10,               // < 10
-[Op.lte]: 10,              // <= 10
-[Op.ne]: 20,               // != 20
+[Op.and]: {a: 5}           // 且 (a = 5)
+[Op.or]: [{a: 5}, {a: 6}]  // (a = 5 或 a = 6)
+[Op.gt]: 6,                // id > 6
+[Op.gte]: 6,               // id >= 6
+[Op.lt]: 10,               // id < 10
+[Op.lte]: 10,              // id <= 10
+[Op.ne]: 20,               // id != 20
 [Op.eq]: 3,                // = 3
-[Op.not]: true,            // IS NOT TRUE
-[Op.between]: [6, 10],     // BETWEEN 6 AND 10
-[Op.notBetween]: [11, 15], // NOT BETWEEN 11 AND 15
-[Op.in]: [1, 2],           // IN [1, 2]
-[Op.notIn]: [1, 2],        // NOT IN [1, 2]
-[Op.like]: '%hat',         // LIKE '%hat'
-[Op.notLike]: '%hat'       // NOT LIKE '%hat'
-[Op.iLike]: '%hat'         // ILIKE '%hat' (case insensitive) (PG only)
-[Op.notILike]: '%hat'      // NOT ILIKE '%hat'  (PG only)
-[Op.regexp]: '^[h|a|t]'    // REGEXP/~ '^[h|a|t]' (MySQL/PG only)
-[Op.notRegexp]: '^[h|a|t]' // NOT REGEXP/!~ '^[h|a|t]' (MySQL/PG only)
-[Op.iRegexp]: '^[h|a|t]'    // ~* '^[h|a|t]' (PG only)
-[Op.notIRegexp]: '^[h|a|t]' // !~* '^[h|a|t]' (PG only)
-[Op.like]: { [Op.any]: ['cat', 'hat']}
-                       // LIKE ANY ARRAY['cat', 'hat'] - also works for iLike and notLike
-[Op.overlap]: [1, 2]       // && [1, 2] (PG array overlap operator)
-[Op.contains]: [1, 2]      // @> [1, 2] (PG array contains operator)
-[Op.contained]: [1, 2]     // <@ [1, 2] (PG array contained by operator)
-[Op.any]: [2,3]            // ANY ARRAY[2, 3]::INTEGER (PG only)
+[Op.not]: true,            // 不是 TRUE
+[Op.between]: [6, 10],     // 在 6 和 10 之间
+[Op.notBetween]: [11, 15], // 不在 11 和 15 之间
+[Op.in]: [1, 2],           // 在 [1, 2] 之中
+[Op.notIn]: [1, 2],        // 不在 [1, 2] 之中
+[Op.like]: '%hat',         // 包含 '%hat'
+[Op.notLike]: '%hat'       // 不包含 '%hat'
+[Op.iLike]: '%hat'         // 包含 '%hat' (不区分大小写)  (仅限 PG)
+[Op.notILike]: '%hat'      // 不包含 '%hat'  (仅限 PG)
+[Op.regexp]: '^[h|a|t]'    // 匹配正则表达式/~ '^[h|a|t]' (仅限 MySQL/PG)
+[Op.notRegexp]: '^[h|a|t]' // 不匹配正则表达式/!~ '^[h|a|t]' (仅限 MySQL/PG)
+[Op.iRegexp]: '^[h|a|t]'    // ~* '^[h|a|t]' (仅限 PG)
+[Op.notIRegexp]: '^[h|a|t]' // !~* '^[h|a|t]' (仅限 PG)
+[Op.like]: { [Op.any]: ['cat', 'hat']} // 包含任何数组['cat', 'hat'] - 同样适用于 iLike 和 notLike
+[Op.overlap]: [1, 2]       // && [1, 2] (PG数组重叠运算符)
+[Op.contains]: [1, 2]      // @> [1, 2] (PG数组包含运算符)
+[Op.contained]: [1, 2]     // <@ [1, 2] (PG数组包含于运算符)
+[Op.any]: [2,3]            // 任何数组[2, 3]::INTEGER (仅限PG)
 
-[Op.col]: 'user.organization_id' // = "user"."organization_id", with dialect specific column identifiers, PG in this example
+[Op.col]: 'user.organization_id' // = 'user'.'organization_id', 使用数据库语言特定的列标识符, 本例使用 PG
 ```
 
-#### Range Operators
+#### 范围选项
 
-Range types can be queried with all supported operators.
+所有操作符都支持支持的范围类型查询。
 
-Keep in mind, the provided range value can
-[define the bound inclusion/exclusion](/manual/tutorial/models-definition.html#range-types)
-as well.
+请记住，提供的范围值也可以[定义绑定的 inclusion/exclusion](/manual/tutorial/models-definition.html#range-types)。
 
 ```js
-// All the above equality and inequality operators plus the following:
+// 所有上述相等和不相等的操作符加上以下内容:
 
 [Op.contains]: 2           // @> '2'::integer (PG range contains element operator)
 [Op.contains]: [1, 2]      // @> [1, 2) (PG range contains range operator)
@@ -176,10 +174,8 @@ as well.
 [Op.noExtendLeft]: [1, 2]  // &> [1, 2) (PG range does not extend to the left of operator)
 ```
 
-#### Combinations
+#### 组合
 ```js
-const Op = Sequelize.Op;
-
 {
   rank: {
     [Op.or]: {
@@ -215,8 +211,10 @@ const Op = Sequelize.Op;
 // title LIKE 'Boat%' OR description LIKE '%boat%'
 ```
 
-#### Operators Aliases
-Sequelize allows setting specific strings as aliases for operators -
+#### 运算符别名
+
+Sequelize 允许将特定字符串设置为操作符的别名 -
+
 ```js
 const Op = Sequelize.Op;
 const operatorsAliases = {
@@ -225,36 +223,39 @@ const operatorsAliases = {
 const connection = new Sequelize(db, user, pass, { operatorsAliases })
 
 [Op.gt]: 6 // > 6
-$gt: 6 // same as using Op.gt (> 6)
+$gt: 6 // 等同于使用 Op.gt (> 6)
 ```
 
 
-#### Operators security
-Using Sequelize without any aliases improves security.
-Some frameworks automatically parse user input into js objects and if you fail to sanitize your input it might be possible to inject an Object with string operators to Sequelize.
+#### 运算符安全性
 
-Not having any string aliases will make it extremely unlikely that operators could be injected but you should always properly validate and sanitize user input.
+使用没有任何别名的 Sequelize 可以提高安全性。
 
-For backward compatibility reasons Sequelize sets the following aliases by default -
+一些框架会自动将用户输入解析为js对象，如果您无法清理输入，则可能会将具有字符串运算符的对象注入到 Sequelize。
+
+不带任何字符串别名将使运算符不太可能被注入，但您应该始终正确验证和清理用户输入。
+
+由于向后兼容性原因Sequelize默认设置以下别名 -
+
 $eq, $ne, $gte, $gt, $lte, $lt, $not, $in, $notIn, $is, $like, $notLike, $iLike, $notILike, $regexp, $notRegexp, $iRegexp, $notIRegexp, $between, $notBetween, $overlap, $contains, $contained, $adjacent, $strictLeft, $strictRight, $noExtendRight, $noExtendLeft, $and, $or, $any, $all, $values, $col
 
-Currently the following legacy aliases are also set but are planned to be fully removed in the near future -
+目前，以下遗留别名也被设置，但计划在不久的将来完全删除 -
+
 ne, not, in, notIn, gte, gt, lte, lt, like, ilike, $ilike, nlike, $notlike, notilike, .., between, !.., notbetween, nbetween, overlap, &&, @>, <@
 
-For better security it is highly advised to use `Sequelize.Op` and not depend on any string alias at all. You can limit alias your application will need by setting `operatorsAliases` option, remember to sanitize user input especially when you are directly passing them to Sequelize methods.
+为了更好的安全性，建议使用 `Sequelize.Op`，而不是依赖任何字符串别名。 您可以通过设置`operatorsAliases`选项来限制应用程序需要的别名，请记住要清理用户输入，特别是当您直接将它们传递给 Sequelize 方法时。
 
 ```js
 const Op = Sequelize.Op;
 
-//use sequelize without any operators aliases
+// 不用任何操作符别名使用 sequelize 
 const connection = new Sequelize(db, user, pass, { operatorsAliases: false });
 
-//use sequelize with only alias for $and => Op.and
+// 只用 $and => Op.and 操作符别名使用 sequelize 
 const connection2 = new Sequelize(db, user, pass, { operatorsAliases: { $and: Op.and } });
 ```
 
-Sequelize will warn you if your using the default aliases and not limiting them
-if you want to keep using all default aliases (excluding legacy ones) without the warning you can pass the following operatorsAliases option -
+如果你使用默认别名并且不限制它们，Sequelize会发出警告。如果您想继续使用所有默认别名（不包括旧版别名）而不发出警告，您可以传递以下运算符参数 -
 
 ```js
 const Op = Sequelize.Op;
@@ -298,11 +299,12 @@ const operatorsAliases = {
 const connection = new Sequelize(db, user, pass, { operatorsAliases });
 ```
 
+
 ### JSONB
 
-JSONB can be queried in three different ways.
+JSONB 可以以三种不同的方式进行查询。
 
-#### Nested object
+#### 嵌套对象
 ```js
 {
   meta: {
@@ -315,7 +317,7 @@ JSONB can be queried in three different ways.
 }
 ```
 
-#### Nested key
+#### 嵌套键
 ```js
 {
   "meta.audio.length": {
@@ -324,7 +326,7 @@ JSONB can be queried in three different ways.
 }
 ```
 
-#### Containment
+#### 外包裹
 ```js
 {
   "meta": {
@@ -337,9 +339,9 @@ JSONB can be queried in three different ways.
 }
 ```
 
-### Relations / Associations
+### 关系 / 关联
 ```js
-// Find all projects with a least one task where task.state === project.state
+// 找到所有具有至少一个 task 的  project，其中 task.state === project.state
 Project.findAll({
     include: [{
         model: Task,
@@ -348,70 +350,70 @@ Project.findAll({
 })
 ```
 
-## Pagination / Limiting
+## 分页 / 限制
 
 ```js
-// Fetch 10 instances/rows
+// 获取10个实例/行
 Project.findAll({ limit: 10 })
 
-// Skip 8 instances/rows
+// 跳过8个实例/行
 Project.findAll({ offset: 8 })
 
-// Skip 5 instances and fetch the 5 after that
+// 跳过5个实例，然后取5个
 Project.findAll({ offset: 5, limit: 5 })
 ```
 
-## Ordering
+## 排序
 
-`order` takes an array of items to order the query by or a sequelize method. Generally you will want to use a tuple/array of either attribute, direction or just direction to ensure proper escaping.
+`order` 需要一个条目的数组来排序查询或者一个 sequelize 方法。一般来说，你将要使用任一属性的 tuple/array，并确定排序的正反方向。
 
 ```js
 Subtask.findAll({
   order: [
-    // Will escape username and validate DESC against a list of valid direction parameters
+    // 将转义用户名，并根据有效的方向参数列表验证DESC
     ['title', 'DESC'],
 
-    // Will order by max(age)
+    // 将按最大值排序(age)
     sequelize.fn('max', sequelize.col('age')),
 
-    // Will order by max(age) DESC
+    // 将按最大顺序(age) DESC
     [sequelize.fn('max', sequelize.col('age')), 'DESC'],
 
-    // Will order by  otherfunction(`col1`, 12, 'lalala') DESC
+    // 将按 otherfunction 排序(`col1`, 12, 'lalala') DESC
     [sequelize.fn('otherfunction', sequelize.col('col1'), 12, 'lalala'), 'DESC'],
 
-    // Will order an associated model's created_at using the model name as the association's name.
+    // 将使用模型名称作为关联的名称排序关联模型的 created_at。
     [Task, 'createdAt', 'DESC'],
 
     // Will order through an associated model's created_at using the model names as the associations' names.
     [Task, Project, 'createdAt', 'DESC'],
 
-    // Will order by an associated model's created_at using the name of the association.
+    // 将使用关联的名称由关联模型的created_at排序。
     ['Task', 'createdAt', 'DESC'],
 
     // Will order by a nested associated model's created_at using the names of the associations.
     ['Task', 'Project', 'createdAt', 'DESC'],
 
-    // Will order by an associated model's created_at using an association object. (preferred method)
+    // Will order by an associated model's created_at using an association object. (优选方法)
     [Subtask.associations.Task, 'createdAt', 'DESC'],
 
-    // Will order by a nested associated model's created_at using association objects. (preferred method)
+    // Will order by a nested associated model's created_at using association objects. (优选方法)
     [Subtask.associations.Task, Task.associations.Project, 'createdAt', 'DESC'],
 
     // Will order by an associated model's created_at using a simple association object.
     [{model: Task, as: 'Task'}, 'createdAt', 'DESC'],
 
-    // Will order by a nested associated model's created_at simple association objects.
+    // 嵌套关联模型的 created_at 简单关联对象排序
     [{model: Task, as: 'Task'}, {model: Project, as: 'Project'}, 'createdAt', 'DESC']
   ]
   
-  // Will order by max age descending
+  // 将按年龄最大值降序排列
   order: sequelize.literal('max(age) DESC')
 
-  // Will order by max age ascending assuming ascending is the default order when direction is omitted
+  // 按最年龄大值升序排列，当省略排序条件时默认是升序排列
   order: sequelize.fn('max', sequelize.col('age'))
 
-  // Will order by age ascending assuming ascending is the default order when direction is omitted
+  // 按升序排列是省略排序条件的默认顺序
   order: sequelize.col('age')
 })
 ```

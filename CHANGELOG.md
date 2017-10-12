@@ -4,6 +4,8 @@
 
 ### 更新
 * 同步官方最新文档版本 4.13.8
+* 翻译 getting-started.md
+* 翻译 models-definition.md* 翻译 models-usage.md* 翻译 querying.md
 
 ## 2017-07-14
 

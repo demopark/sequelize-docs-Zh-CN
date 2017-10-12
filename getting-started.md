@@ -1,32 +1,32 @@
-# Getting started
+# 入门
 
-## Installation
+## 安装
 
-Sequelize is available via NPM and Yarn.
+Sequelize 可通过 NPM 和 Yarn 获得。
 
 ```bash
-// Using NPM
+// 使用 NPM
 $ npm install --save sequelize
 
-# And one of the following:
+# 还有以下之一:
 $ npm install --save pg pg-hstore
 $ npm install --save mysql2
 $ npm install --save sqlite3
 $ npm install --save tedious // MSSQL
 
-// Using Yarn
+// 使用 Yarn
 $ yarn add sequelize
 
-# And one of the following:
+# 还有以下之一:
 $ yarn add pg pg-hstore
 $ yarn add mysql2
 $ yarn add sqlite3
 $ yarn add tedious // MSSQL
 ```
 
-## Setting up a connection
+## 建立连接
 
-Sequelize will setup a connection pool on initialization so you should ideally only ever create one instance per database if you're connecting to the DB from a single process. If you're connecting to the DB from multiple processes, you'll have to create one instance per process, but each instance should have a maximum connection pool size of "max connection pool size divided by number of instances".  So, if you wanted a max connection pool size of 90 and you had 3 worker processes, each process's instance should have a max connection pool size of 30.
+Sequelize将在初始化时设置连接池，所以如果从单个进程连接到数据库，你最好每个数据库只创建一个实例。 如果要从多个进程连接到数据库，则必须为每个进程创建一个实例，但每个实例应具有“最大连接池大小除以实例数”的最大连接池大小。 因此，如果您希望最大连接池大小为90，并且有3个工作进程，则每个进程的实例应具有30的最大连接池大小。
 
 ```js
 const sequelize = new Sequelize('database', 'username', 'password', {
@@ -39,19 +39,19 @@ const sequelize = new Sequelize('database', 'username', 'password', {
     idle: 10000
   },
 
-  // SQLite only
+  // 仅限 SQLite
   storage: 'path/to/database.sqlite'
 });
 
-// Or you can simply use a connection uri
+// 或者你可以简单地使用 uri 连接
 const sequelize = new Sequelize('postgres://user:pass@example.com:5432/dbname');
 ```
 
-The Sequelize constructor takes a whole slew of options that are available via the [API reference](/class/lib/sequelize.js~Sequelize.html).
+Sequelize 构造函数可以通过 [API reference](/class/lib/sequelize.js~Sequelize.html) 获得一整套可用的参数。
 
-## Test the connection
+## 测试连接
 
-You can use the `.authenticate()` function like this to test the connection.
+您可以使用  `.authenticate()` 函数来测试连接。
 
 ```js
 sequelize
@@ -64,9 +64,9 @@ sequelize
   });
 ```
 
-## Your first model
+## 你的第一个模型
 
-Models are defined with `sequelize.define('name', {attributes}, {options})`.
+模型使用 `sequelize.define('name', {attributes}, {options})` 来定义.
 
 ```js
 const User = sequelize.define('user', {
@@ -78,9 +78,9 @@ const User = sequelize.define('user', {
   }
 });
 
-// force: true will drop the table if it already exists
+// force: true 如果表已经存在，将会丢弃表
 User.sync({force: true}).then(() => {
-  // Table created
+  // 表已创建
   return User.create({
     firstName: 'John',
     lastName: 'Hancock'
@@ -88,9 +88,9 @@ User.sync({force: true}).then(() => {
 });
 ```
 
-You can read more about creating models at [Model API reference](/class/lib/model.js~Model.html)
+您可以在 [Model API reference](/class/lib/model.js~Model.html) 中阅读更多关于创建模型的信息。
 
-## Your first query
+## 你的第一个查询
 
 ```js
 User.findAll().then(users => {
@@ -98,39 +98,39 @@ User.findAll().then(users => {
 })
 ```
 
-You can read more about finder functions on models like `.findAll()` at [Data retrieval](/manual/tutorial/models-usage.html#data-retrieval-finders) or how to do specific queries like `WHERE` and `JSONB` at [Querying](/manual/tutorial/querying.html).
+您可以在  [Data retrieval](/manual/tutorial/models-usage.html#data-retrieval-finders)  上查看更多关于模型的查找器功能,如 `.findAll()` 。或者在 [Querying](/manual/tutorial/querying.html) 上查看如何执行特定查询，如 `WHERE` 和 `JSONB` 。
 
-### Application wide model options
+### 应用全局的模型参数
 
-The Sequelize constructor takes a `define` option which will be used as the default options for all defined models.
+Sequelize 构造函数使用 `define` 参数，该参数将用作所有定义模型的默认参数。
 
 ```js
 const sequelize = new Sequelize('connectionUri', {
   define: {
-    timestamps: false // true by default
+    timestamps: false // 默认为 true
   }
 });
 
-const User = sequelize.define('user', {}); // timestamps is false by default
+const User = sequelize.define('user', {}); // 时间戳默认为 false
 const Post = sequelize.define('post', {}, {
-  timestamps: true // timestamps will now be true
+  timestamps: true // 时间戳此时为 false
 });
 ```
 
-## Promises
+## 承诺
 
-Sequelize uses promises to control async control-flow. If you are unfamiliar with how promises work, don't worry, you can read up on them [here](https://github.com/wbinnssmith/awesome-promises) and [here](http://bluebirdjs.com/docs/why-promises.html).
+Sequelize 使用承诺来控制异步控制流程。 如果你不熟悉承诺是如何工作的，别担心，你可以在这里阅读  [这里](https://github.com/wbinnssmith/awesome-promises) 和 [这里](http://bluebirdjs.com/docs/why-promises.html)。
 
-Basically, a promise represents a value which will be present at some point - "I promise you I will give you a result or an error at some point". This means that
+基本上，一个承诺代表了某个时候会出现的值 - 这意味着“我保证你会在某个时候给你一个结果或一个错误”。 
 
 ```js
-// DON'T DO THIS
+// 不要这样做
 user = User.findOne()
 
 console.log(user.get('firstName'));
 ```
 
-_will never work!_ This is because `user` is a promise object, not a data row from the DB. The right way to do it is:
+_这将永远不可用！_这是因为`user`是承诺对象，而不是数据库中的数据行。 正确的方法是：
 
 ```js
 User.findOne().then(user => {
@@ -138,7 +138,7 @@ User.findOne().then(user => {
 });
 ```
 
-When your environment or transpiler supports [async/await](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await) this will work but only in the body of an [async](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function) function:
+当您的环境或解释器支持 [async/await](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await) 时，这将可用，但只能在  [async](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)  方法体中：
 
 ```js
 user = await User.findOne()
@@ -146,4 +146,4 @@ user = await User.findOne()
 console.log(user.get('firstName'));
 ```
 
-Once you've got the hang of what promises are and how they work, use the [bluebird API reference](http://bluebirdjs.com/docs/api-reference.html) as your go-to tool. In particular, you'll probably be using [`.all`](http://bluebirdjs.com/docs/api/promise.all.html) a lot.  
+一旦知道了什么是承诺以及它们的工作原理，请使用 [bluebird API reference](http://bluebirdjs.com/docs/api-reference.html) 作为转移工具。 尤其是，你可能会使用很多 [`.all`](http://bluebirdjs.com/docs/api/promise.all.html) 。
