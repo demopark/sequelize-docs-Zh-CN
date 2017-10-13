@@ -1,8 +1,8 @@
-# Working with legacy tables
+# 使用遗留表
 
-While out of the box Sequelize will seem a bit opinionated it's trivial to both legacy and forward proof your application by defining (otherwise generated) table and field names.
+虽然 Sequelize 自认为可以开箱即用, 但是如果你要使用应用之前遗留的资产和凭据,仅需要做一点微不足道的设置即可。
 
-## Tables
+## 表
 ```js
 sequelize.define('user', {
 
@@ -11,7 +11,7 @@ sequelize.define('user', {
 });
 ```
 
-## Fields
+## 字段
 ```js
 sequelize.define('modelName', {
   userId: {
@@ -21,10 +21,11 @@ sequelize.define('modelName', {
 });
 ```
 
-## Primary keys
-Sequelize will assume your table has a `id` primary key property by default.
+## 主键
 
-To define your own primary key:
+Sequelize将假设您的表默认具有`id`主键属性。
+
+要定义你自己的主键：
 
 ```js
 sequelize.define('collection', {
@@ -43,9 +44,9 @@ sequelize.define('collection', {
 });
 ```
 
-And if your model has no primary key at all you can use `Model.removeAttribute('id');`
+如果你的模型根本没有主键，你可以使用 `Model.removeAttribute('id');`
 
-## Foreign keys
+## 外键
 ```js
 // 1:1
 Organization.belongsTo(User, {foreignKey: 'owner_id'});
