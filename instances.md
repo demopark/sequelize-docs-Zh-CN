@@ -1,8 +1,8 @@
-# Instances
+# 实例
 
-## Building a non-persistent instance
+## 构建非持久性实例
 
-In order to create instances of defined classes just do as follows&period; You might recognize the syntax if you coded Ruby in the past&period; Using the `build`-method will return an unsaved object&comma; which you explicitly have to save&period;
+为了创建定义类的实例，请执行以下操作。 如果你以前编写过 Ruby，你可能认识该语法。 使用 `build` - 该方法将返回一个未保存的对象，你要明确地保存它。
 
 ```js
 const project = Project.build({
@@ -17,142 +17,142 @@ const task = Task.build({
 })
 ```
 
-Built instances will automatically get default values when they were defined&colon;
+内置实例在定义时会自动获取默认值：
 
 ```js
-// first define the model
+// 首先定义模型
 const Task = sequelize.define('task', {
   title: Sequelize.STRING,
   rating: { type: Sequelize.STRING, defaultValue: 3 }
 })
  
-// now instantiate an object
+// 现在实例化一个对象
 const task = Task.build({title: 'very important task'})
  
 task.title  // ==> 'very important task'
 task.rating // ==> 3
 ```
 
-To get it stored in the database&comma; use the `save`-method and catch the events ... if needed&colon;
+要将其存储在数据库中，请使用 `save` 方法并捕获事件(如果需要):
 
 ```js
 project.save().then(() => {
-  // my nice callback stuff
+  // 回调
 })
  
 task.save().catch(error => {
-  // mhhh, wth!
+  // 呃
 })
  
-// you can also build, save and access the object with chaining:
+// 还可以使用链式构建来保存和访问对象：
 Task
   .build({ title: 'foo', description: 'bar', deadline: new Date() })
   .save()
   .then(anotherTask => {
-    // you can now access the currently saved task with the variable anotherTask... nice!
+    // 您现在可以使用变量 anotherTask 访问当前保存的任务
   })
   .catch(error => {
-    // Ooops, do some error-handling
+    // Ooops，做一些错误处理
   })
 ```
 
-## Creating persistent instances
+## 创建持久性实例
 
-Besides constructing objects&comma; that needs an explicit save call to get stored in the database&comma; there is also the possibility to do all those steps with one single command&period; It's called `create`.
+除了构建对象之外，还需要一个明确的保存调用来存储在数据库中，可以通过一个命令执行所有这些步骤。 它被称为 `create`。
 
 ```js
 Task.create({ title: 'foo', description: 'bar', deadline: new Date() }).then(task => {
-  // you can now access the newly created task via the variable task
+  // 你现在可以通过变量 task 来访问新创建的 task
 })
 ```
 
-It is also possible to define which attributes can be set via the create method&period; This can be especially very handy if you create database entries based on a form which can be filled by a user&period; Using that would for example allow you to restrict the `User` model to set only a username and an address but not an admin flag&colon;
+也可以通过 `create` 方法定义哪些属性可以设置。 如果你创建基于可由用户填写的表单的数据库条目，这将非常方便。 例如，使用这种方式，你可以限制 `User` 模型，仅设置 username 和 address，而不是 admin 标志：
 
 ```js
 User.create({ username: 'barfooz', isAdmin: true }, { fields: [ 'username' ] }).then(user => {
-  // let's assume the default of isAdmin is false:
+  // 我们假设 isAdmin 的默认值为 false：
   console.log(user.get({
     plain: true
   })) // => { username: 'barfooz', isAdmin: false }
 })
 ```
 
-## Updating / Saving / Persisting an instance
+## 更新 / 保存 / 持久化一个实例
 
-Now lets change some values and save changes to the database&period;&period;&period; There are two ways to do that&colon;
+现在可以更改一些值并将更改保存到数据库...有两种方法可以实现：
 
 ```js
-// way 1
+// 方法 1
 task.title = 'a very different title now'
 task.save().then(() => {})
  
-// way 2
+// 方法 2
 task.update({
   title: 'a very different title now'
 }).then(() => {})
 ```
 
-It's also possible to define which attributes should be saved when calling `save`&comma; by passing an array of column names&period; This is useful when you set attributes based on a previously defined object&period; E&period;g&period; if you get the values of an object via a form of a web app&period; Furthermore this is used internally for `update`&period; This is how it looks like&colon;
+通过传递列名数组，调用 `save` 时也可以定义哪些属性应该被保存。 当您基于先前定义的对象设置属性时，这是有用的。 例如。 如果您通过Web应用程序的形式获取对象的值。 此外，这在 `update` 内部使用。 它就像这样：
 
 ```js
 task.title = 'foooo'
 task.description = 'baaaaaar'
 task.save({fields: ['title']}).then(() => {
- // title will now be 'foooo' but description is the very same as before
+ // title 现在将是 “foooo”，而 description 与以前一样
 })
  
-// The equivalent call using update looks like this:
+// 使用等效的 update 调用如下所示:
 task.update({ title: 'foooo', description: 'baaaaaar'}, {fields: ['title']}).then(() => {
- // title will now be 'foooo' but description is the very same as before
+ //  title 现在将是 “foooo”，而 description 与以前一样
 })
 ```
 
-When you call `save` without changing any attribute, this method will execute nothing;
+当你调用 `save `而不改变任何属性的时候，这个方法什么都不执行。 
 
-## Destroying / Deleting persistent instances
+## 销毁 / 删除持久性实例
 
-Once you created an object and got a reference to it&comma; you can delete it from the database&period; The relevant method is `destroy`&colon;
+创建对象并获得对象的引用后，可以从数据库中删除它。 相关的方法是 `destroy`：
 
 ```js
 Task.create({ title: 'a task' }).then(task => {
-  // now you see me...
+  // 获取到 task 对象...
   return task.destroy();
 }).then(() => {
- // now i'm gone :)
+ // task 对象已被销毁
 })
 ```
 
-If the `paranoid` options is true, the object will not be deleted, instead the `deletedAt` column will be set to the current timestamp. To force the deletion, you can pass `force: true` to the destroy call:
+如果 `paranoid` 选项为 true，则不会删除该对象，而将 `deletedAt` 列设置为当前时间戳。 要强制删除，可以将 `force: true` 传递给 destroy 调用：
 
 ```js
 task.destroy({ force: true })
 ```
 
-## Working in bulk (creating, updating and destroying multiple rows at once)
+## 批量操作（一次创建，更新和销毁多行）
 
-In addition to updating a single instance, you can also create, update, and delete multiple instances at once. The functions you are looking for are called
+除了更新单个实例之外，你还可以一次创建，更新和删除多个实例。 调用你需要的方法
 
 * `Model.bulkCreate`
 * `Model.update`
 * `Model.destroy`
 
-Since you are working with multiple models, the callbacks will not return DAO instances. BulkCreate will return an array of model instances/DAOs, they will however, unlike `create`, not have the resulting values of autoIncrement attributes.`update` and `destroy` will return the number of affected rows.
+由于你使用多个模型，回调将不会返回DAO实例。 BulkCreate将返回一个模型实例/DAO的数组，但是它们不同于`create`，没有 autoIncrement 属性的结果值. `update` 和 `destroy` 将返回受影响的行数。
 
-First lets look at bulkCreate
+首先看下 bulkCreate
 
 ```js
 User.bulkCreate([
   { username: 'barfooz', isAdmin: true },
   { username: 'foo', isAdmin: true },
   { username: 'bar', isAdmin: false }
-]).then(() => { // Notice: There are no arguments here, as of right now you'll have to...
+]).then(() => { // 注意: 这里没有凭据, 然而现在你需要...
   return User.findAll();
 }).then(users => {
-  console.log(users) // ... in order to get the array of user objects
+  console.log(users) // ... 以获取 user 对象的数组
 })
 ```
 
-To update several rows at once:
+一次更新几行:
 
 ```js
 Task.bulkCreate([
@@ -161,21 +161,21 @@ Task.bulkCreate([
   {subject: 'programming', status: 'finished'}
 ]).then(() => {
   return Task.update(
-    { status: 'inactive' }, /* set attributes' value */,
-    { where: { subject: 'programming' }} /* where criteria */
+    { status: 'inactive' }, /* 设置属性的值 */,
+    { where: { subject: 'programming' }} /* where 规则 */
   );
 }).spread((affectedCount, affectedRows) => {
-  // .update returns two values in an array, therefore we use .spread
-  // Notice that affectedRows will only be defined in dialects which support returning: true
+  // .update 在数组中返回两个值，因此我们使用 .spread
+  // 请注意，affectedRows 只支持以 returning: true 的方式进行定义
   
-  // affectedCount will be 2
+  // affectedCount 将会是 2
   return Task.findAll();
 }).then(tasks => {
-  console.log(tasks) // the 'programming' tasks will both have a status of 'inactive'
+  console.log(tasks) // “programming” 任务都将处于 “inactive” 状态
 })
 ```
 
-And delete them:
+然后删除它们:
 
 ```js
 Task.bulkCreate([
@@ -187,28 +187,28 @@ Task.bulkCreate([
     where: {
       subject: 'programming'
     },
-    truncate: true /* this will ignore where and truncate the table instead */
+    truncate: true /* 这将忽 where 并用 truncate table 替代  */
   });
 }).then(affectedRows => {
-  // affectedRows will be 2
+  // affectedRows 将会是 2
   return Task.findAll();
 }).then(tasks => {
-  console.log(tasks) // no programming, just reading :(
+  console.log(tasks) // 显示 tasks 内容
 })
 ```
 
-If you are accepting values directly from the user, it might be beneficial to limit the columns that you want to actually insert.`bulkCreate()`accepts an options object as the second parameter. The object can have a `fields` parameter, &lpar;an array&rpar; to let it know which fields you want to build explicitly
+如果您直接从 user 接受值，则限制要实际插入的列可能会更好。`bulkCreate()` 接受一个选项对象作为第二个参数。 该对象可以有一个 `fields` 参数（一个数组），让它知道你想要明确构建哪些字段
 
 ```js
 User.bulkCreate([
   { username: 'foo' },
   { username: 'bar', admin: true}
 ], { fields: ['username'] }).then(() => {
-  // nope bar, you can't be admin!
+  // admin 将不会被构建
 })
 ```
 
-`bulkCreate` was originally made to be a mainstream&sol;fast way of inserting records&comma; however&comma; sometimes you want the luxury of being able to insert multiple rows at once without sacrificing model validations even when you explicitly tell Sequelize which columns to sift through&period; You can do by adding a `validate: true` property to the options object.
+`bulkCreate`  最初是成为 主流/快速 插入记录的方法，但是有时您希望能够同时插入多行而不牺牲模型验证，即使您明确地告诉 Sequelize 去筛选哪些列。 你可以通过在options对象中添加一个 `validate: true` 属性来实现。
 
 ```js
 const Tasks = sequelize.define('task', {
@@ -231,7 +231,8 @@ Tasks.bulkCreate([
   {code: '1234'},
   {name: 'bar', code: '1'}
 ], { validate: true }).catch(errors => {
-  /* console.log(errors) would look like:
+
+  /* console.log(errors) 看起来像这样:
   [
     { record:
     ...
@@ -247,12 +248,13 @@ Tasks.bulkCreate([
         errors: [Object] } }
   ]
   */
+  
 })
 ```
 
-## Values of an instance
+## 一个实例的值
 
-If you log an instance you will notice&comma; that there is a lot of additional stuff&period; In order to hide such stuff and reduce it to the very interesting information&comma; you can use the`get`-attribute&period; Calling it with the option `plain` = true will only return the values of an instance&period;
+如果你记录一个实例，你会注意到有很多额外的东西。 为了隐藏这些东西并将其减少到非常有趣的信息，您可以使用 `get` 属性。 使用选项 `plain: true` 调用它将只返回一个实例的值。
 
 ```js
 Person.create({
@@ -264,7 +266,7 @@ Person.create({
   }))
 })
  
-// result:
+// 结果:
  
 // { name: 'Rambow',
 //   firstname: 'John',
@@ -274,11 +276,11 @@ Person.create({
 // }
 ```
 
-**Hint&colon;**You can also transform an instance into JSON by using `JSON.stringify(instance)`&period; This will basically return the very same as `values`&period;
+**提示:** 您还可以使用  `JSON.stringify(instance)` 将一个实例转换为 JSON。 基本上与  `values` 返回的相同。
 
-## Reloading instances
+## 重载实例
 
-If you need to get your instance in sync&comma; you can use the method`reload`&period; It will fetch the current data from the database and overwrite the attributes of the model on which the method has been called on&period;
+如果你需要让你的实例同步，你可以使用 `reload` 方法。 它将从数据库中获取当前数据，并覆盖调用该方法的模型的属性。
 
 ```js
 Person.findOne({ where: { name: 'john' } }).then(person => {
@@ -291,11 +293,11 @@ Person.findOne({ where: { name: 'john' } }).then(person => {
 })
 ```
 
-## Incrementing
+## 递增
 
-In order to increment values of an instance without running into concurrency issues&comma; you may use `increment`&period;
+为了增加实例的值而不发生并发问题，您可以使用 `increment`。
 
-First of all you can define a field and the value you want to add to it&period;
+首先，你可以定义一个字段和要添加的值。
 
 ```js
 User.findById(1).then(user => {
@@ -303,7 +305,7 @@ User.findById(1).then(user => {
 }).then(/* ... */)
 ```
 
-Second&comma; you can define multiple fields and the value you want to add to them&period;
+然后，你可以定义多个字段和要添加到其中的值。
 
 ```js
 User.findById(1).then(user => {
@@ -311,7 +313,7 @@ User.findById(1).then(user => {
 }).then(/* ... */)
 ```
 
-Third&comma; you can define an object containing fields and its increment values&period;
+最后，你可以定义一个包含字段及其递增值的对象。
 
 ```js
 User.findById(1).then(user => {
@@ -322,11 +324,11 @@ User.findById(1).then(user => {
 }).then(/* ... */)
 ```
 
-## Decrementing
+## 递减
 
-In order to decrement values of an instance without running into concurrency issues&comma; you may use `decrement`&period;
+为了减少一个实例的值而不遇到并发问题，你可以使用 `decrement`。
 
-First of all you can define a field and the value you want to add to it&period;
+首先，你可以定义一个字段和要添加的值。
 
 ```js
 User.findById(1).then(user => {
@@ -334,7 +336,7 @@ User.findById(1).then(user => {
 }).then(/* ... */)
 ```
 
-Second&comma; you can define multiple fields and the value you want to add to them&period;
+然后，你可以定义多个字段和要添加到其中的值。
 
 ```js
 User.findById(1).then(user => {
@@ -342,7 +344,7 @@ User.findById(1).then(user => {
 }).then(/* ... */)
 ```
 
-Third&comma; you can define an object containing fields and its decrement values&period;
+最后， 你可以定义一个包含字段及其递减值的对象。
 
 ```js
 User.findById(1).then(user => {
