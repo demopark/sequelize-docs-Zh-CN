@@ -1,22 +1,22 @@
-# Transactions
+# 事务
 
-Sequelize supports two ways of using transactions:
+Sequelize 支持两种使用事务的方法：
 
-* One which will automatically commit or rollback the transaction based on the result of a promise chain and, (if enabled) pass the transaction to all calls within the callback
-* And one which leaves committing, rolling back and passing the transaction to the user.
+* 一个将根据承诺链的结果自动提交或回滚事务，（如果启用）用回调将该事务传递给所有调用
+* 而另一个 leave committing，回滚并将事务传递给用户。
 
-The key difference is that the managed transaction uses a callback that expects a promise to be returned to it while the unmanaged transaction returns a promise.
+主要区别在于托管事务使用一个回调，对非托管事务而言期望承诺返回一个 promise 结果。
 
-## Managed transaction (auto-callback)
+## 托管事务（auto-callback）
 
-Managed transactions handle committing or rolling back the transaction automagically. You start a managed transaction by passing a callback to `sequelize.transaction`.
+托管事务自动处理提交或回滚事务。你可以通过将回调传递给 `sequelize.transaction` 来启动托管事务。
 
-Notice how the callback passed to `transaction` returns a promise chain, and does not explicitly call `t.commit()` nor `t.rollback()`. If all promises in the returned chain are resolved successfully the transaction is committed. If one or several of the promises are rejected, the transaction is rolled back.
+注意回传传递给 `transaction` 的回调是否是一个承诺链，并且没有明确地调用`t.commit（）`或  `t.rollback()`。 如果返回链中的所有承诺都已成功解决，则事务被提交。 如果一个或几个承诺被拒绝，事务将回滚。
 
 ```js
 return sequelize.transaction(function (t) {
 
-  // chain all your queries here. make sure you return them.
+  // 在这里链接您的所有查询。 确保你返回他们。
   return User.create({
     firstName: 'Abraham',
     lastName: 'Lincoln'
@@ -28,17 +28,17 @@ return sequelize.transaction(function (t) {
   });
 
 }).then(function (result) {
-  // Transaction has been committed
-  // result is whatever the result of the promise chain returned to the transaction callback
+  // 事务已被提交
+  // result 是承诺链返回到事务回调的结果
 }).catch(function (err) {
-  // Transaction has been rolled back
-  // err is whatever rejected the promise chain returned to the transaction callback
+  // 事务已被回滚
+  // err 是拒绝承诺链返回到事务回调的错误
 });
 ```
 
-### Throw errors to rollback
+### 抛出错误到回滚
 
-When using the managed transaction you should _never_ commit or rollback the transaction manually. If all queries are successful, but you still want to rollback the transaction (for example because of a validation failure) you should throw an error to break and reject the chain:
+使用托管事务时，你应该 _**永不**_ 手动提交或回滚事务。 如果所有查询都成功，但您仍然希望回滚事务（例如因为验证失败），则应该抛出一个错误来断开和拒绝链接：
 
 ```js
 return sequelize.transaction(function (t) {
@@ -46,22 +46,22 @@ return sequelize.transaction(function (t) {
     firstName: 'Abraham',
     lastName: 'Lincoln'
   }, {transaction: t}).then(function (user) {
-    // Woops, the query was successful but we still want to roll back!
+    // 查询成功，但我们仍然想回滚！
     throw new Error();
   });
 });
 ```
 
-### Automatically pass transactions to all queries
+### 自动将事务传递给所有查询
 
-In the examples above, the transaction is still manually passed, by passing `{ transaction: t }` as the second argument. To automatically pass the transaction to all queries you must install the [continuation local storage](https://github.com/othiym23/node-continuation-local-storage) (CLS) module and instantiate a namespace in your own code:
+在上面的例子中，事务仍然是手动传递的，通过传递 `{transaction:t}` 作为第二个参数。 要自动将事务传递给所有查询，您必须安装 [continuation local storage](https://github.com/othiym23/node-continuation-local-storage) (CLS) 模块，并在您自己的代码中实例化一个命名空间：
 
 ```js
 const cls = require('continuation-local-storage'),
     namespace = cls.createNamespace('my-very-own-namespace');
 ```
 
-To enable CLS you must tell sequelize which namespace to use by using a static method of the sequelize constructor:
+要启用CLS，您必须通过使用sequelize构造函数的静态方法来告诉Sequelize要使用的命名空间：
 
 ```js
 const Sequelize = require('sequelize');
@@ -70,9 +70,9 @@ Sequelize.useCLS(namespace);
 new Sequelize(....);
 ```
 
-Notice, that the `useCLS()` method is on the *constructor*, not on an instance of sequelize. This means that all instances will share the same namespace, and that CLS is all-or-nothing - you cannot enable it only for some instances.
+请注意， `useCLS()`  方法在 *构造函数* 上，而不是在 sequelize 的实例上。 这意味着所有实例将共享相同的命名空间，并且 CLS 是全部或全无方式 - 你不能仅在某些实例中启用它。
 
-CLS works like a thread-local storage for callbacks. What this means in practice is that different callback chains can access local variables by using the CLS namespace. When CLS is enabled sequelize will set the `transaction` property on the namespace when a new transaction is created. Since variables set within a callback chain are private to that chain several concurrent transactions can exist at the same time:
+CLS 的工作方式就像一个用于回调的本地线程存储。 这在实践中意味着不同的回调链可以通过使用 CLS 命名空间来访问局部变量。 当启用 CLS 时，创建新事务时，Sequelize 将在命名空间上设置 `transaction` 属性。 由于回调链中设置的变量对该链是私有的，因此可以同时存在多个并发事务：
 
 ```js
 sequelize.transaction(function (t1) {
@@ -84,38 +84,40 @@ sequelize.transaction(function (t2) {
 });
 ```
 
-In most case you won't need to access `namespace.get('transaction')` directly, since all queries will automatically look for a transaction on the namespace:
+在大多数情况下，你不需要直接访问 `namespace.get('transaction')`，因为所有查询都将自动在命名空间中查找事务：
 
 ```js
 sequelize.transaction(function (t1) {
-  // With CLS enabled, the user will be created inside the transaction
+  // 启用 CLS 后，将在事务中创建用户
   return User.create({ name: 'Alice' });
 });
 ```
 
-After you've used `Sequelize.useCLS()` all promises returned from sequelize will be patched to maintain CLS context. CLS is a complicated subject - more details in the docs for [cls-bluebird](https://www.npmjs.com/package/cls-bluebird), the patch used to make bluebird promises work with CLS.
+在使用 `Sequelize.useCLS()` 后，从 sequelize 返回的所有承诺将被修补以维护 CLS 上下文。 CLS 是一个复杂的课题 - [cls-bluebird](https://www.npmjs.com/package/cls-bluebird)的文档中有更多细节，用于使 bluebird 承诺的补丁与CLS一起工作。
 
-## Concurrent/Partial transactions
+## 并行/部分事务
 
-You can have concurrent transactions within a sequence of queries or have some of them excluded from any transactions. Use the `{transaction: }` option to control which transaction a query belong to:
+你可以在一系列查询中执行并发事务，或者将某些事务从任何事务中排除。 使用 `{transaction: }` 选项来控制查询所属的事务：
 
-### Without CLS enabled
+### 不启用CLS
+
 ```js
 sequelize.transaction(function (t1) {
   return sequelize.transaction(function (t2) {
-    // With CLS enable, queries here will by default use t2
-    // Pass in the `transaction` option to define/alter the transaction they belong to.
-    return Promise.all([
+    // 启用CLS，这里的查询将默认使用 t2    
+    // 通过 `transaction` 选项来定义/更改它们所属的事务。
+        return Promise.all([
         User.create({ name: 'Bob' }, { transaction: null }),
         User.create({ name: 'Mallory' }, { transaction: t1 }),
-        User.create({ name: 'John' }) // this would default to t2
+        User.create({ name: 'John' }) // 这将默认为 t2
     ]);
   });
 });
 ```
 
-## Isolation levels
-The possible isolations levels to use when starting a transaction:
+## 隔离等级
+
+启动事务时可能使用的隔离等级：
 
 ```js
 Sequelize.Transaction.ISOLATION_LEVELS.READ_UNCOMMITTED // "READ UNCOMMITTED"
@@ -124,22 +126,23 @@ Sequelize.Transaction.ISOLATION_LEVELS.REPEATABLE_READ  // "REPEATABLE READ"
 Sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE // "SERIALIZABLE"
 ```
 
-By default, sequelize uses the isolation level of the database. If you want to use a different isolation level, pass in the desired level as the first argument:
+默认情况下，sequelize 使用数据库的隔离级别。 如果要使用不同的隔离级别，请传入所需级别作为第一个参数：
 
 ```js
 return sequelize.transaction({
   isolationLevel: Sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE
   }, function (t) {
 
-  // your transactions
+  //  你的事务
 
   });
 ```
 
-Note: The SET ISOLATION LEVEL queries are not logged in case of MSSQL as the specified isolationLevel is passed directly to tedious
+注意: 在MSSQL的情况下，SET ISOLATION LEVEL 查询不被记录, 指定的 isolationLevel 直接传递到tedious
 
-## Unmanaged transaction (then-callback)
-Unmanaged transactions force you to manually rollback or commit the transaction. If you don't do that, the transaction will hang until it times out. To start an unmanaged transaction, call `sequelize.transaction()` without a callback (you can still pass an options object) and call `then` on the returned promise. Notice that `commit()` and `rollback()` returns a promise.
+## 非托管事务（then-callback）
+
+非托管事务强制您手动回滚或提交交易。 如果不这样做，事务将挂起，直到超时。 要启动非托管事务，请调用 `sequelize.transaction()` 而不用 callback（你仍然可以传递一个选项对象），并在返回的承诺上调用 `then`。 请注意，`commit()` 和 `rollback()` 返回一个承诺。
 
 ```js
 return sequelize.transaction().then(function (t) {
@@ -159,58 +162,55 @@ return sequelize.transaction().then(function (t) {
 });
 ```
 
-## Options
-The `transaction` method can be called with an options object as the first argument, that
-allows the configuration of the transaction.
+## 参数
+
+可以使用options对象作为第一个参数来调用`transaction`方法，这允许配置事务。
 
 ```js
 return sequelize.transaction({ /* options */ });
 ```
 
-The following options (with their default values) are available:
+以下选项（使用默认值）可用：
 
 ```js
 {
   autocommit: true,
   isolationLevel: 'REPEATABLE_READ',
-  deferrable: 'NOT DEFERRABLE' // implicit default of postgres
+  deferrable: 'NOT DEFERRABLE' // postgres 的默认设置
 }
 ```
 
-The `isolationLevel` can either be set globally when initializing the Sequelize instance or
-locally for every transaction:
+在为 Sequelize 实例或每个局部事务初始化时，`isolationLevel`可以全局设置：
 
 ```js
-// globally
+// 全局
 new Sequelize('db', 'user', 'pw', {
   isolationLevel: Sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE
 });
 
-// locally
+// 局部
 sequelize.transaction({
   isolationLevel: Sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE
 });
 ```
 
-The `deferrable` option triggers an additional query after the transaction start
-that optionally set the constraint checks to be deferred or immediate. Please note
-that this is only supported in PostgreSQL.
+`deferrable` 选项在事务开始后触发一个额外的查询，可选地将约束检查设置为延迟或立即。 请注意，这仅在PostgreSQL中受支持。
 
 ```js
 sequelize.transaction({
-  // to defer all constraints:
+  // 推迟所有约束：
   deferrable: Sequelize.Deferrable.SET_DEFERRED,
 
-  // to defer a specific constraint:
+  // 推迟具体约束：
   deferrable: Sequelize.Deferrable.SET_DEFERRED(['some_constraint']),
 
-  // to not defer constraints:
+  // 不推迟约束：
   deferrable: Sequelize.Deferrable.SET_IMMEDIATE
 })
 ```
 
-## Usage with other sequelize methods
+## 使用其他 Sequelize 方法
 
-The `transaction` option goes with most other options, which are usually the first argument of a method.
-For methods that take values, like `.create`, `.update()`, `.updateAttributes()` etc. `transaction` should be passed to the option in the second argument.
-If unsure, refer to the API documentation for the method you are using to be sure of the signature.
+`transaction` 选项与其他大多数选项一起使用，通常是方法的第一个参数。
+对于取值的方法，如 `.create`, `.update()`, `.updateAttributes()` 等。应该传递给第二个参数的选项。
+如果不确定，请参阅API文档中的用于确定签名的方法。

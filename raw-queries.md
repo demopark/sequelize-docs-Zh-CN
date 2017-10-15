@@ -1,40 +1,41 @@
-# Raw queries
+# 原始查询
 
-As there are often use cases in which it is just easier to execute raw / already prepared SQL queries, you can utilize the function `sequelize.query`.
+由于常常使用简单的方式来执行原始/已经准备好的SQL查询，所以可以使用 `sequelize.query` 函数。
 
-By default the function will return two arguments - a results array, and an object containing metadata (affected rows etc.). Note that since this is a raw query, the metadata (property names etc.) is dialect specific. Some dialects return the metadata "within" the results object (as properties on an array). However, two arguments will always be returned, but for MSSQL and MySQL it will be two references to the same object.
+默认情况下，函数将返回两个参数 - 一个结果数组，以及一个包含元数据（受影响的行等）的对象。 请注意，由于这是一个原始查询，所以元数据（属性名称等）是具体的方言。 某些方言返回元数据 "within" 结果对象（作为数组上的属性）。 但是，将永远返回两个参数，但对于MSSQL和MySQL，它将是对同一对象的两个引用。
 
 ```js
 sequelize.query("UPDATE users SET y = 42 WHERE x = 12").spread((results, metadata) => {
-  // Results will be an empty array and metadata will contain the number of affected rows.
+  // 结果将是一个空数组，元数据将包含受影响的行数。
 })
 ```
 
-In cases where you don't need to access the metadata you can pass in a query type to tell sequelize how to format the results. For example, for a simple select query you could do:
+在不需要访问元数据的情况下，您可以传递一个查询类型来告诉后续如何格式化结果。 例如，对于一个简单的选择查询你可以做：
 
 ```js
 sequelize.query("SELECT * FROM `users`", { type: sequelize.QueryTypes.SELECT})
   .then(users => {
-    // We don't need spread here, since only the results will be returned for select queries
+    // 我们不需要在这里延伸，因为只有结果将返回给选择查询
   })
 ```
 
-Several other query types are available. [Peek into the source for details](https://github.com/sequelize/sequelize/blob/master/lib/query-types.js)
+还有其他几种查询类型可用。 [详细了解来源](https://github.com/sequelize/sequelize/blob/master/lib/query-types.js)
 
-A second option is the model. If you pass a model the returned data will be instances of that model.
+第二种选择是模型。 如果传递模型，返回的数据将是该模型的实例。
 
 ```js
-// Callee is the model definition. This allows you to easily map a query to a predefined model
+// Callee 是模型定义。 这样您就可以轻松地将查询映射到预定义的模型
 sequelize.query('SELECT * FROM projects', { model: Projects }).then(projects => {
-  // Each record will now be a instance of Project
+  // 每个记录现在将是Project的一个实例
 })
 ```
 
-## Replacements
-Replacements in a query can be done in two different ways, either using named parameters (starting with `:`), or unnamed, represented by a `?`. Replacements are passed in the options object.
+## 替换
 
-* If an array is passed, `?` will be replaced in the order that they appear in the array
-* If an object is passed, `:key` will be replaced with the keys from that object. If the object contains keys not found in the query or vice versa, an exception will be thrown.
+查询中的替换可以通过两种不同的方式完成：使用命名参数（以`：`开头），或者由`？`表示的未命名参数。 替换在options对象中传递。
+
+* 如果传递一个数组, `?` 将按照它们在数组中出现的顺序被替换
+* 如果传递一个对象, `:key` 将替换为该对象的键。 如果对象包含在查询中找不到的键，则会抛出异常，反之亦然。
 
 ```js
 sequelize.query('SELECT * FROM projects WHERE status = ?',
@@ -50,7 +51,7 @@ sequelize.query('SELECT * FROM projects WHERE status = :status ',
 })
 ```
 
-Array replacements will automatically be handled, the following query searches for projects where the status matches an array of values.
+数组替换将自动处理，以下查询将搜索状态与值数组匹配的项目。
 
 ```js
 sequelize.query('SELECT * FROM projects WHERE status IN(:status) ',
@@ -60,7 +61,7 @@ sequelize.query('SELECT * FROM projects WHERE status IN(:status) ',
 })
 ```
 
-To use the wildcard operator %, append it to your replacement. The following query matches users with names that start with 'ben'.
+要使用通配符运算符 ％，请将其附加到你的替换中。 以下查询与名称以“ben”开头的用户相匹配。
 
 ```js
 sequelize.query('SELECT * FROM users WHERE name LIKE :search_name ',
@@ -70,18 +71,19 @@ sequelize.query('SELECT * FROM users WHERE name LIKE :search_name ',
 })
 ```
 
-## Bind Parameter
-Bind parameters are like replacements. Except replacements are escaped and inserted into the query by sequelize before the query is sent to the database, while bind parameters are sent to the database outside the SQL query text. A query can have either bind parameters or replacements.
+## 绑定参数
 
-Only SQLite and PostgreSQL support bind parameters. Other dialects will insert them into the SQL query in the same way it is done for replacements. Bind parameters are referred to by either $1, $2, ... (numeric) or $key (alpha-numeric). This is independent of the dialect.
+绑定参数就像替换。 除非替换被转义并在查询发送到数据库之前通过后续插入到查询中，而将绑定参数发送到SQL查询文本之外的数据库。 查询可以具有绑定参数或替换。
 
-* If an array is passed, `$1` is bound to the 1st element in the array (`bind[0]`)
-* If an object is passed, `$key` is bound to `object['key']`. Each key must begin with a non-numeric char. `$1` is not a valid key, even if `object['1']` exists.
-* In either case `$$` can be used to escape a literal `$` sign.
+只有SQLite和PostgreSQL支持绑定参数。 其他方言会将它们插入到SQL查询中，就像替换一样。 绑定参数由 `$1, $2, ... (numeric)` 或 `$key (alpha-numeric)` 引用。这是独立于方言。
 
-The array or object must contain all bound values or Sequelize will throw an exception. This applies even to cases in which the database may ignore the bound parameter.
+* 如果传递一个数组, `$1` 被绑定到数组中的第一个元素 (`bind[0]`)。
+* 如果传递一个对象, `$key` 绑定到 `object['key']`。 每个键必须以非数字字符开始。 `$1` 不是一个有效的键，即使 `object['1']` 存在。
+* 在这两种情况下 `$$` 可以用来转义一个 `$` 字符符号.
 
-The database may add further restrictions to this. Bind parameters cannot be SQL keywords, nor table or column names. They are also ignored in quoted text or data. In PostgreSQL it may also be needed to typecast them, if the type cannot be inferred from the context `$1::varchar`.
+数组或对象必须包含所有绑定的值，或者Sequelize将抛出异常。 这甚至适用于数据库可能忽略绑定参数的情况。
+
+数据库可能会增加进一步的限制。 绑定参数不能是SQL关键字，也不能是表或列名。 引用的文本或数据也忽略它们。 在PostgreSQL中，如果不能从上下文 `$1::varchar` 推断类型，那么也可能需要对其进行类型转换。
 
 ```js
 sequelize.query('SELECT *, "text with literal $$1 and literal $$status" as t FROM projects WHERE status = $1',

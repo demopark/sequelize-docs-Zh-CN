@@ -1,11 +1,12 @@
-## Basic usage
+## 基本用法
 
-To get the ball rollin' you first have to create an instance of Sequelize. Use it the following way:
+在开始之前，你首先必须创建一个 Sequelize 的实例。 像下面这样：
 
 ```js
 const sequelize = new Sequelize('database', 'username'[, 'password'])
 ```
-This will save the passed database credentials and provide all further methods. Furthermore you can specify a non-default host/port:
+
+这将会保存要传递的数据库凭据并提供所有进一步的方法。此外，你还可以指定非默认的主机或端口：
 
 ```js
 const sequelize = new Sequelize('database', 'username', 'password', {
@@ -14,76 +15,76 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 })
 ```
 
-If you just don't have a password:
+如果你没有密码：
 
 ```js
 const sequelize = new Sequelize('database', 'username')
-// or
+// 或
 const sequelize = new Sequelize('database', 'username', null)
 ```
 
-You can also use a connection string:
+你也可以使用连接字符串：
 
 ```js
 const sequelize = new Sequelize('mysql://user:pass@example.com:9821/dbname', {
-  // Look to the next section for possible options
+  // 更多选项请看下一节
 })
 ```
 
-## Options
+## 选项
 
-Besides the host and the port, Sequelize comes with a whole bunch of options. Here they are:
+除了主机和端口，Sequelize 还提供了一大堆选项。它们在这:
 
 ```js
 const sequelize = new Sequelize('database', 'username', 'password', {
-  // custom host; default: localhost
+  // 自定义主机; 默认值: localhost
   host: 'my.server.tld',
  
-  // custom port; default: 3306
+  // 自定义端口; 默认值: 3306
   port: 12345,
  
-  // custom protocol
-  // - default: 'tcp'
-  // - added in: v1.5.0
-  // - postgres only, useful for heroku
+  // 自定义协议
+  // - 默认值: 'tcp'
+  // - 版本: v1.5.0
+  // - 仅限 postgres, 用于 heroku
   protocol: null,
  
-  // disable logging; default: console.log
+  // 禁用日志; 默认值: console.log
   logging: false,
  
-  // the sql dialect of the database
-  // - currently supported: 'mysql', 'sqlite', 'postgres', 'mssql'
+  // 数据库的 sql 方言
+  // - 当前支持: 'mysql', 'sqlite', 'postgres', 'mssql'
   dialect: 'mysql',
  
-  // you can also pass any dialect options to the underlying dialect library
-  // - default is empty
-  // - currently supported: 'mysql', 'postgres', 'mssql'
+  // 你还可以将任何方言选项传递到底层方言库
+  // - 默认是空
+  // - 当前支持: 'mysql', 'postgres', 'mssql'
   dialectOptions: {
     socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock',
     supportBigNumbers: true,
     bigNumberStrings: true
   },
  
-  // the storage engine for sqlite
-  // - default ':memory:'
+  // sqlite 的存储引擎
+  // - 默认值 ':memory:'
   storage: 'path/to/database.sqlite',
  
-  // disable inserting undefined values as NULL
-  // - default: false
+  // 禁止将未定义的值插入为NULL
+  // - 默认值: false
   omitNull: true,
  
-  // a flag for using a native library or not.
-  // in the case of 'pg' -- set this to true will allow SSL support
-  // - default: false
+  // 是否使用本地库的标志
+  // 如果是 'pg' -- 设置为 true 将允许 SSL 支持
+  // - 默认值: false
   native: true,
  
-  // Specify options, which are used when sequelize.define is called.
-  // The following example:
+  // 指定在调用 sequelize.define 时使用的选项
+  // 如下示例:
   //   define: {timestamps: false}
-  // is basically the same as:
+  // 这基本等同于:
   //   sequelize.define(name, attributes, { timestamps: false })
-  // so defining the timestamps for each model will be not necessary
-  // Below you can see the possible keys for settings. All of them are explained on this page
+  // 没有必要像这样去设置每个定义的时间戳选项
+  // 下面你看到的这些可能设置的键. 本章中都进行了说明
   define: {
     underscored: false
     freezeTableName: false,
@@ -95,22 +96,22 @@ const sequelize = new Sequelize('database', 'username', 'password', {
     timestamps: true
   },
  
-  // similar for sync: you can define this to always force sync for models
+  // 类似于同步：你可以定义始终强制同步模型
   sync: { force: true },
  
-  // sync after each association (see below). If set to false, you need to sync manually after setting all associations. Default: true
+  // 每次关联后进行同步（见下文）。 如果设置为 false，则需要在设置所有关联后手动进行同步。 默认值: true
   syncOnAssociation: true,
  
-  // use pooling in order to reduce db connection overload and to increase speed
-  // currently only for mysql and postgresql (since v1.5.0)
+  // 使用连接池来减少数据库连接超载并提高速度
+  // 当前仅支持 mysql 和 postgresql (从 v1.5.0 开始)
   pool: { max: 5, idle: 30},
  
-  // language is used to determine how to translate words into singular or plural form based on the [lingo project](https://github.com/visionmedia/lingo)
-  // options are: en [default], es
+  // 用于确定如何根据 [lingo project](https://github.com/visionmedia/lingo) 将单词翻译成单数形式或复数形式
+  // 选项为: en [默认], es
   language: 'en',
 
-  // isolation level of each transaction. Defaults to REPEATABLE_READ
-  // options are:
+  // 每个事务的隔离级别. 默认是 REPEATABLE_READ
+  // 可用选项:
   // READ_UNCOMMITTED
   // READ_COMMITTED
   // REPEATABLE_READ
@@ -119,11 +120,11 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 })
 ```
 
-**Hint:** You can also define a custom function for the logging part. Just pass a function. The first parameter will be the string that is logged.
+**提示:** 你可以通过传递一个方法为日志部分设置一个自定义方法。第一个参数是将被记录的字符串 。
 
-## Read replication
+## 读取复制
 
-Sequelize supports read replication, i.e. having multiple servers that you can connect to when you want to do a SELECT query. When you do read replication, you specify one or more servers to act as read replicas, and one server to act as the write master, which handles all writes and updates and propagates them to the replicas (note that the actual replication process is **not** handled by Sequelize, but should be set up in MySql).
+Sequelize 支持读取复制，即在要执行 SELECT 查询时可以连接到多个服务器。 当你读取复制时，你指定一个或多个服务器作为读取副本，一个服务器充当写入主机，它处理所有写入和更新，并将其传播到副本（请注意，实际的复制进程为 *不是* 由 Sequelize 处理，而应该在 MySql 中设置）。
 
 ```js
 const sequelize = new Sequelize('database', null, null, {
@@ -136,16 +137,16 @@ const sequelize = new Sequelize('database', null, null, {
     ],
     write: { host: 'localhost', username: 'root', password: null }
   },
-  pool: { // If you want to override the options used for the read pool you can do so here
+  pool: { // 如果要覆盖用于读取池的选项，可以在此处进行
     max: 20,
     idle: 30000
   },
 })
 ```
 
-If you have any general settings that apply to all replicas you do not need to provide them for each instance. In the code above, database name and port is propagated to all replicas. The same will happen for user and password, if you leave them out for any of the replicas. Each replica has the following options:`host`,`port`,`username`,`password`,`database`.
+如果你有适用于所有副本的常规设置，则不需要为每个实例单独提供它们。在上面的代码中，数据库名称和端口被传播到所有副本。对于用户和密码也是如此， 如果你把它们用于任何一个副本。每个副本都有以下选项：`host`，`port`，`username`，`password`，`database`。
 
-Sequelize uses a pool to manage connections to your replicas. The default options are:
+Sequelize 使用池来管理与副本的连接。 默认选项为：
 
 ```js
 {
@@ -158,17 +159,17 @@ Sequelize uses a pool to manage connections to your replicas. The default option
 }
 ```
 
-If you want to modify these, you can pass pool as an options when instantiating Sequelize, as shown above.
+如果要修改这些，可以在实例化 Sequelize 时作为选项传递池，如上所示。
 
-**Note:** Read replication only works for MySQL at the moment!
+**注意:** 读复制当前只适用于MySQL！
 
-## Dialects
+## 方言
 
-With the release of Sequelize`1.6.0`, the library got independent from specific dialects. This means, that you'll have to add the respective connector library to your project yourself. Version 1.7.0 stable has been released in bundles with the connector libraries (sequelize-mysql, sequelize-postgres etc.) but these bundles are not maintained, and will not be released for 2.0.0 upwards.
+随着 Sequelize `1.6.0` 的发布，库可以独立于特定的方言。这意味着您必须自己添加相应的连接器库到您的项目。版本 1.7.0 stable 已经与连接器库（sequelize-mysql，sequelize-postgres等）捆绑在一起发布，但是这些软件包没有被维护，并且不会向2.0.0发布。
 
 ### MySQL
 
-In order to get Sequelize working nicely together with MySQL, you'll need to install`mysql2@^1.0.0-rc.10`or higher. Once that's done you can use it like this:
+为了使 Sequelize 与 MySQL 完美结合，您需要安装 `mysql2@^1.0.0-rc.10` 或更高版本。 一旦完成，你可以这样使用它：
 
 ```js
 const sequelize = new Sequelize('database', 'username', 'password', {
@@ -176,26 +177,25 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 })
 ```
 
-**Note:** You can pass options directly to dialect library by setting the
-`dialectOptions` parameter. See [Options][0]
-for examples (currently only mysql is supported).
+**注意:** 您可以通过设置 `dialectOptions` 参数将选项直接传递给方言库. 查看 [Options][0]
+获取例子 (目前只支持mysql).
 
 ### SQLite
 
-For SQLite compatibility you'll need`sqlite3@~3.0.0`. Configure Sequelize like this:
+对于 SQLite 兼容性，您将需要 `sqlite3 @〜3.0.0`。 配置 Sequelize 如下所示：
 
 ```js
 const sequelize = new Sequelize('database', 'username', 'password', {
-  // sqlite! now!
+  // 设置成 sqlite
   dialect: 'sqlite',
  
-  // the storage engine for sqlite
+  // sqlite 的存储引擎
   // - default ':memory:'
   storage: 'path/to/database.sqlite'
 })
 ```
 
-Or you can use a connection string as well with a path:
+或者您也可以使用连接字符串以及路径:
 
 ```js
 const sequelize = new Sequelize('sqlite:/home/abs/path/dbname.db')
@@ -204,18 +204,18 @@ const sequelize = new Sequelize('sqlite:relativePath/dbname.db')
 
 ### PostgreSQL
 
-The library for PostgreSQL is`pg@^5.0.0 || ^6.0.0 || ^7.0.0` You'll just need to define the dialect:
+PostgreSQL 的库是 `pg@^5.0.0 || ^6.0.0 || ^7.0.0` 你只需要定义方言:
 
 ```js
 const sequelize = new Sequelize('database', 'username', 'password', {
-  // gimme postgres, please!
+  // 定义为 postgres
   dialect: 'postgres'
 })
 ```
 
 ### MSSQL
 
-The library for MSSQL is`tedious@^1.7.0` You'll just need to define the dialect:
+MSSQL 的库是 `tedious@^1.7.0` 你只需要定义方言:
 
 ```js
 const sequelize = new Sequelize('database', 'username', 'password', {
@@ -223,50 +223,48 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 })
 ```
 
-## Executing raw SQL queries
+## 执行原始 SQL 查询
 
-As there are often use cases in which it is just easier to execute raw / already prepared SQL queries, you can utilize the function `sequelize.query`.
+由于常常使用简单的方式来执行原始/已经准备好的SQL查询，所以可以使用“sequelize.query”函数。
 
-Here is how it works:
+这是它如何工作的:
 
 ```js
-// Arguments for raw queries
+// 原始查询的参数
 sequelize.query('your query', [, options])
 
-// Quick example
+// 简单的例子
 sequelize.query("SELECT * FROM myTable").then(myTableRows => {
   console.log(myTableRows)
 })
 
-// If you want to return sequelize instances use the model options.
-// This allows you to easily map a query to a predefined model for sequelize e.g:
+// 如果要返回 sequelize 实例，请使用模型选项。
+// 这样，你可以轻松地将查询映射到预定义的sequelize模型，例如：
 sequelize
   .query('SELECT * FROM projects', { model: Projects })
   .then(projects => {
-    // Each record will now be mapped to the project's model.
+    // 每个记录现在将映射到项目的模型。
     console.log(projects)
   })
 
 
-// Options is an object with the following keys:
+// 选项是具有以下键的对象：
 sequelize
   .query('SELECT 1', {
-    // A function (or false) for logging your queries
-    // Will get called for every SQL query that gets send
-    // to the server.
+    // 用于记录查询的函数（或false）
+    // 每个发送到服务器的SQL查询都会调用
     logging: console.log,
 
-    // If plain is true, then sequelize will only return the first
-    // record of the result set. In case of false it will all records.
+    // 如果 plain 是 TRUE ，则 sequelize 将只返回结果集的第一条记录。
+    // 如果是 FALSE， 则是全部记录。
     plain: false,
 
-    // Set this to true if you don't have a model definition for your query.
+    // 如果你没有查询的模型定义，请将其设置为true。
     raw: false
   })
 
-// Note the second argument being null!
-// Even if we declared a callee here, the raw: true would
-// supersede and return a raw object.
+// 注意第二个参数为null！
+// 即使我们在这里声明一个被调用，raw: true 将取代并返回一个原始对象。
 sequelize
   .query('SELECT * FROM projects', { raw: true })
   .then(projects => {
@@ -274,15 +272,13 @@ sequelize
   })
 ```
 
-Replacements in a query can be done in two different ways, either using
-named parameters (starting with `:`), or unnamed, represented by a ?
+查询中的替换可以通过两种不同的方式完成：
+使用命名参数（以`:`开头），或者由未命名的
 
-The syntax used depends on the replacements option passed to the function:
+使用的语法取决于传递给函数的替换选项：
 
-* If an array is passed, `?` will be replaced in the order that they appear in the array
-* If an object is passed, `:key` will be replaced with the keys from that object.
-If the object contains keys not found in the query or vice versa, an exception
-will be thrown.
+* 如果一个数组被传递，`?` 将按照它们在数组中出现的顺序被替换
+* 如果传递一个对象，`:key`将被该对象的键替换。如果包含在查询中的对象未找到对应的键，则会抛出异常，反之亦然。
 
 ```js
 sequelize
@@ -304,7 +300,7 @@ sequelize
   })
 ```
 
-**One note:** If the attribute names of the table contain dots, the resulting objects will be nested:
+**注意一点:** 如果表的属性名称包含 " . "，则生成的对象将被嵌套：
 
 ```js
 sequelize.query('select 1 as `foo.bar.baz`').then(rows => {

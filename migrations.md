@@ -1,34 +1,37 @@
-# Migrations
+# 迁移
 
-Just like you use Git / SVN to manage changes in your source code, you can use migrations to keep track of changes to database. With migrations you can transfer your existing database into another state and vice versa: Those state transitions are saved in migration files, which describe the way how to get to the new state and how to revert the changes in order to get back to the old state.
+就像您使用Git / SVN来管理源代码的更改一样，您可以使用迁移来跟踪数据库的更改。 通过迁移，您可以将现有的数据库转移到另一个状态，反之亦然：这些状态转换将保存在迁移文件中，它们描述了如何进入新状态以及如何还原更改以恢复旧状态。
 
-You will need [Sequelize CLI][0]. The CLI ships support for migrations and project bootstrapping.
+您将需要[Sequelize CLI][0]。 CLI支持迁移和项目引导。
 
-## The CLI
+## 命令行界面
 
-### Installing CLI
-Lets start with installing CLI, you can find instructions [here][0]. Most preferred way is installing locally like this
+### 安装命令行界面
+
+让我们从安装CLI开始，你可以在 [这里][0] 找到说明。 最推荐的方式是这样安装
 
 ```bash
 $ npm install --save sequelize-cli
 ```
 
-### Bootstrapping
-To create an empty project you will need to execute `init` command
+### 引导
+
+要创建一个空项目，你需要执行 `init` 命令
 
 ```bash
 $ node_modules/.bin/sequelize init
 ```
 
-This will create following folders
+这将创建以下文件夹
 
-- `config`, contains config file, which tells CLI how to connect with database
-- `models`, contains all models for your project
-- `migrations`, contains all migration files
-- `seeders`, contains all seed files
+- `config`, 包含配置文件，它告诉CLI如何连接数据库
+- `models`,包含您的项目的所有模型
+- `migrations`, 包含所有迁移文件
+- `seeders`, 包含所有种子文件
 
-#### Configuration
-Before continuing further we will need to tell CLI how to connect to database. To do that lets open default config file `config/config.json`. It looks something like this
+#### 结构
+
+在继续进行之前，我们需要告诉 CLI 如何连接到数据库。 为此，可以打开默认配置文件 `config/config.json`。 看起来像这样
 
 ```json
 {
@@ -56,73 +59,77 @@ Before continuing further we will need to tell CLI how to connect to database. T
 }
 ```
 
-Now edit this file and set correct database credentials and dialect.
+现在编辑此文件并设置正确的数据库凭据和方言。
 
-**Note:** _If your database doesn't exists yet, you can just call `db:create` command. With proper access it will create that database for you._
+**注意:** _如果你的数据库还不存在，你可以调用 `db:create` 命令。 通过正确的访问，它将为您创建该数据库。_
 
-### Creating first Model (and Migration)
-Once you have properly configured CLI config file you are ready to create you first migration. Its as simple as executing a simple command.
+### 创建第一个模型（和迁移）
 
-We will use `model:generate` command. This command requires two options
+一旦您正确配置了CLI配置文件，您就可以首先创建迁移。 它像执行一个简单的命令一样简单。
 
-- `name`, Name of the model
-- `attributes`, List of model attributes
+我们将使用 `model:generate` 命令。 此命令需要两个选项
 
-Lets create a model named `User`
+- `name`, 模型的名称
+- `attributes`, 模型的属性列表
+
+让我们创建一个名叫 `User` 的模型
 
 ```bash
 $ node_modules/.bin/sequelize model:generate --name User --attributes firstName:string,lastName:string,email:string
 ```
 
-This will do following
+这将发生以下事情
 
-- Create a model file `user` in `models` folder
-- Create a migration file with name like `XXXXXXXXXXXXXX-create-user.js` in `migrations` folder
+- 在 `models` 文件夹中创建了一个 `user` 模型文件
+- 在 `migrations` 文件夹中创建了一个名字像 `XXXXXXXXXXXXXX-create-user.js` 的迁移文件
 
-**Note:** _Sequelize will only use Model files, it's the table representation. On other hand migration file is a change in that model or more specifically that table, used by CLI. Treat migrations like a commit or a log for some change in database._
+**注意:** _Sequelize 将只使用模型文件，它是表描述。另一边，迁移文件是该模型的更改，或更具体的是说 CLI 所使用的表。 处理迁移，如提交或日志，以进行数据库的某些更改。 _
 
-### Running Migrations
-Now till this step CLI haven't inserted anything into database. We have just created required model and migration files for our first model `User`. Now to actually create that table in database you need to run `db:migrate` command.
+### 运行迁移
+
+直到这一步，CLI没有将任何东西插入数据库。 我们刚刚为我们的第一个模型 `User` 创建了必需的模型和迁移文件。 现在要在数据库中实际创建该表，需要运行 `db:migrate` 命令。
 
 ```bash
 $ node_modules/.bin/sequelize db:migrate
 ```
 
-This command will execute these steps
+此命令将执行这些步骤
 
-- Will ensure a table called `SequelizeMeta` in database. This table is used to record which migration have ran on current database
-- Start looking for any migration files which haven't ran yet. This is possible by checking `SequelizeMeta` table. In this case it will run `XXXXXXXXXXXXXX-create-user.js` migration, which we created in last step.
-- Creates a table called `User` with all columns as specified in its migration file.
+- 将在数据库中确保一个名为 `SequelizeMeta` 的表。 此表用于记录在当前数据库上运行的迁移
+- 开始寻找尚未运行的任何迁移文件。 这可以通过检查 `SequelizeMeta` 表。 在这个例子中，它将运行我们在最后一步中创建的 `XXXXXXXXXXXXXX-create-user.js` 迁移，。
+- 创建一个名为 `User` 的表，其中包含其迁移文件中指定的所有列。
 
-### Undoing Migrations
-Now our table has been created and saved in database. With migration you can revert to old state by just running a command.
+### 撤消迁移
 
-You can use `db:migrate:undo`, this command will revert most recent migration.
+现在我们的表已创建并保存在数据库中。 通过迁移，只需运行命令即可恢复为旧状态。
+
+您可以使用 `db:migrate:undo`，这个命令将会恢复最近的迁移。
 
 ```bash
 $ node_modules/.bin/sequelize db:migrate:undo
 ```
 
-You can revert back to initial state by undoing all migrations with `db:migrate:undo:all` command. You can also revert back to a specific migration by passing its name in `--to` option.
+通过使用  `db:migrate:undo:all` 命令撤消所有迁移，可以恢复到初始状态。 您还可以通过将其名称传递到 `--to` 选项中来恢复到特定的迁移。
 
 ```bash
 $ node_modules/.bin/sequelize db:migrate:undo:all --to XXXXXXXXXXXXXX-create-posts.js
 ```
 
-### Creating First Seed
-Suppose we want to insert some data into few tables by default. If we follow up on previous example we can consider creating a demo user for `User` table.
+### 创建第一个种子
 
-To manage all data migrations you can use seeders. Seed files are some change in data that can be used to populate database table with sample data or test data.
+假设我们希望在默认情况下将一些数据插入到几个表中。 如果我们跟进前面的例子，我们可以考虑为 `User` 表创建演示用户。
 
-Lets create a seed file which will add a demo user to our `User` table.
+要管理所有数据迁移，您可以使用 `seeders`。 种子文件是数据的一些变化，可用于使用样本数据或测试数据填充数据库表。
+
+让我们创建一个种子文件，它会将一个演示用户添加到我们的 `User` 表中。
 
 ```bash
 $ node_modules/.bin/sequelize seed:generate --name demo-user
 ```
 
-This command will create a seed file in `seeders` folder. File name will look something like `XXXXXXXXXXXXXX-demo-user.js`, It follows same `up / down` semantics like migration files.
+这个命令将会在 `seeders` 文件夹中创建一个种子文件。文件名看起来像是  `XXXXXXXXXXXXXX-demo-user.js`，它遵循相同的 `up/down` 语义，如迁移文件。
 
-Now we should edit this file to insert demo user to `User` table.
+现在我们应该编辑这个文件，将演示用户插入`User`表。
 
 ```js
 'use strict';
@@ -143,50 +150,54 @@ module.exports = {
 
 ```
 
-### Running Seeds
-In last step you have create a seed file. Its still not committed to database. To do that we need to run a simple command.
+### 运行种子
+
+在上一步中，你创建了一个种子文件。 但它还没有保存到数据库。 为此，我们需要运行一个简单的命令。
 
 ```bash
 $ node_modules/.bin/sequelize db:seed:all
 ```
 
-This will execute that seed file and you will have a demo user inserted into `User` table.
+这将执行该种子文件，您将有一个演示用户插入 `User` 表。
 
-**Note:** _Seeders execution is not stored anywhere unlike migration which use `SequelizeMeta` table. If you wish to override this please read `Storage` section_
+**注意:** _ `seeders` 执行不会存储在任何使用 `SequelizeMeta` 表的迁移的地方。 如果你想覆盖这个，请阅读 `存储` 部分_
 
-### Undoing Seeds
-Seeders if they are using any storage can be undo. There are two commands available for that
+### 撤销种子
 
-If you wish to undo most recent seed
+Seeders 如果使用了任何存储那么就可以被撤消。 有两个可用的命令
+
+如果你想撤消最近的种子
 
 ```bash
 node_modules/.bin/sequelize db:seed:undo
 ```
 
-If you wish to undo all seeds
+如果你想撤消所有的种子
 
 ```bash
 node_modules/.bin/sequelize db:seed:undo:all
 ```
 
-## Advance Topics
+## 高级专题
 
-### Migration Skeleton
-The following skeleton shows a typical migration file.
+### 迁移框架
+
+以下框架显示了一个典型的迁移文件。
 
 ```js
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    // logic for transforming into the new state
+    // 转变为新状态的逻辑
   },
  
   down: (queryInterface, Sequelize) => {
-    // logic for reverting the changes
+    // 恢复更改的逻辑
   }
 }
 ```
 
-The passed `queryInterface` object can be used to modify the database. The `Sequelize` object stores the available data types such as `STRING` or `INTEGER`. Function `up` or `down` should return a `Promise`. Lets look at an example
+传递的 `queryInterface` 对象可以用来修改数据库。 `Sequelize` 对象存储可用的数据类型，如 `STRING` 或 `INTEGER`。 函数 `up` 或 `down` 应该返回一个 `Promise` 。 让我们来看一个例子
+
 
 ```js
 module.exports = {
@@ -206,21 +217,22 @@ module.exports = {
 }
 ```
 
-### The `.sequelizerc` File
-This is a special configuration file. It let you specify various options that you would usually pass as arguments to CLI. Some scenarios where you can use it.
+### `.sequelizerc` 文件
 
-- You want to override default path to `migrations`, `models`, `seeders` or `config` folder.
-- You want to rename `config.json` to something else like `database.json`
+这是一个特殊的配置文件。 它允许您指定通常作为参数传递给CLI的各种选项。 在某些情况下，您可以使用它。
 
-And a whole lot more. Let see how you can use this file for custom configuration.
+- 你想要覆盖到 `migrations`, `models`, `seeders` 或 `config` 文件夹的路径.
+- 你想要重命名 `config.json` 成为别的名字比如 `database.json`
 
-For starters lets create an empty file in root directory of your project.
+还有更多的, 让我们看一下如何使用这个文件进行自定义配置。
+
+对于初学者，可以在项目的根目录中创建一个空文件。
 
 ```bash
 $ touch .sequelizerc
 ```
 
-Now lets work with an example config.
+现在可以使用示例配置。
 
 ```js
 const path = require('path');
@@ -233,19 +245,20 @@ module.exports = {
 }
 ```
 
-With this config you are telling CLI to
+通过这个配置你告诉CLI: 
 
-- Use `config/database.json` file for config settings
-- Use `db/models` as models folder
-- Use `db/seeders` as seeders folder
-- Use `db/migrations` as migrations folder
+- 使用 `config/database.json` 文件来配置设置
+- 使用 `db/models` 作为模型文件夹
+- 使用 `db/seeders` 作为种子文件夹
+- 使用 `db/migrations` 作为迁移文件夹
 
-### Dynamic Configuration
-Configuration file is by default a JSON file called `config.json`. But sometimes you want to execute some code or access environment variables which is not possible in JSON files.
+### 动态配置
 
-Sequelize CLI can read from both `JSON` and `JS` files. This can be setup with `.sequelizerc` file. Let see how
+配置文件是默认的一个名为 `config.json` 的JSON文件。 但有时你想执行一些代码或访问环境变量，这在JSON文件中是不可能的。
 
-First you need to create a `.sequelizerc` file in root folder of your project. This file should override config path to a `JS` file. Like this
+Sequelize CLI可以从“JSON”和“JS”文件中读取。 这可以用`.sequelizerc`文件设置。 让我们来看一下
+
+首先，您需要在项目的根文件夹中创建一个 `.sequelizerc` 文件。 该文件应该覆盖 `JS` 文件的配置路径。 推荐这个
 
 ```js
 const path = require('path');
@@ -255,9 +268,9 @@ module.exports = {
 }
 ```
 
-Now Sequelize CLI will load `config/config.js` for getting configuration options. Since this is a JS file you can have any code executed and export final dynamic configuration file.
+现在，Sequelize CLI将加载 `config/config.js` 以获取配置选项。 由于这是一个JS文件，您可以执行任何代码并导出最终的动态配置文件。
 
-An example of `config/config.js` file
+一个 `config/config.js` 文件的例子
 
 ```js
 const fs = require('fs');
@@ -292,10 +305,11 @@ module.exports = {
 };
 ```
 
-### Using Environment Variables
-With CLI you can directly access the environment variables inside the `config/config.js`. You can use `.sequelizerc` to tell CLI to use `config/config.js` for configuration. This is explained in last section.
+### 使用环境变量
 
-Then you can just expose file with proper environment variables.
+使用CLI，您可以直接访问 `config/config.js` 内的环境变量。 您可以使用 `.sequelizerc` 来告诉CLI使用 `config/config.js` 进行配置。 这在上一节中有所解释。
+
+然后你可以使用正确的环境变量来暴露文件。
 
 ```js
 module.exports = {
@@ -322,8 +336,9 @@ module.exports = {
   }
 ```
 
-### Specifying Dialect Options
-Sometime you want to specify a dialectOption, if it's a general config you can just add it in `config/config.json`. Sometime you want to execute some code to get dialectOptions, you should use dynamic config file for those cases.
+### 指定方言选项
+
+有时你想指定一个 dialectOption，如果它是一个通用配置，你可以将其添加到 `config/config.json` 中。 有时你想执行一些代码来获取 dialectOptions，你应该为这些情况使用动态配置文件。
 
 ```json
 {
@@ -336,10 +351,11 @@ Sometime you want to specify a dialectOption, if it's a general config you can j
 }
 ```
 
-### Production Usages
-Some tips around using CLI and migration setup in production environment.
+### 生产用途
 
-1) Use environment variables for config settings. This is better achieved with dynamic configuration. A sample production safe configuration may look like.
+有关在生产环境中使用CLI和迁移设置的一些提示。
+
+1) 使用环境变量进行配置设置。 这是通过动态配置更好地实现的。 样品生产安全配置可能看起来像
 
 ```js
 const fs = require('fs');
@@ -374,24 +390,20 @@ module.exports = {
 };
 ```
 
-Our goal is to use environment variables for various database secrets and not accidentally checkout them to source control.
+我们的目标是为各种数据库秘密使用环境变量，而不是意外检查它们来源控制。
 
-### Storage
-There are three types of storage that you can use: `sequelize`, `json`, and `none`.
+### 存储
 
-- `sequelize` : stores migrations and seeds in a table on the sequelize database
-- `json` : stores migrations and seeds on a json file
-- `none` : does not store any migration/seed
+可以使用三种类型的存储：`sequelize`，`json`和`none`。
+
+- `sequelize` : 将迁移和种子存储在 sequelize 数据库的表中
+- `json` : 将迁移和种子存储在json文件上
+- `none` : 不存储任何迁移/种子
 
 
-#### Migration Storage
-By default the CLI will create a table in your database called `SequelizeMeta` containing an entry
-for each executed migration. To change this behavior, there are three options you can add to the
-configuration file. Using `migrationStorage`, you can choose the type of storage to be used for
-migrations. If you choose `json`, you can specify the path of the file using `migrationStoragePath`
-or the CLI will write to the file `sequelize-meta.json`. If you want to keep the information in the
-database, using `sequelize`, but want to use a different table, you can change the table name using
-`migrationStorageTableName`.
+#### 迁移存储
+
+默认情况下，CLI 将在您的数据库中创建一个名为 `SequelizeMeta` 的表，其中包含每个执行迁移的条目。 要更改此行为，可以在配置文件中添加三个选项。 使用 `migrationStorage` 可以选择要用于迁移的存储类型。 如果选择 `json`，可以使用 `migrationStoragePath` 指定文件的路径，或者 CLI 将写入 `sequelize-meta.json` 文件。 如果要将数据保存在数据库中，请使用 `sequelize`，但是要使用其他表格，可以使用 `migrationStorageTableName`.
 
 ```json
 {
@@ -402,27 +414,23 @@ database, using `sequelize`, but want to use a different table, you can change t
     "host": "127.0.0.1",
     "dialect": "mysql",
 
-    // Use a different storage type. Default: sequelize
+    // 使用不同的存储类型. Default: sequelize
     "migrationStorage": "json",
 
-    // Use a different file name. Default: sequelize-meta.json
+    // 使用不同的文件名. Default: sequelize-meta.json
     "migrationStoragePath": "sequelizeMeta.json",
 
-    // Use a different table name. Default: SequelizeMeta
+    // 使用不同的表名. Default: SequelizeMeta
     "migrationStorageTableName": "sequelize_meta"
   }
 }
 ```
 
-**Note:** _The `none` storage is not recommended as a migration storage. If you decide to use it, be
-aware of the implications of having no record of what migrations did or didn't run._
+**注意:** _不推荐使用 `none` 存储作为迁移存储。 如果您决定使用它，请注意将会没有任何移动记录或没有运行的记录._
 
-#### Seed Storage
-By default the CLI will not save any seed that is executed. If you choose to change this behavior (!),
-you can use `seederStorage` in the configuration file to change the storage type. If you choose `json`,
-you can specify the path of the file using `seederStoragePath` or the CLI will write to the file
-`sequelize-data.json`. If you want to keep the information in the database, using `sequelize`, you can
-specify the table name using `seederStorageTableName`, or it will default to `SequelizeData`.
+#### 种子储存
+
+默认情况下，CLI 不会保存任何被执行的种子。 如果您选择更改此行为(!)，则可以在配置文件中使用 `seederStorage` 来更改存储类型。 如果选择 `json`，可以使用 `seederStoragePath` 指定文件的路径，或者 CLI 将写入文件 `sequelize-data.json`。 如果要将数据保存在数据库中，请使用 `sequelize`，您可以使用 `seederStorageTableName` 指定表名，否则将默认为`SequelizeData`。
 
 ```json
 {
@@ -432,26 +440,27 @@ specify the table name using `seederStorageTableName`, or it will default to `Se
     "database": "database_development",
     "host": "127.0.0.1",
     "dialect": "mysql",
-    // Use a different storage. Default: none
+    // 使用不同的存储空间. Default: none
     "seederStorage": "json",
-    // Use a different file name. Default: sequelize-data.json
+    // 使用不同的文件名. Default: sequelize-data.json
     "seederStoragePath": "sequelizeData.json",
-    // Use a different table name. Default: SequelizeData
+    // 使用不同的表名 Default: SequelizeData
     "seederStorageTableName": "sequelize_data"
   }
 }
 ```
 
-### Configuration Connection String
-As an alternative to the `--config` option with configuration files defining your database, you can
-use the `--url` option to pass in a connection string. For example:
+### 配置连接字符串
+
+作为 `--config` 选项的替代方法，可以使用定义数据库的配置文件，您可以使用 `--url` 选项传递连接字符串。 例如：
 
 ```bash
 $ node_modules/.bin/sequelize db:migrate --url 'mysql://root:password@mysql_host.com/database_name'
 ```
 
-### Connecting over SSL
-Ensure ssl is specified in both `dialectOptions` and in the base config.
+### 通过SSL连接
+
+确保ssl在 `dialectOptions` 和基本配置中指定。
 
 ```json
 {
@@ -465,12 +474,13 @@ Ensure ssl is specified in both `dialectOptions` and in the base config.
 }
 ```
 
-### Programmatic use
-Sequelize has a [sister library][1] for programmatically handling execution and logging of migration tasks.
+### 程序化使用
 
-## Query Interface
+Sequelize 有一个 [姊妹库][1]，用于以编程方式处理迁移任务的执行和记录。
 
-Using `queryInterface` object described before you can change database schema. To see full list of public methods it supports check [QueryInterface API][2]
+## 查询界面
+
+使用 `queryInterface` 对象描述之前，您可以更改数据库模式。 查看完整的公共方法列表，它支持 [QueryInterface API][2]
 
 
 [0]: https://github.com/sequelize/cli

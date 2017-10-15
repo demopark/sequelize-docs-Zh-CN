@@ -1,10 +1,10 @@
-# Hooks
+# 钩子
 
-Hooks (also known as lifecycle events), are functions which are called before and after calls in sequelize are executed. For example, if you want to always set a value on a model before saving it, you can add a `beforeUpdate` hook.
+钩子（也称为生命周期事件）是执行 sequelize 调用之前和之后调用的函数。 例如，如果要在保存模型之前始终设置值，可以添加一个 `beforeUpdate` 钩子。
 
-For a full list of hooks, see [Hooks file](https://github.com/sequelize/sequelize/blob/master/lib/hooks.js#L7).
+获取完整列表, 请查看 [Hooks file](https://github.com/sequelize/sequelize/blob/master/lib/hooks.js#L7).
 
-## Order of Operations
+## 操作清单
 
 ```
 (1)
@@ -41,13 +41,14 @@ For a full list of hooks, see [Hooks file](https://github.com/sequelize/sequeliz
   afterBulkUpdate(options)
 ```
 
-## Declaring Hooks
-Arguments to hooks are passed by reference. This means, that you can change the values, and this will be reflected in the insert / update statement. A hook may contain async actions - in this case the hook function should return a promise.
+## 声明钩子
 
-There are currently three ways to programmatically add hooks:
+钩子的参数通过引用传递。 这意味着您可以更改值，这将反映在insert / update语句中。 钩子可能包含异步动作 - 在这种情况下，钩子函数应该返回一个承诺。
+
+目前有三种以编程方式添加钩子的方法:
 
 ```js
-// Method 1 via the .define() method
+// 方法1 通过 .define() 方法
 const User = sequelize.define('user', {
   username: DataTypes.STRING,
   mood: {
@@ -65,7 +66,7 @@ const User = sequelize.define('user', {
   }
 });
 
-// Method 2 via the .hook() method (or its alias .addHook() method)
+// 方法2 通过 . hook() 方法 (或其别名 .addHook() 方法)
 User.hook('beforeValidate', (user, options) => {
   user.mood = 'happy';
 });
@@ -74,7 +75,7 @@ User.addHook('afterValidate', 'someCustomName', (user, options) => {
   return sequelize.Promise.reject(new Error("I'm afraid I can't let you do that!"));
 });
 
-// Method 3 via the direct method
+// 方法3 通过直接方法
 User.beforeCreate((user, options) => {
   return hashPassword(user.password).then(hashedPw => {
     user.password = hashedPw;
@@ -86,9 +87,9 @@ User.afterValidate('myHookAfter', (user, options) => {
 });
 ```
 
-## Removing hooks
+## 移除钩子
 
-Only a hook with name param can be removed.
+只能删除有名称参数的钩子。
 
 ```js
 const Book = sequelize.define('book', {
@@ -102,48 +103,50 @@ Book.addHook('afterCreate', 'notifyUsers', (book, options) => {
 Book.removeHook('afterCreate', 'notifyUsers');
 ```
 
-You can have many hooks with same name. Calling `.removeHook()` will remove all of them.
+你可以有很多同名的钩子。 调用 `.removeHook()` 将会删除它们。
 
-## Global / universal hooks
-Global hooks are hooks which are run for all models. They can define behaviours that you want for all your models, and are especially useful for plugins. They can be defined in two ways, which have slightly different semantics:
+## 全局 / 通用 钩子
 
-### Sequelize.options.define (default hook)
+全局钩子是所有模型的钩子。 他们可以定义您想要的所有模型的行为，并且对插件特别有用。 它们可以用两种方式来定义，它们的语义略有不同：
+
+### Sequelize.options.define (默认钩子)
 ```js
 const sequelize = new Sequelize(..., {
     define: {
         hooks: {
             beforeCreate: () => {
-                // Do stuff
+                // 做些什么
             }
         }
     }
 });
 ```
 
-This adds a default hook to all models, which is run if the model does not define its own `beforeCreate` hook:
+这将为所有模型添加一个默认钩子，如果模型没有定义自己的 `beforeCreate`  钩子，那么它将运行。
 
 ```js
 const User = sequelize.define('user');
 const Project = sequelize.define('project', {}, {
     hooks: {
         beforeCreate: () => {
-            // Do other stuff
+            //  做些其它什么
         }
     }
 });
 
-User.create() // Runs the global hook
-Project.create() // Runs its own hook (because the global hook is overwritten)
+User.create() // 运行全局钩子
+Project.create() // 运行其自身的钩子 (因为全局钩子被覆盖)
 ```
 
-### Sequelize.addHook (permanent hook)
+### Sequelize.addHook (常驻钩子)
+
 ```js
 sequelize.addHook('beforeCreate', () => {
-    // Do stuff
+    // 做些什么
 });
 ```
 
-This hooks is always run before create, regardless of whether the model specifies its own `beforeCreate` hook:
+这个钩子总是在创建之前运行，无论模型是否指定了自己的 `beforeCreate` 钩子：
 
 
 ```js
@@ -151,21 +154,21 @@ const User = sequelize.define('user');
 const Project = sequelize.define('project', {}, {
     hooks: {
         beforeCreate: () => {
-            // Do other stuff
+            // 做些其它什么
         }
     }
 });
 
-User.create() // Runs the global hook
-Project.create() // Runs its own hook, followed by the global hook
+User.create() // 运行全局钩子
+Project.create() //运行其自己的钩子之后运行全局钩子
 ```
 
-Local hooks are always run before global hooks.
+本地钩子总是在全局钩子之前运行。
 
 
-### Instance hooks
+### 实例钩子
 
-The following hooks will emit whenever you're editing a single object
+当您编辑单个对象时，以下钩子将触发
 
 ```
 beforeValidate
@@ -175,33 +178,33 @@ afterCreate / afterUpdate / afterDestroy
 ```
 
 ```js
-// ...define ...
+// ...定义 ...
 User.beforeCreate(user => {
   if (user.accessLevel > 10 && user.username !== "Boss") {
-    throw new Error("You can't grant this user an access level above 10!")
+    throw new Error("您不能授予该用户10级以上的访问级别！")
   }
 })
 ```
 
-This example will return an error:
+此示例将返回错误:
 
 ```js
 User.create({username: 'Not a Boss', accessLevel: 20}).catch(err => {
-  console.log(err); // You can't grant this user an access level above 10!
+  console.log(err); // 您不能授予该用户 10 级以上的访问级别！
 });
 ```
 
-The following example would return successful:
+以下示例将返回成功:
 
 ```js
 User.create({username: 'Boss', accessLevel: 20}).then(user => {
-  console.log(user); // user object with username as Boss and accessLevel of 20
+  console.log(user); // 用户名为 Boss 和 accessLevel 为 20 的用户对象
 });
 ```
 
-### Model hooks
+### 模型钩子
 
-Sometimes you'll be editing more than one record at a time by utilizing the `bulkCreate, update, destroy` methods on the model. The following will emit whenever you're using one of those methods:
+有时，您将一次编辑多个记录，方法是使用模型上的 `bulkCreate, update, destroy` 方法。 当您使用以下方法之一时，将会触发以下内容：
 
 ```
 beforeBulkCreate(instances, options)
@@ -212,50 +215,49 @@ afterBulkUpdate(options)
 afterBulkDestroy(options)
 ```
 
-If you want to emit hooks for each individual record, along with the bulk hooks you can pass `individualHooks: true` to the call.
+如果要为每个单独的记录触发钩子，连同批量钩子，您可以将 `personalHooks:true` 传递给调用。
 
 ```js
 Model.destroy({ where: {accessLevel: 0}, individualHooks: true});
-// Will select all records that are about to be deleted and emit before- + after- Destroy on each instance
+// 将选择要删除的所有记录，并在每个实例删除之前 + 之后触发
 
 Model.update({username: 'Toni'}, { where: {accessLevel: 0}, individualHooks: true});
-// Will select all records that are about to be updated and emit before- + after- Update on each instance
+// 将选择要更新的所有记录，并在每个实例更新之前 + 之后触发
 ```
 
-The `options` argument of hook method would be the second argument provided to the corresponding method or its
-cloned and extended version.
+钩子方法的 `options` 参数将是提供给相应方法或其克隆和扩展版本的第二个参数。
 
 ```js
 Model.beforeBulkCreate((records, {fields}) => {
-  // records = the first argument sent to .bulkCreate
-  // fields = one of the second argument fields sent to .bulkCreate
-})
+  // records = 第一个参数发送到 .bulkCreate
+  // fields = 第二个参数字段之一发送到 .bulkCreate
+  })
 
 Model.bulkCreate([
-    {username: 'Toni'}, // part of records argument
-    {username: 'Tobi'} // part of records argument
-  ], {fields: ['username']} // options parameter
+    {username: 'Toni'}, // 部分记录参数
+    {username: 'Tobi'} // 部分记录参数
+  ], {fields: ['username']} // 选项参数
 )
 
 Model.beforeBulkUpdate(({attributes, where}) => {
-  // where - in one of the fields of the clone of second argument sent to .update
-  // attributes - is one of the fields that the clone of second argument of .update would be extended with 
+  // where - 第二个参数的克隆的字段之一发送到 .update
+  // attributes - .update 的第二个参数的克隆的字段之一被用于扩展
 })
 
-Model.update({gender: 'Male'} /*attributes argument*/, { where: {username: 'Tom'}} /*where argument*/)
+Model.update({gender: 'Male'} /*属性参数*/, { where: {username: 'Tom'}} /*where 参数*/)
 
 Model.beforeBulkDestroy(({where, individualHooks}) => {
-  // individualHooks - default of overridden value of extended clone of second argument sent to Model.destroy
-  // where - in one of the fields of the clone of second argument sent to Model.destroy
+  // individualHooks - 第二个参数被扩展的克隆被覆盖的默认值发送到 Model.destroy
+  // where - 第二个参数的克隆的字段之一发送到 Model.destroy
 })
 
-Model.destroy({ where: {username: 'Tom'}} /*where argument*/)
+Model.destroy({ where: {username: 'Tom'}} /*where 参数*/)
 ```
 
-If you use `Model.bulkCreate(...)` with the `updatesOnDuplicate` option, changes made in the hook to fields that aren't given in the `updatesOnDuplicate` array will not be persisted to the database. However it is possible to change the updatesOnDuplicate option inside the hook if this is what you want.
+如果用 `updates.OnDuplicate` 参数使用 `Model.bulkCreate(...)` ，那么钩子中对 `updatesOnDuplicate` 数组中没有给出的字段所做的更改将不会被持久保留到数据库。 但是，如果这是您想要的，则可以更改钩子中的 updatesOnDuplicate 选项。
 
 ```js
-// Bulk updating existing users with updatesOnDuplicate option
+// 使用 updatesOnDuplicate 选项批量更新现有用户
 Users.bulkCreate([
   { id: 1, isMemeber: true },
   { id: 2, isMember: false }
@@ -270,18 +272,17 @@ User.beforeBulkCreate((users, options) => {
     }
   }
 
-  // Add memberSince to updatesOnDuplicate otherwise the memberSince date wont be
-  // saved to the database
+  // 添加 memberSince 到 updatesOnDuplicate 否则 memberSince 期将不会被保存到数据库
   options.updatesOnDuplicate.push('memberSince');
 });
 ```
 
-## Associations
+## 关联
 
-For the most part hooks will work the same for instances when being associated except a few things
+在大多数情况下，钩子对于相关联的实例而言将是一样的，除了几件事情之外。
 
-1. When using add/set functions the beforeUpdate/afterUpdate hooks will run.
-2. The only way to call beforeDestroy/afterDestroy hooks are on associations with `onDelete: 'cascade'` and the option `hooks: true`. For instance:
+1. 当使用 add/set 函数时，将运行 beforeUpdate/afterUpdate 钩子。
+2. 调用 beforeDestroy/afterDestroy 钩子的唯一方法是与 `onDelete:'cascade` 和参数 `hooks：true` 相关联。 例如：
 
 ```js
 const Projects = sequelize.define('projects', {
@@ -296,31 +297,29 @@ Projects.hasMany(Tasks, { onDelete: 'cascade', hooks: true });
 Tasks.belongsTo(Projects);
 ```
 
-This code will run beforeDestroy/afterDestroy on the Tasks table. Sequelize, by default, will try to optimize your queries as much as possible. When calling cascade on delete, Sequelize will simply execute a
+该代码将在Tasks表上运行beforeDestroy / afterDestroy。 默认情况下，Sequelize会尝试尽可能优化您的查询。 在删除时调用级联，Sequelize将简单地执行一个
 
 ```sql
 DELETE FROM `table` WHERE associatedIdentifier = associatedIdentifier.primaryKey
 ```
 
-However, adding `hooks: true` explicitly tells Sequelize that optimization is not of your concern and will perform a `SELECT` on the associated objects and destroy each instance one by one in order to be able to call the hooks with the right parameters.
+然而，添加 `hooks: true` 会明确告诉 Sequelize，优化不是你所关心的，并且会在关联的对象上执行一个 `SELECT`，并逐个删除每个实例，以便能够使用正确的参数调用钩子。
 
-If your association is of type `n:m`, you may be interested in firing hooks on the through model when using the `remove` call. Internally, sequelize is using `Model.destroy` resulting in calling the `bulkDestroy` instead of the `before/afterDestroy` hooks on each through instance.
+如果您的关联类型为 `n:m`，则在使用 `remove` 调用时，您可能有兴趣在直通模型上触发钩子。 在内部，sequelize 使用 `Model.destroy`，致使在每个实例上调用 `bulkDestroy` 而不是 `before / afterDestroy` 钩子。
 
-This can be simply solved by passing `{individualHooks: true}` to the `remove` call, resulting on each hook to be called on each removed through instance object.
+这可以通过将 `{individualHooks:true}` 传递给 `remove` 调用来简单地解决，从而导致每个钩子都通过实例对象被删除。
 
 
-## A Note About Transactions
+## 关于事务的注意事项
 
-Note that many model operations in Sequelize allow you to specify a transaction in the options parameter of the method. If a transaction _is_ specified in the original call, it will be present in the options parameter passed to the hook function. For example, consider the following snippet:
+请注意，Sequelize 中的许多模型操作允许您在方法的 options 参数中指定事务。 如果在原始调用中 _指定_ 了一个事务，它将出现在传递给钩子函数的 options 参数中。 例如，请参考以下代码段：
 
 ```js
-// Here we use the promise-style of async hooks rather than
-// the callback.
+// 这里我们使用异步钩子的承诺风格，而不是回调。
 User.hook('afterCreate', (user, options) => {
-  // 'transaction' will be available in options.transaction
+  // 'transaction' 将在 options.transaction 中可用
 
-  // This operation will be part of the same transaction as the
-  // original User.create call.
+  // 此操作将成为与原始 User.create 调用相同的事务的一部分。
   return User.update({
     mood: 'sad'
   }, {
@@ -341,10 +340,10 @@ sequelize.transaction(transaction => {
 });
 ```
 
-If we had not included the transaction option in our call to `User.update` in the preceding code, no change would have occurred, since our newly created user does not exist in the database until the pending transaction has been committed.
+如果我们在上述代码中的 `User.update` 调用中未包含事务选项，则不会发生任何更改，因为在已提交挂起的事务之前，我们新创建的用户不存在于数据库中。
 
-### Internal Transactions
+### 内部事务
 
-It is very important to recognize that sequelize may make use of transactions internally for certain operations such as `Model.findOrCreate`. If your hook functions execute read or write operations that rely on the object's presence in the database, or modify the object's stored values like the example in the preceding section, you should always specify `{ transaction: options.transaction }`.
+要认识到 sequelize 可能会在某些操作（如 `Model.findOrCreate`）内部使用事务是非常重要的。 如果你的钩子函数执行依赖对象在数据库中存在的读取或写入操作，或者修改对象的存储值，就像上一节中的例子一样，你应该总是指定 `{ transaction: options.transaction }`。
 
-If the hook has been called in the process of a transacted operation, this makes sure that your dependent read/write is a part of that same transaction. If the hook is not transacted, you have simply specified `{ transaction: null }` and can expect the default behaviour.
+如果在处理操作的过程中已经调用了该钩子，则这将确保您的依赖读/写是同一事务的一部分。 如果钩子没有被处理，你只需要指定`{ transaction: null }` 并且可以预期默认行为。

@@ -1,13 +1,14 @@
-# Scopes
-Scoping allows you to define commonly used queries that you can easily use later. Scopes can include all the same attributes as regular finders, `where`, `include`, `limit` etc.
+# 作用域
 
-## Definition
+作用域允许你定义常用查询，以便以后轻松使用。 作用域可以包括与常规查找器 `where`, `include`, `limit` 等所有相同的属性。
 
-Scopes are defined in the model definition and can be finder objects, or functions returning finder objects - except for the default scope, which can only be an object:
+## 定义
+
+作用域在模型定义中定义，可以是finder对象或返回finder对象的函数，除了默认作用域，该作用于只能是一个对象：
 
 ```js
 const Project = sequelize.define('project', {
-  // Attributes
+  // 属性
 }, {
   defaultScope: {
     where: {
@@ -45,25 +46,26 @@ const Project = sequelize.define('project', {
 });
 ```
 
-You can also add scopes after a model has been defined by calling `addScope`. This is especially useful for scopes with includes, where the model in the include might not be defined at the time the other model is being defined.
+通过调用 `addScope` 定义模型后，还可以添加作用域。 这对于具有包含的作用域特别有用，其中在定义其他模型时可能不会定义 include 中的模型。
 
-The default scope is always applied. This means, that with the model definition above, `Project.findAll()` will create the following query:
+始终应用默认作用域。 这意味着，通过上面的模型定义，`Project.findAll()` 将创建以下查询：
 
 ```sql
 SELECT * FROM projects WHERE active = true
 ```
 
-The default scope can be removed by calling `.unscoped()`, `.scope(null)`, or by invoking another scope:
+可以通过调用 `.unscoped()`, `.scope(null)` 或通过调用另一个作用域来删除默认作用域：
 
 ```js
-Project.scope('deleted').findAll(); // Removes the default scope
+Project.scope('deleted').findAll(); // 删除默认作用域
 ```
 ```sql
 SELECT * FROM projects WHERE deleted = true
 ```
 
-It is also possible to include scoped models in a scope definition. This allows you to avoid duplicating `include`, `attributes` or `where` definitions.
-Using the above example, and invoking the `active` scope on the included User model (rather than specifying the condition directly in that include object):
+还可以在作用域定义中包含作用域模型。 这让你避免重复 `include`，`attributes` 或 `where` 定义。
+
+使用上面的例子，并在包含的用户模型中调用 `active` 作用域（而不是直接在该 include 对象中指定条件）：
 
 ```js
 activeUsers: {
@@ -73,54 +75,59 @@ activeUsers: {
 }
 ```
 
-## Usage
-Scopes are applied by calling `.scope` on the model definition, passing the name of one or more scopes. `.scope` returns a fully functional model instance with all the regular methods: `.findAll`, `.update`, `.count`, `.destroy` etc. You can save this model instance and reuse it later:
+## 使用
+
+通过在模型定义上调用 `.scope` 来应用作用域，传递一个或多个作用域的名称。 `.scope` 返回一个全功能的模型实例，它具有所有常规的方法：`.findAll`，`.update`，`.count`，`.destroy`等等。你可以保存这个模型实例并稍后再次使用：
 
 ```js
 const DeletedProjects = Project.scope('deleted');
 
 DeletedProjects.findAll();
-// some time passes
+// 过一段时间
 
-// let's look for deleted projects again!
+// 让我们再次寻找被删除的项目！
 DeletedProjects.findAll();
 ```
 
-Scopes apply to `.find`, `.findAll`, `.count`, `.update` and `.destroy`.
+作用域适用于  `.find`, `.findAll`, `.count`, `.update` 和 `.destroy`.
 
-Scopes which are functions can be invoked in two ways. If the scope does not take any arguments it can be invoked as normally. If the scope takes arguments, pass an object:
+可以通过两种方式调用作为函数的作用域。 如果作用域没有任何参数，它可以正常调用。 如果作用域采用参数，则传递一个对象：
 
 ```js
 Project.scope('random', { method: ['accessLevel', 19]}).findAll();
 ```
+
 ```sql
 SELECT * FROM projects WHERE someNumber = 42 AND accessLevel >= 19
 ```
 
-## Merging
-Several scopes can be applied simultaneously by passing an array of scopes to `.scope`, or by passing the scopes as consecutive arguments.
+## 合并
+
+通过将作用域数组传递到 `.scope` 或通过将作用域作为连续参数传递，可以同时应用多个作用域。
 
 ```js
-// These two are equivalent
+// 这两个是等价的
 Project.scope('deleted', 'activeUsers').findAll();
 Project.scope(['deleted', 'activeUsers']).findAll();
 ```
+
 ```sql
 SELECT * FROM projects
 INNER JOIN users ON projects.userId = users.id
 AND users.active = true
 ```
 
-If you want to apply another scope alongside the default scope, pass the key `defaultScope` to `.scope`:
+如果要将其他作用域与默认作用域一起应用，请将键 `defaultScope` 传递给 `.scope`：
 
 ```js
 Project.scope('defaultScope', 'deleted').findAll();
 ```
+
 ```sql
 SELECT * FROM projects WHERE active = true AND deleted = true
 ```
 
-When invoking several scopes, keys from subsequent scopes will overwrite previous ones (similar to [_.assign](https://lodash.com/docs#assign)). Consider two scopes:
+当调用多个作用域时，后续作用域的键将覆盖以前的作用域（类似于  [_.assign](https://lodash.com/docs#assign) ）。 考虑两个作用域：
 
 ```js
 {
@@ -144,15 +151,15 @@ When invoking several scopes, keys from subsequent scopes will overwrite previou
 }
 ```
 
-Calling `.scope('scope1', 'scope2')` will yield the following query
+调用  `.scope('scope1', 'scope2')` 将产生以下查询
 
 ```sql
 WHERE firstName = 'bob' AND age > 30 LIMIT 10
 ```
 
-Note how `limit` and `age` are overwritten by `scope2`, while `firstName` is preserved. `limit`, `offset`, `order`, `paranoid`, `lock` and `raw` are overwritten, while `where` and `include` are shallowly merged. This means that identical keys in the where objects, and subsequent includes of the same model will both overwrite each other.
+注意 `scope2` 覆盖 `limit` 和 `age`，而 `firstName` 被保留。 `limit`，`offset`，`order`，`paranoid`，`lock`和`raw`被覆盖，而`where`和`include`被浅层合并。 这意味着相同的键在同一个模型的对象以及随后的包含都将相互覆盖。
 
-The same merge logic applies when passing a find object directly to findAll on a scoped model:
+当将查找对象直接传递到作用域模型上的 findAll 时，适用相同的合并逻辑：
 
 ```js
 Project.scope('deleted').findAll({
@@ -161,21 +168,23 @@ Project.scope('deleted').findAll({
   }
 })
 ```
+
 ```sql
 WHERE deleted = true AND firstName = 'john'
 ```
 
-Here the `deleted` scope is merged with the finder. If we were to pass `where: { firstName: 'john', deleted: false }` to the finder, the `deleted` scope would be overwritten.
+这里的 `deleted` 作用域与 finder 合并。 如果我们要将 `where: { firstName: 'john', deleted: false }`  传递给 finder，那么 `deleted` 作用域将被覆盖。
 
-## Associations
-Sequelize has two different but related scope concepts in relation to associations. The difference is subtle but important:
+## 关联
 
-* **Association scopes** Allow you to specify default attributes when getting and setting associations - useful when implementing polymorphic associations. This scope is only invoked on the association between the two models, when using the `get`, `set`, `add` and `create` associated model functions
-* **Scopes on associated models** Allows you to apply default and other scopes when fetching associations, and allows you to pass a scoped model when creating associations. These scopes both apply to regular finds on the model and to find through the association.
+Sequelize 与关联有两个不同但相关的作用域概念。 差异是微妙但重要的：
 
-As an example, consider the models Post and Comment. Comment is associated to several other models (Image, Video etc.) and the association between Comment and other models is polymorphic, which means that Comment stores a `commentable` column, in addition to the foreign key `commentable_id`.
+* **关联作用域**  允许您在获取和设置关联时指定默认属性 - 在实现多态关联时很有用。 当使用`get`，`set`，`add`和`create`相关联的模型函数时，这个作用域仅在两个模型之间的关联上被调用
+* **关联模型上的作用域** 允许您在获取关联时应用默认和其他作用域，并允许您在创建关联时传递作用域模型。 这些作用域都适用于模型上的常规查找和通过关联查找。
 
-The polymorphic association can be implemented with an _association scope_ :
+举个例子，思考模型Post和Comment。 注释与其他几个模型（图像，视频等）相关联，注释和其他模型之间的关联是多态的，这意味着除了外键 `commentable_id` 之外，注释还存储一个`commentable`列。
+
+可以使用  _association scope_ 来实现多态关联：
 
 ```js
 this.Post.hasMany(this.Comment, {
@@ -186,16 +195,17 @@ this.Post.hasMany(this.Comment, {
 });
 ```
 
-When calling `post.getComments()`, this will automatically add `WHERE commentable = 'post'`. Similarly, when adding new comments to a post, `commentable` will automagically be set to `'post'`. The association scope is meant to live in the background without the programmer having to worry about it - it cannot be disabled. For a more complete polymorphic example, see [Association scopes](/manual/tutorial/associations.html#scopes)
+当调用 `post.getComments()` 时，这将自动添加 `WHERE commentable = 'post'`。 类似地，当向帖子添加新的注释时，`commentable` 会自动设置为 `'post'`。 关联作用域是为了存活于后台，没有程序员不必担心 - 它不能被禁用。 有关更完整的多态性示例，请参阅 [关联作用域](/manual/tutorial/associations.html#scopes)
 
-Consider then, that Post has a default scope which only shows active posts: `where: { active: true }`. This scope lives on the associated model (Post), and not on the association like the `commentable` scope did. Just like the default scope is applied when calling `Post.findAll()`, it is also applied when calling `User.getPosts()` - this will only return the active posts for that user.
+那么考虑那个Post的默认作用域只显示活动的帖子：`where: { active: true }`。 该作用域存在于相关联的模型（Post）上，而不是像`commentable` 作用域那样在关联上。 就像在调用`Post.findAll()` 时一样应用默认作用域，当调用 `User.getPosts()` 时，它也会被应用 - 这只会返回该用户的活动帖子。
 
-To disable the default scope, pass `scope: null` to the getter: `User.getPosts({ scope: null })`. Similarly, if you want to apply other scopes, pass an array like you would to `.scope`:
+要禁用默认作用域，将 `scope: null` 传递给 getter： `User.getPosts({ scope: null })`。 同样，如果要应用其他作用域，请像这样: 
+
 ```js
 User.getPosts({ scope: ['scope1', 'scope2']});
 ```
 
-If you want to create a shortcut method to a scope on an associated model, you can pass the scoped model to the association. Consider a shortcut to get all deleted posts for a user:
+如果要为关联模型上的作用域创建快捷方式，可以将作用域模型传递给关联。 考虑一个快捷方式来获取用户所有已删除的帖子：
 
 ```js
 const Post = sequelize.define('post', attributes, {
@@ -213,7 +223,7 @@ const Post = sequelize.define('post', attributes, {
   }
 });
 
-User.hasMany(Post); // regular getPosts association
+User.hasMany(Post); // 常规 getPosts 关联
 User.hasMany(Post.scope('deleted'), { as: 'deletedPosts' });
 
 ```
