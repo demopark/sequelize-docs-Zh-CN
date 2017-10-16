@@ -1,4 +1,4 @@
-# 关联
+# Associations - 关联
 
 本部分描述 sequelize 中的各种关联类型。 当调用 `User.hasOne(Project)` 这样的方法时，我们说 `User`  模型（该函数被调用的模型）是 __source__  而 `Project` 模型（模型被传递为参数）是 __target__ 。
 

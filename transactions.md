@@ -1,4 +1,4 @@
-# 事务
+# Transactions - 事务
 
 Sequelize 支持两种使用事务的方法：
 

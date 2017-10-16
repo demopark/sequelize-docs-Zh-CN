@@ -1,4 +1,4 @@
-# 升级到 V4
+# Upgrade to V4 - 升级到 V4
 
 Sequelize V4 是一个重要版本，它引入了新的功能和突破性的变化。 大量的 sequelize 代码库已用 ES2015 功能重构。 以下指南列出了从 v3 升级到 v4 的一些更改。查看 [修改日志](https://github.com/sequelize/sequelize/blob/b49f936e9aa316cf4a13bade76585acf4d5d8b04/changelog.md) 查看全部详细列表。
 
