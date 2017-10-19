@@ -117,11 +117,11 @@ const Post = sequelize.define('post', {}, {
 });
 ```
 
-## 承诺
+## Promise
 
-Sequelize 使用承诺来控制异步控制流程。 如果你不熟悉承诺是如何工作的，别担心，你可以在这里阅读  [这里](https://github.com/wbinnssmith/awesome-promises) 和 [这里](http://bluebirdjs.com/docs/why-promises.html)。
+Sequelize 使用 promise 来控制异步控制流程。 如果你不熟悉 promise 是如何工作的，别担心，你可以在这里阅读  [这里](https://github.com/wbinnssmith/awesome-promises) 和 [这里](http://bluebirdjs.com/docs/why-promises.html)。
 
-基本上，一个承诺代表了某个时候会出现的值 - 这意味着“我保证你会在某个时候给你一个结果或一个错误”。 
+基本上，一个 promise 代表了某个时候会出现的值 - 这意味着“我保证你会在某个时候给你一个结果或一个错误”。 
 
 ```js
 // 不要这样做
@@ -130,7 +130,7 @@ user = User.findOne()
 console.log(user.get('firstName'));
 ```
 
-_这将永远不可用！_这是因为`user`是承诺对象，而不是数据库中的数据行。 正确的方法是：
+_这将永远不可用！_这是因为`user`是 promise 对象，而不是数据库中的数据行。 正确的方法是：
 
 ```js
 User.findOne().then(user => {
@@ -146,4 +146,4 @@ user = await User.findOne()
 console.log(user.get('firstName'));
 ```
 
-一旦知道了什么是承诺以及它们的工作原理，请使用 [bluebird API reference](http://bluebirdjs.com/docs/api-reference.html) 作为转移工具。 尤其是，你可能会使用很多 [`.all`](http://bluebirdjs.com/docs/api/promise.all.html) 。
+一旦知道了什么是 promise 以及它们的工作原理，请使用 [bluebird API reference](http://bluebirdjs.com/docs/api-reference.html) 作为转移工具。 尤其是，你可能会使用很多 [`.all`](http://bluebirdjs.com/docs/api/promise.all.html) 。

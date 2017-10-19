@@ -55,8 +55,8 @@ Sequelize V4 是一个重要版本，它引入了新的功能和突破性的变�
 - `Model.Instance` 和 `instance.Model` 已被移除。要从一个实例访问模型，只需使用 [`instance.constructor`](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/constructor)。 示例类 (`Model.Instance`) 现在是模型本身。
 - Sequelize 现在使用一个 bluebird 库的独立副本.
 
-    - sequelize返回的承诺现在是 `Sequelize.Promise` 而不是 bluebird 的全局 `Promise` 实例。
-    - CLS 补丁不会影响 bluebird 的全局承诺。当与 `Promise.all` 和其他 bluebird 方法一起使用时，事务不会自动传递给方法。明确地修补 bluebird 实例，可以让 CLS 能够使用 bluebird 方法。
+    - sequelize返回的 promise 现在是 `Sequelize.Promise` 而不是 bluebird 的全局 `Promise` 实例。
+    - CLS 补丁不会影响 bluebird 的全局 promise。当与 `Promise.all` 和其他 bluebird 方法一起使用时，事务不会自动传递给方法。明确地修补 bluebird 实例，可以让 CLS 能够使用 bluebird 方法。
 
       ```bash
       $ npm install --save cls-bluebird
@@ -94,7 +94,7 @@ Sequelize V4 是一个重要版本，它引入了新的功能和突破性的变�
 - 当验证失败时，来自 `Model.validate` 实例方法的结果将被拒绝。 验证成功后才能实现。
 - 原始参数 where, order 和 group 比如 `where: { $raw: '..', order: [{ raw: '..' }], group: [{ raw: '..' }] }` 删除以防止SQL注入攻击。
 - `Sequelize.Utils` 不再是公共API的一部分，使用它自己承担风险。
-- `Hooks` 现在应返回承诺。 不支持回调。
+- `Hooks` 现在应返回 promise。 不支持回调。
 
 ### 新功能
 - `sequelize.sync({ alter: true })` 的初始版本已添加，并使用 `ALTER TABLE` 命令来同步表。 [迁移](http://docs.sequelizejs.com/manual/tutorial/migrations.html) 仍然是首选，应在生产中使用。

@@ -2,16 +2,16 @@
 
 Sequelize 支持两种使用事务的方法：
 
-* 一个将根据承诺链的结果自动提交或回滚事务，（如果启用）用回调将该事务传递给所有调用
+* 一个将根据 promise 链的结果自动提交或回滚事务，（如果启用）用回调将该事务传递给所有调用
 * 而另一个 leave committing，回滚并将事务传递给用户。
 
-主要区别在于托管事务使用一个回调，对非托管事务而言期望承诺返回一个 promise 结果。
+主要区别在于托管事务使用一个回调，对非托管事务而言期望 promise 返回一个 promise 的结果。
 
 ## 托管事务（auto-callback）
 
 托管事务自动处理提交或回滚事务。你可以通过将回调传递给 `sequelize.transaction` 来启动托管事务。
 
-注意回传传递给 `transaction` 的回调是否是一个承诺链，并且没有明确地调用`t.commit（）`或  `t.rollback()`。 如果返回链中的所有承诺都已成功解决，则事务被提交。 如果一个或几个承诺被拒绝，事务将回滚。
+注意回传传递给 `transaction` 的回调是否是一个 promise 链，并且没有明确地调用`t.commit（）`或  `t.rollback()`。 如果返回链中的所有 promise 都已成功解决，则事务被提交。 如果一个或几个 promise 被拒绝，事务将回滚。
 
 ```js
 return sequelize.transaction(function (t) {
@@ -29,10 +29,10 @@ return sequelize.transaction(function (t) {
 
 }).then(function (result) {
   // 事务已被提交
-  // result 是承诺链返回到事务回调的结果
+  // result 是 promise 链返回到事务回调的结果
 }).catch(function (err) {
   // 事务已被回滚
-  // err 是拒绝承诺链返回到事务回调的错误
+  // err 是拒绝 promise 链返回到事务回调的错误
 });
 ```
 
@@ -93,7 +93,7 @@ sequelize.transaction(function (t1) {
 });
 ```
 
-在使用 `Sequelize.useCLS()` 后，从 sequelize 返回的所有承诺将被修补以维护 CLS 上下文。 CLS 是一个复杂的课题 - [cls-bluebird](https://www.npmjs.com/package/cls-bluebird)的文档中有更多细节，用于使 bluebird 承诺的补丁与CLS一起工作。
+在使用 `Sequelize.useCLS()` 后，从 sequelize 返回的所有 promise 将被修补以维护 CLS 上下文。 CLS 是一个复杂的课题 - [cls-bluebird](https://www.npmjs.com/package/cls-bluebird)的文档中有更多细节，用于使 bluebird promise 的补丁与CLS一起工作。
 
 ## 并行/部分事务
 
@@ -142,7 +142,7 @@ return sequelize.transaction({
 
 ## 非托管事务（then-callback）
 
-非托管事务强制您手动回滚或提交交易。 如果不这样做，事务将挂起，直到超时。 要启动非托管事务，请调用 `sequelize.transaction()` 而不用 callback（你仍然可以传递一个选项对象），并在返回的承诺上调用 `then`。 请注意，`commit()` 和 `rollback()` 返回一个承诺。
+非托管事务强制您手动回滚或提交交易。 如果不这样做，事务将挂起，直到超时。 要启动非托管事务，请调用 `sequelize.transaction()` 而不用 callback（你仍然可以传递一个选项对象），并在返回的 promise 上调用 `then`。 请注意，`commit()` 和 `rollback()` 返回一个 promise。
 
 ```js
 return sequelize.transaction().then(function (t) {
