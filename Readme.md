@@ -37,7 +37,23 @@ Sequelize 是一个基于 promise 的 Node.js ORM, 目前支持 Postgres, MySQL,
 
 ```js
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize('database', 'username', 'password');
+const sequelize = new Sequelize('database', 'username', 'password', {
+  host: 'localhost',
+  dialect: 'mysql'|'sqlite'|'postgres'|'mssql',
+
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000
+  },
+
+  // 仅限 SQLite
+  storage: 'path/to/database.sqlite',
+
+  // 请参考 Querying - 查询 操作符 章节
+  operatorsAliases: false
+});
 
 const User = sequelize.define('user', {
   username: Sequelize.STRING,
@@ -50,8 +66,8 @@ sequelize.sync()
     birthday: new Date(1980, 6, 20)
   }))
   .then(jane => {
-    console.log(jane.get({
-      plain: true
-    }));
+    console.log(jane.toJSON());
   });
 ```
+
+请通过 [Getting started - 入门](getting-started.md) 来学习更多相关内容。 如果你想要学习 Sequelize API 请通过 [API Reference](http://docs.sequelizejs.com/identifiers) (英文)。

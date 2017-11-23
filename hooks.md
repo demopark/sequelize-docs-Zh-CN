@@ -259,7 +259,7 @@ Model.destroy({ where: {username: 'Tom'}} /*where 参数*/)
 ```js
 // 使用 updatesOnDuplicate 选项批量更新现有用户
 Users.bulkCreate([
-  { id: 1, isMemeber: true },
+  { id: 1, isMember: true },
   { id: 2, isMember: false }
 ], {
   updatesOnDuplicate: ['isMember']

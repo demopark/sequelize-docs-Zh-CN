@@ -296,20 +296,18 @@ Project.findAll({group: 'name'})
 ```js
 something.findOne({
   order: [
-    'name',
     // 将返回 `name`
-    'username DESC',
-    // 将返回 `username DESC` -- 不要这样做
-    ['username', 'DESC'],
+    ['name'],
     // 将返回 `username` DESC
-    sequelize.fn('max', sequelize.col('age')),
+    ['username', 'DESC'],
     // 将返回 max(`age`)
-    [sequelize.fn('max', sequelize.col('age')), 'DESC'],
+    sequelize.fn('max', sequelize.col('age')),
     // 将返回 max(`age`) DESC
-    [sequelize.fn('otherfunction', sequelize.col('col1'), 12, 'lalala'), 'DESC'],
+    [sequelize.fn('max', sequelize.col('age')), 'DESC'],
     // 将返回 otherfunction(`col1`, 12, 'lalala') DESC
-    [sequelize.fn('otherfunction', sequelize.fn('awesomefunction', sequelize.col('col'))), 'DESC']
+    [sequelize.fn('otherfunction', sequelize.col('col1'), 12, 'lalala'), 'DESC'],
     // 将返回 otherfunction(awesomefunction(`col`)) DESC，这个嵌套是可以无限的！
+    [sequelize.fn('otherfunction', sequelize.fn('awesomefunction', sequelize.col('col'))), 'DESC']
   ]
 })
 ```

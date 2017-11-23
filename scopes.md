@@ -89,7 +89,7 @@ DeletedProjects.findAll();
 DeletedProjects.findAll();
 ```
 
-作用域适用于  `.find`, `.findAll`, `.count`, `.update` 和 `.destroy`.
+作用域适用于  `.find`, `.findAll`, `.count`, `.update`, `.increment` 和 `.destroy`.
 
 可以通过两种方式调用作为函数的作用域。 如果作用域没有任何参数，它可以正常调用。 如果作用域采用参数，则传递一个对象：
 

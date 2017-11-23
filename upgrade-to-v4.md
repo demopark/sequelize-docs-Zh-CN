@@ -108,7 +108,7 @@ Sequelize V4 是一个重要版本，它引入了新的功能和突破性的变�
   
   然后，您可以直接在类中定义自定义方法，类方法和 getter / setter。
   这也使得有更多的使用模式，例如用 [装饰器](https://www.npmjs.com/package/sequelize-decorators).
-- 增加了 `DEBUG` 支持。 现在可以使用 `DEBUG = sequelize * node app.js` 为所有 sequlize 操作启用日志记录。 要过滤记录的查询，请使用 `DEBUG=sequelize:sql:mssql sequelize:connection*` 来记录生成的SQL查询，连接信息等。
+- 增加了 `DEBUG` 支持。 现在可以使用 `DEBUG = sequelize * node app.js` 为所有 sequelize 操作启用日志记录。 要过滤记录的查询，请使用 `DEBUG=sequelize:sql:mssql sequelize:connection*` 来记录生成的SQL查询，连接信息等。
 - `SQLite` 添加了 `JSON` 数据类型支持。
 - `UPSERT` 现在使用 `MERGE` 语句支持 `MSSQL`。
 - 事务现在完全支持 `MSSQL`。

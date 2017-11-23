@@ -29,6 +29,7 @@ $ yarn add tedious // MSSQL
 Sequelize将在初始化时设置连接池，所以如果从单个进程连接到数据库，你最好每个数据库只创建一个实例。 如果要从多个进程连接到数据库，则必须为每个进程创建一个实例，但每个实例应具有“最大连接池大小除以实例数”的最大连接池大小。 因此，如果您希望最大连接池大小为90，并且有3个工作进程，则每个进程的实例应具有30的最大连接池大小。
 
 ```js
+const Sequelize = require('sequelize');
 const sequelize = new Sequelize('database', 'username', 'password', {
   host: 'localhost',
   dialect: 'mysql'|'sqlite'|'postgres'|'mssql',
@@ -36,6 +37,7 @@ const sequelize = new Sequelize('database', 'username', 'password', {
   pool: {
     max: 5,
     min: 0,
+    acquire: 30000,
     idle: 10000
   },
 
@@ -119,7 +121,11 @@ const Post = sequelize.define('post', {}, {
 
 ## Promise
 
-Sequelize 使用 promise 来控制异步控制流程。 如果你不熟悉 promise 是如何工作的，别担心，你可以在这里阅读  [这里](https://github.com/wbinnssmith/awesome-promises) 和 [这里](http://bluebirdjs.com/docs/why-promises.html)。
+Sequelize 使用 [Bluebird](http://bluebirdjs.com) promise 来控制异步控制流程。
+
+**注意:** _Sequelize 使用 Bluebird 实例的独立副本。如果你想设置任何 Bluebird 特定的参数可以通过使用 `Sequelize.Promise` 来访问它。_
+
+如果你不熟悉 promise 是如何工作的，别担心，你可以阅读一下 [这里](http://bluebirdjs.com/docs/why-promises.html)。
 
 基本上，一个 promise 代表了某个时候会出现的值 - 这意味着“我保证你会在某个时候给你一个结果或一个错误”。 
 

@@ -97,7 +97,7 @@ $ node_modules/.bin/sequelize db:migrate
 
 - 将在数据库中确保一个名为 `SequelizeMeta` 的表。 此表用于记录在当前数据库上运行的迁移
 - 开始寻找尚未运行的任何迁移文件。 这可以通过检查 `SequelizeMeta` 表。 在这个例子中，它将运行我们在最后一步中创建的 `XXXXXXXXXXXXXX-create-user.js` 迁移，。
-- 创建一个名为 `User` 的表，其中包含其迁移文件中指定的所有列。
+- 创建一个名为 `Users` 的表，其中包含其迁移文件中指定的所有列。
 
 ### 撤消迁移
 

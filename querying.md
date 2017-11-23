@@ -93,6 +93,22 @@ Post.findAll({
 });
 // SELECT * FROM post WHERE authorId = 12 AND status = 'active';
 
+Post.findAll({
+  where: {
+    [Op.or]: [{authorId: 12}, {authorId: 13}]
+  }
+});
+// SELECT * FROM post WHERE authorId = 12 OR authorId = 13;
+
+Post.findAll({
+  where: {
+    authorId: {
+      [Op.or]: [12, 13]
+    }
+  }
+});
+// SELECT * FROM post WHERE authorId = 12 OR authorId = 13;
+
 Post.destroy({
   where: {
     status: 'inactive'
