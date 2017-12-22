@@ -302,7 +302,10 @@ Person.findOne({ where: { name: 'john' } }).then(person => {
 ```js
 User.findById(1).then(user => {
   return user.increment('my-integer-field', {by: 2})
-}).then(/* ... */)
+}).then(user => {
+  // Postgres默认会返回更新的 user (除非通过设置禁用 { returning: false })
+  // 在其他方言中，您将需要调用 user.reload() 来获取更新的实例...
+})
 ```
 
 然后，你可以定义多个字段和要添加到其中的值。
@@ -333,7 +336,10 @@ User.findById(1).then(user => {
 ```js
 User.findById(1).then(user => {
   return user.decrement('my-integer-field', {by: 2})
-}).then(/* ... */)
+}).then(user => {
+  // Postgres默认会返回更新的 user (除非通过设置禁用 { returning: false })
+  // 在其他方言中，您将需要调用 user.reload() 来获取更新的实例...
+})
 ```
 
 然后，你可以定义多个字段和要添加到其中的值。

@@ -98,8 +98,8 @@ User.create({ username: 'fnord', job: 'omnomnom' })
 
 处理程序成功将始终接收具有两个属性的对象：
 
-* `count` - 一个整数，总数记录匹配where语句
-* `rows` - 一个数组对象，记录在limit和offset范围内匹配where语句，
+* `count` - 一个整数，总数记录匹配where语句和关联的其它过滤器
+* `rows` - 一个数组对象，记录在limit和offset范围内匹配where语句和关联的其它过滤器，
 
 ```js
 Project
@@ -118,7 +118,7 @@ Project
   });
 ```
 
-`findAndCountAll`  也支持 include。 只有标记为 `required` 的 include 将被添加到计数部分：
+它支持 include。 只有标记为 `required` 的 include 将被添加到计数部分：
 
 假设您想查找附有个人资料的所有用户：
 
@@ -319,7 +319,7 @@ something.findOne({
 * Object -
   * raw 将被添加逐字引用
   * 如果未设置 raw，一切都被忽略，查询将失败
-* Sequelize.fn 和 Sequelize.col 返回函数和引用的列
+* Sequelize.fn 和 Sequelize.col 返回函数和引用的列名
 
 ### 原始查询
 

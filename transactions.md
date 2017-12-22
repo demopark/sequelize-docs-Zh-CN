@@ -95,9 +95,13 @@ sequelize.transaction(function (t1) {
 
 在使用 `Sequelize.useCLS()` 后，从 sequelize 返回的所有 promise 将被修补以维护 CLS 上下文。 CLS 是一个复杂的课题 - [cls-bluebird](https://www.npmjs.com/package/cls-bluebird)的文档中有更多细节，用于使 bluebird promise 的补丁与CLS一起工作。
 
+**注意:** _[当使用 cls-hooked 软件包的时候，CLS 仅支持 async/await](https://github.com/othiym23/node-continuation-local-storage/issues/98#issuecomment-323503807). 即使, [cls-hooked](https://github.com/Jeff-Lewis/cls-hooked/blob/master/README.md) 依靠 *试验性的 API* [async_hooks](https://github.com/nodejs/node/blob/master/doc/api/async_hooks.md)_
+
 ## 并行/部分事务
 
 你可以在一系列查询中执行并发事务，或者将某些事务从任何事务中排除。 使用 `{transaction: }` 选项来控制查询所属的事务：
+
+**警告:** _SQLite 不能同时支持多个事务。_
 
 ### 不启用CLS
 
@@ -138,7 +142,7 @@ return sequelize.transaction({
   });
 ```
 
-注意: 在MSSQL的情况下，SET ISOLATION LEVEL 查询不被记录, 指定的 isolationLevel 直接传递到tedious
+**注意:** _在MSSQL的情况下，SET ISOLATION LEVEL 查询不被记录, 指定的 isolationLevel 直接传递到 tedious_
 
 ## 非托管事务（then-callback）
 

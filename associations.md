@@ -102,7 +102,7 @@ Project.hasOne(User, { foreignKey: 'initiator_id' })
 */
  
 Project.hasOne(User, { as: 'Initiator' })
-// 现在你可以获得 Project#getInitiator 和 Project#setInitiator
+// 现在你可以获得 Project.getInitiator 和 Project.setInitiator
  
 // 或者让我们来定义一些自己的参考
 const Person = sequelize.define('person', { /* ... */})
@@ -115,8 +115,8 @@ Person.hasOne(Person, {as: 'Father', foreignKey: 'DadId'})
 // 这将把属性 DadId 添加到 Person
  
 // 在这两种情况下，你都可以：
-Person#setFather
-Person#getFather
+Person.setFather
+Person.getFather
  
 // 如果你需要联结表两次，你可以联结同一张表
 Team.hasOne(Game, {as: 'HomeTeam', foreignKey : 'homeTeamId'});
@@ -180,7 +180,7 @@ Player.belongsTo(Team)  // `teamId` 将被添加到 Player / Source 模型中
 Coach.hasOne(Team)  // `coachId` 将被添加到 Team / Target 模型中
 ```
 
-## 一对多关联
+## 一对多关联 (hasMany)
 
 一对多关联将一个来源与多个目标连接起来。 而多个目标接到同一个特定的源。
 
@@ -193,8 +193,7 @@ const Project = sequelize.define('project', {/* ... */})
 Project.hasMany(User, {as: 'Workers'})
 ```
 
-这将添加属性 `projectId` 或 `project_id` 到 User。 Project 的实例将获得访问器 `getWorkers` 和 `setWorkers`。 我们让它保持原样，让它成为单向关联。
-但是我们想要更多！ 让我们在下一节中以其他方式定义并创建一个多对多的关联：
+这将添加属性 `projectId` 或 `project_id` 到 User。 Project 的实例将获得访问器 `getWorkers` 和 `setWorkers`。 
 
 有时您可能需要在不同的列上关联记录，您可以使用 `sourceKey` 选项：
 
@@ -207,6 +206,7 @@ Country.hasMany(City, {foreignKey: 'countryCode', sourceKey: 'isoCode'});
 City.belongsTo(Country, {foreignKey: 'countryCode', targetKey: 'isoCode'});
 ```
 
+到目前为止，我们解决了单向关联。 但我们想要更多！ 让我们通过在下一节中创建一个多对多的关联来定义它。
 
 ## 多对多关联
 
@@ -555,7 +555,7 @@ task2.setProject(null).then(function() {
 
 ```js
 Task.hasOne(User, {as: "Author"})
-Task#setAuthor(anAuthor)
+Task.setAuthor(anAuthor)
 ```
 
 可以通过两种方式添加与自定义连接表的关系的关联（继续前一章中定义的关联）：
@@ -717,7 +717,7 @@ const Series = sequelize.define('series', {
   trainer_id: {
     type: DataTypes.INTEGER,
     references: {
-      model: "trainers",
+      model: "trainer",
       key: "id"
     }
   }

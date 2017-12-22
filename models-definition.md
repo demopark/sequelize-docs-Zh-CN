@@ -38,6 +38,7 @@ const Foo = sequelize.define('foo', {
 
  // unique属性用来创建一个唯一约束。
  someUnique: {type: Sequelize.STRING, unique: true},
+ 
  // 这与在模型选项中创建索引完全相同。
  {someUnique: {type: Sequelize.STRING}},
  {indexes: [{unique: true, fields: ['someUnique']}]},
@@ -140,6 +141,7 @@ Sequelize.BOOLEAN                     // TINYINT(1)
 
 Sequelize.ENUM('value 1', 'value 2')  // An ENUM with allowed values 'value 1' and 'value 2'
 Sequelize.ARRAY(Sequelize.TEXT)       // Defines an array. PostgreSQL only.
+Sequelize.ARRAY(Sequelize.ENUM)       // Defines an array of ENUM. PostgreSQL only.
 
 Sequelize.JSON                        // JSON column. PostgreSQL, SQLite and MySQL only.
 Sequelize.JSONB                       // JSONB column. PostgreSQL only.
@@ -197,6 +199,14 @@ sequelize.define('model', {
 })
 ```
 
+### Array(ENUM)
+
+此项仅支持 PostgreSQL.
+
+Array(ENUM) 类型需要特殊处理。 每当 Sequelize 与数据库通信时，它必须使用 ENUM 名称对数组值进行类型转换。
+
+所以这个枚举名必须遵循  `enum_<table_name>_<col_name>` 这个模式。 如果您正在使用 `sync`，则会自动生成正确的名称。
+
 ### 范围类型
 
 由于范围类型具有其绑定的包含(inclusive)/排除(exclusive)的额外信息，所以使用一个元组在javascript中表示它们并不是很简单。
@@ -242,7 +252,7 @@ range.inclusive // [false, true]
 
 确保在序列化之前将其转换为可序列化的格式，因为数组额外的属性将不会被序列化。
 
-#### 特殊情况
+**特殊情况**
 
 ```js
 // 空范围:
@@ -717,10 +727,10 @@ Sequelize支持在 `Model.sync()` 或 `sequelize.sync` 中创建的模型定义�
 ```js
 sequelize.define('user', {}, {
   indexes: [
-    // 在 poem 上创建一个唯一索引
+    // 在 email 上创建一个唯一索引
     {
       unique: true,
-      fields: ['poem']
+      fields: ['email']
     },
 
     // 在使用 jsonb_path_ops 的 operator 数据上创建一个 gin 索引

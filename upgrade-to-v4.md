@@ -9,7 +9,36 @@ Sequelize V4 是一个重要版本，它引入了新的功能和突破性的变�
 - 删除了MariaDB方言。 这只是围绕 MySQL 的一个浅层包装，所以使用 `dialect:'mysql` 而不是进一步的改变。
 - 删除默认的 `REPEATABLE_READ` 事务隔离。 隔离级别现在默认为数据库的级别。 在启动事务时明确地传递所需的隔离级别。
 - 删除了对 `pool: false` 的支持。要使用单个连接，请将 `pool.max` 设置为1。
+- 删除了对旧连接池配置关键字的支持。 
+
+ 以前:
+
+  ```js
+  pool: {
+    maxIdleTime: 30000,
+    minConnections: 20,
+    maxConnections: 30
+  }
+  ```
+
+  现在:
+
+  ```js
+  pool: {
+    idle: 30000,
+    min: 20,
+    max: 30
+  }
+  ```
 - （MySQL）当数字太大时，BIGINT 现在被转换为字符串。
+- (MySQL) `DECIMAL` 和 `NEWDECIMAL` 类型现在以 String 形式返回，除非
+
+  ```js
+  dialectOptions: {
+    decimalNumbers: true
+  }
+  ```
+  被指定.
 - 删除了对referencesKey的支持，使用了一个引用对象。
 
   ```js
