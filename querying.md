@@ -315,6 +315,39 @@ const operatorsAliases = {
 const connection = new Sequelize(db, user, pass, { operatorsAliases });
 ```
 
+### JSON
+
+JSON 数据类型仅由 PostgreSQL，SQLite 和 MySQL 语言支持。
+
+#### PostgreSQL
+
+PostgreSQL 中的 JSON 数据类型将值存储为纯文本，而不是二进制表示。 如果您只是想存储和检索 JSON 格式数据，那么使用 JSON 将占用更少的磁盘空间，并且从其输入数据中构建时间更少。 但是，如果您想对 JSON 值执行任何操作，则应该使用下面描述的 JSONB 数据类型。
+
+#### MSSQL
+
+MSSQL 没有 JSON 数据类型，但是它确实提供了对于自 SQL Server 2016 以来通过某些函数存储为字符串的 JSON 的支持。使用这些函数，您将能够查询存储在字符串中的 JSON，但是任何返回的值将需要分别进行解析。
+
+```js
+// ISJSON - 测试一个字符串是否包含有效的 JSON
+User.findAll({
+  where: sequelize.where(sequelize.fn('ISJSON', sequelize.col('userDetails')), 1)
+})
+
+// JSON_VALUE - 从 JSON 字符串提取标量值
+User.findAll({
+  attributes: [[ sequelize.fn('JSON_VALUE', sequelize.col('userDetails'), '$.address.Line1'), 'address line 1']]
+})
+
+// JSON_VALUE - 从 JSON 字符串中查询标量值
+User.findAll({
+  where: sequelize.where(sequelize.fn('JSON_VALUE', sequelize.col('userDetails'), '$.address.Line1'), '14, Foo Street')
+})
+
+// JSON_QUERY - 提取一个对象或数组
+User.findAll({
+  attributes: [[ sequelize.fn('JSON_QUERY', sequelize.col('userDetails'), '$.address'), 'full address']]
+})
+```
 
 ### JSONB
 
@@ -431,5 +464,24 @@ Subtask.findAll({
 
   // 按升序排列是省略排序条件的默认顺序
   order: sequelize.col('age')
+  
+  // 将根据方言随机排序 (而不是 fn('RAND') 或 fn('RANDOM'))
+  order: sequelize.random()
+})
+```
+
+## Table Hint
+
+当使用 mssql 时，可以使用 `tableHint` 来选择传递一个表提示。 该提示必须是来自 `Sequelize.TableHints` 的值，只能在绝对必要时使用。 每个查询当前仅支持单个表提示。
+
+表提示通过指定某些选项来覆盖 mssql 查询优化器的默认行为。 它们只影响该子句中引用的表或视图。
+
+```js
+const TableHints = Sequelize.TableHints;
+
+Project.findAll({
+  // 添加 table hint NOLOCK
+  tableHint: TableHints.NOLOCK
+  // 这将生成 SQL 'WITH (NOLOCK)'
 })
 ```

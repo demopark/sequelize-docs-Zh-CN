@@ -124,6 +124,61 @@ Sequelize V4 是一个重要版本，它引入了新的功能和突破性的变�
 - 原始参数 where, order 和 group 比如 `where: { $raw: '..', order: [{ raw: '..' }], group: [{ raw: '..' }] }` 删除以防止SQL注入攻击。
 - `Sequelize.Utils` 不再是公共API的一部分，使用它自己承担风险。
 - `Hooks` 现在应返回 promise。 不支持回调。
+- `include` 总是一个数组
+
+  之前:
+  ```js
+  User.findAll({
+    include: {
+      model: Comment,
+      as: 'comments'
+    }
+  })
+  ```
+  
+  现在:
+  ```js
+  User.findAll({
+    include: [{
+      model: Comment,
+      as: 'comments'
+    }]
+  })
+  ```
+
+- `where` 在 `include` 中不会使这个 `include` 及其所有父节点都被 `required`。你可以使用下面的 `beforeFind` 全局 Hook 来保持以前的行为：
+
+  ```js
+  function whereRequiredLikeInV3(modelDescriptor) {
+    if (!modelDescriptor.include) {
+      return false;
+    }
+
+    return modelDescriptor.include.some(relatedModelDescriptor => {
+      const childDescriptorRequired = whereRequiredLikeInV3(
+        relatedModelDescriptor,
+      );
+
+      if (
+        (relatedModelDescriptor.where || childDescriptorRequired) &&
+        typeof relatedModelDescriptor.required === 'undefined'
+      ) {
+        relatedModelDescriptor.required = true;
+      }
+
+      return relatedModelDescriptor.required;
+    });
+  }
+  
+  const sequelize = new Sequelize(..., {
+    ...,
+    define: {
+      hooks: {
+        beforeFind: whereRequiredLikeInV3,
+      },
+    },
+  });
+  ```
 
 ### 新功能
 - `sequelize.sync({ alter: true })` 的初始版本已添加，并使用 `ALTER TABLE` 命令来同步表。 [迁移](http://docs.sequelizejs.com/manual/tutorial/migrations.html) 仍然是首选，应在生产中使用。

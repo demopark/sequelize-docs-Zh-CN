@@ -489,8 +489,8 @@ Subscription.hasMany(Invoice, { foreignKey: 'subscription_id' )
 因为 Sequelize 做了很多神奇的事，所以你必须在设置关联后调用 `Sequelize.sync`。 这样做将允许您进行以下操作：
 
 ```js
-Project.belongsToMany(Task)
-Task.belongsToMany(Project)
+Project.hasMany(Task)
+Task.belongsTo(Project)
  
 Project.create()...
 Task.create()...
@@ -627,7 +627,7 @@ Project.create({ /* */ }).then(project => {
 project.setUsers([user1, user2]).then(() => {
   return project.hasUsers([user1]);
 }).then(result => {
-  // 结果是 false
+  // 结果是 true
   return project.hasUsers([user1, user2]);
 }).then(result => {
   // 结果是 true
