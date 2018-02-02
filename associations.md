@@ -16,7 +16,7 @@ BelongsTo 关联是在 **source model** 上存在一对一关系的外键的关�
 const Player = this.sequelize.define('player', {/* attributes */});
 const Team  = this.sequelize.define('team', {/* attributes */});
 
-Player.belongsTo(Team); // 将向 Team 添加一个 teamId 属性以保存 Team 的主键值
+Player.belongsTo(Team); // 将向 Player 添加一个 teamId 属性以保存 Team 的主键值
 ```
 
 #### 外键
