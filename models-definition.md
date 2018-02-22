@@ -106,7 +106,7 @@ module.exports = {
 
 ## 数据类型
 
-以下是 Sequelize 支持的一些数据类型。 有关完整和更新的列表, 参阅 [DataTypes](/variable/index.html#static-variable-DataTypes).
+以下是 Sequelize 支持的一些数据类型。 有关完整和更新的列表, 参阅 [DataTypes](http://docs.sequelizejs.com/variable/index.html#static-variable-DataTypes).
 
 ```js
 Sequelize.STRING                      // VARCHAR(255)
@@ -284,7 +284,7 @@ Sequelize.Deferrable.INITIALLY_IMMEDIATE
 Sequelize.Deferrable.NOT
 ```
 
-最后一个参数是 PostgreSQL 的默认值，不允许你在事务中动态的更改规则。 查看 [the transaction section](/manual/tutorial/transactions.html#options) 获取补充信息.
+最后一个参数是 PostgreSQL 的默认值，不允许你在事务中动态的更改规则。 查看 [the transaction section](/sequelize-docs-Zh-CN/transactions.html#参数) 获取补充信息.
 
 ## Getters & setters
 
@@ -329,7 +329,7 @@ Employee
 
 ### 定义为模型参数的一部分
 
-以下是在模型参数中定义 getter 和 setter 的示例。 `fullName` getter，是一个说明如何在模型上定义伪属性的例子 - 这些属性实际上不是数据库模式的一部分。 事实上，伪属性可以通过两种方式定义：使用模型getter，或者使用[`虚拟`数据类型](/variable/index.html#static-variable-DataTypes)的列。 虚拟数据类型可以有验证，而虚拟属性的getter则不能。
+以下是在模型参数中定义 getter 和 setter 的示例。 `fullName` getter，是一个说明如何在模型上定义伪属性的例子 - 这些属性实际上不是数据库模式的一部分。 事实上，伪属性可以通过两种方式定义：使用模型getter，或者使用[`虚拟`数据类型](http://docs.sequelizejs.com/variable/index.html#static-variable-DataTypes)的列。 虚拟数据类型可以有验证，而虚拟属性的getter则不能。
 
 请注意，`fullName` getter函数中引用的`this.firstname`和`this.lastname`将触发对相应getter函数的调用。 如果你不想那样使用`getDataValue()`方法来访问原始值（见下文）。
 
@@ -761,7 +761,7 @@ sequelize.define('user', {}, {
 ```
 
 
-[0]: /manual/tutorial/models-definition.html#configuration
+[0]: /sequelize-docs-Zh-CN/models-definition.html#配置
 [3]: https://github.com/chriso/validator.js
-[5]: /docs/final/misc#asynchronicity
+[5]: http://docs.sequelizejs.com/docs/final/misc#asynchronicity
 [6]: http://bluebirdjs.com/docs/api/spread.html

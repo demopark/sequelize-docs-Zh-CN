@@ -49,7 +49,7 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 const sequelize = new Sequelize('postgres://user:pass@example.com:5432/dbname');
 ```
 
-Sequelize 构造函数可以通过 [API reference](/class/lib/sequelize.js~Sequelize.html) 获得一整套可用的参数。
+Sequelize 构造函数可以通过 [API reference](http://docs.sequelizejs.com/class/lib/sequelize.js~Sequelize.html) 获得一整套可用的参数。
 
 ## 测试连接
 
@@ -90,7 +90,7 @@ User.sync({force: true}).then(() => {
 });
 ```
 
-您可以在 [Model API reference](/class/lib/model.js~Model.html) 中阅读更多关于创建模型的信息。
+您可以在 [Model API reference](http://docs.sequelizejs.com/class/lib/model.js~Model.html) 中阅读更多关于创建模型的信息。
 
 ## 你的第一个查询
 
@@ -100,7 +100,7 @@ User.findAll().then(users => {
 })
 ```
 
-您可以在  [Data retrieval](/manual/tutorial/models-usage.html#data-retrieval-finders)  上查看更多关于模型的查找器功能,如 `.findAll()` 。或者在 [Querying](/manual/tutorial/querying.html) 上查看如何执行特定查询，如 `WHERE` 和 `JSONB` 。
+您可以在  [Data retrieval](/sequelize-docs-Zh-CN/models-usage.html#数据检索查找器)  上查看更多关于模型的查找器功能,如 `.findAll()` 。或者在 [Querying](/sequelize-docs-Zh-CN/querying.html) 上查看如何执行特定查询，如 `WHERE` 和 `JSONB` 。
 
 ### 应用全局的模型参数
 
