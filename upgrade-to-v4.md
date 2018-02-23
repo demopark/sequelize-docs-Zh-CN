@@ -124,59 +124,75 @@ Sequelize V4 是一个重要版本，它引入了新的功能和突破性的变�
 - 原始参数 where, order 和 group 比如 `where: { $raw: '..', order: [{ raw: '..' }], group: [{ raw: '..' }] }` 删除以防止SQL注入攻击。
 - `Sequelize.Utils` 不再是公共API的一部分，使用它自己承担风险。
 - `Hooks` 现在应返回 promise。 不支持回调。
-- `include` 总是一个数组
+- `required` 内部的 include 不会传播 include 链。
 
-  之前:
-  ```js
-  User.findAll({
-    include: {
-      model: Comment,
-      as: 'comments'
-    }
-  })
-  ```
+要获得 v3 兼容的效果，您需要在包含的 include 上设置 `required`。
+
+  以前:
   
-  现在:
   ```js
-  User.findAll({
-    include: [{
-      model: Comment,
-      as: 'comments'
-    }]
-  })
+  user.findOne({
+    include: {
+      model: project,
+      include: {
+        model: task,
+        required: true
+      }
+    }
+  });
   ```
 
-- `where` 在 `include` 中不会使这个 `include` 及其所有父节点都被 `required`。你可以使用下面的 `beforeFind` 全局 Hook 来保持以前的行为：
+  现在:
+  
+  ```js
+  User.findOne({
+    include: {
+      model: Project,
+      required: true,
+      include: {
+        model: Task,
+        required: true
+      }
+    }
+  });
+
+  User.findOne({
+    include: {
+      model: Project,
+      required: true,
+      include: {
+        model: Task,
+        where: {type: 'important'} //其中 required 默认为 true
+      }
+    }
+  });
+  ```
+
+或者，您可以添加 `beforeFind` hook 来获得兼容 v3 的行为 -
 
   ```js
-  function whereRequiredLikeInV3(modelDescriptor) {
-    if (!modelDescriptor.include) {
-      return false;
-    }
+  function propagateRequired(modelDescriptor) {
+    let include = modelDescriptor.include;
+    
+    if (!include) return false;
+    if (!Array.isArray(include)) include = [include];
 
-    return modelDescriptor.include.some(relatedModelDescriptor => {
-      const childDescriptorRequired = whereRequiredLikeInV3(
-        relatedModelDescriptor,
-      );
-
-      if (
-        (relatedModelDescriptor.where || childDescriptorRequired) &&
-        typeof relatedModelDescriptor.required === 'undefined'
-      ) {
-        relatedModelDescriptor.required = true;
+    return include.reduce((isRequired, descriptor) => {
+      const hasRequiredChild = propogateRequired(descriptor);
+      if ((descriptor.where || hasRequiredChild) && descriptor.required === undefined) {
+        descriptor.required = true;
       }
-
-      return relatedModelDescriptor.required;
-    });
+      return descriptor.required || isRequired;
+    }, false);
   }
   
   const sequelize = new Sequelize(..., {
     ...,
     define: {
       hooks: {
-        beforeFind: whereRequiredLikeInV3,
-      },
-    },
+        beforeFind: propagateRequired
+      }
+    }
   });
   ```
 

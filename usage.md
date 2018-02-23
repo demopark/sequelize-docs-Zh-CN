@@ -14,7 +14,7 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 
 ```js
 const sequelize = new Sequelize('database', 'username', 'password', {
-  dialect: 'mysql'
+  dialect: 'mysql',
   host: "my.server.tld",
   port: 9821,
 })
@@ -197,8 +197,6 @@ const sequelize = new Sequelize('database', 'username', 'password', {
   dialect: 'postgres'
 })
 ```
-
-**注意:** `pg@^7.0.0` 当前不被支持.
 
 ### MSSQL
 

@@ -9,7 +9,7 @@ Sequelize 可通过 NPM 和 Yarn 获得。
 $ npm install --save sequelize
 
 # 还有以下之一:
-$ npm install --save pg@6 pg-hstore #pg@7 当前不支持
+$ npm install --save pg pg-hstore
 $ npm install --save mysql2
 $ npm install --save sqlite3
 $ npm install --save tedious // MSSQL
