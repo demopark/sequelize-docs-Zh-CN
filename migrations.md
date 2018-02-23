@@ -485,4 +485,4 @@ Sequelize 有一个 [姊妹库][1]，用于以编程方式处理迁移任务的�
 
 [0]: https://github.com/sequelize/cli
 [1]: https://github.com/sequelize/umzug
-[2]: /class/lib/query-interface.js~QueryInterface.html
+[2]: http://docs.sequelizejs.com/class/lib/query-interface.js~QueryInterface.html
