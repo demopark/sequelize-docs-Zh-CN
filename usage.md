@@ -310,4 +310,4 @@ sequelize.query('select 1 as `foo.bar.baz`').then(rows => {
 
 
 
-[0]: /sequelize-docs-Zh-CN/usage.html#选项
+[0]: usage.md#选项

@@ -284,7 +284,7 @@ Sequelize.Deferrable.INITIALLY_IMMEDIATE
 Sequelize.Deferrable.NOT
 ```
 
-最后一个参数是 PostgreSQL 的默认值，不允许你在事务中动态的更改规则。 查看 [the transaction section](/sequelize-docs-Zh-CN/transactions.html#参数) 获取补充信息.
+最后一个参数是 PostgreSQL 的默认值，不允许你在事务中动态的更改规则。 查看 [the transaction section](transactions.md#参数) 获取补充信息.
 
 ## Getters & setters
 
@@ -761,7 +761,7 @@ sequelize.define('user', {}, {
 ```
 
 
-[0]: /sequelize-docs-Zh-CN/models-definition.html#配置
+[0]: models-definition.md#配置
 [3]: https://github.com/chriso/validator.js
-[5]: http://docs.sequelizejs.com/docs/final/misc#asynchronicity
+[5]: /docs/final/misc#asynchronicity
 [6]: http://bluebirdjs.com/docs/api/spread.html

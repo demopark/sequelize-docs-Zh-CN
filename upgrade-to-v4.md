@@ -181,8 +181,8 @@ Sequelize V4 是一个重要版本，它引入了新的功能和突破性的变�
   ```
 
 ### 新功能
-- `sequelize.sync({ alter: true })` 的初始版本已添加，并使用 `ALTER TABLE` 命令来同步表。 [迁移](http://docs.sequelizejs.com/manual/tutorial/migrations.html) 仍然是首选，应在生产中使用。
-- 现在支持添加和删除数据库约束。 现有的 primary，foreignKey 和其他约束现在可以使用迁移来添加/删除 - [查看更多](http://docs.sequelizejs.com/manual/tutorial/migrations.html#addconstraint-tablename-attributes-options-).
+- `sequelize.sync({ alter: true })` 的初始版本已添加，并使用 `ALTER TABLE` 命令来同步表。 [迁移](migrations.md) 仍然是首选，应在生产中使用。
+- 现在支持添加和删除数据库约束。 现有的 primary，foreignKey 和其他约束现在可以使用迁移来添加/删除 - [查看更多](migrations.md#addconstraint-tablename-attributes-options-).
 - 实例（数据库行）现在是模型的实例，而不是单独类的实例。这意味着你可以替换`User.build()` 用 `new User()` 和 `sequelize.define(attributes, options)` 用
 
   ```js

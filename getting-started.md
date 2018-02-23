@@ -100,7 +100,7 @@ User.findAll().then(users => {
 })
 ```
 
-您可以在  [Data retrieval](/sequelize-docs-Zh-CN/models-usage.html#数据检索查找器)  上查看更多关于模型的查找器功能,如 `.findAll()` 。或者在 [Querying](/sequelize-docs-Zh-CN/querying.html) 上查看如何执行特定查询，如 `WHERE` 和 `JSONB` 。
+您可以在  [Data retrieval](models-usage.md#数据检索/查找器)  上查看更多关于模型的查找器功能,如 `.findAll()` 。或者在 [Querying](querying.md) 上查看如何执行特定查询，如 `WHERE` 和 `JSONB` 。
 
 ### 应用全局的模型参数
 

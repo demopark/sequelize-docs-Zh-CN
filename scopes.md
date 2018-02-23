@@ -195,7 +195,7 @@ this.Post.hasMany(this.Comment, {
 });
 ```
 
-当调用 `post.getComments()` 时，这将自动添加 `WHERE commentable = 'post'`。 类似地，当向帖子添加新的注释时，`commentable` 会自动设置为 `'post'`。 关联作用域是为了存活于后台，没有程序员不必担心 - 它不能被禁用。 有关更完整的多态性示例，请参阅 [关联作用域](/sequelize-docs-Zh-CN/associations.html#作用域)
+当调用 `post.getComments()` 时，这将自动添加 `WHERE commentable = 'post'`。 类似地，当向帖子添加新的注释时，`commentable` 会自动设置为 `'post'`。 关联作用域是为了存活于后台，没有程序员不必担心 - 它不能被禁用。 有关更完整的多态性示例，请参阅 [关联作用域](associations.html#作用域)
 
 那么考虑那个Post的默认作用域只显示活动的帖子：`where: { active: true }`。 该作用域存在于相关联的模型（Post）上，而不是像`commentable` 作用域那样在关联上。 就像在调用`Post.findAll()` 时一样应用默认作用域，当调用 `User.getPosts()` 时，它也会被应用 - 这只会返回该用户的活动帖子。
 
