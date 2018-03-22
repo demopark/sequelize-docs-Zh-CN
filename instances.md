@@ -58,7 +58,8 @@ Task
 
 ## 创建持久性实例
 
-除了构建对象之外，还需要一个明确的保存调用来存储在数据库中，可以通过一个命令执行所有这些步骤。 它被称为 `create`。
+虽然使用 `.build()` 创建的实例需要显式的 `.save()` 调用来存储到 database&comma 中;
+但`.create()` 完全省略了这个要求，一旦调用就自动存储实例的数据。
 
 ```js
 Task.create({ title: 'foo', description: 'bar', deadline: new Date() }).then(task => {
@@ -161,7 +162,7 @@ Task.bulkCreate([
   {subject: 'programming', status: 'finished'}
 ]).then(() => {
   return Task.update(
-    { status: 'inactive' }, /* 设置属性的值 */,
+    { status: 'inactive' }, /* 设置属性的值 */
     { where: { subject: 'programming' }} /* where 规则 */
   );
 }).spread((affectedCount, affectedRows) => {
@@ -236,12 +237,16 @@ Tasks.bulkCreate([
   [
     { record:
     ...
+    name: 'SequelizeBulkRecordError',
+    message: 'Validation error',
     errors:
       { name: 'SequelizeValidationError',
         message: 'Validation error',
         errors: [Object] } },
     { record:
       ...
+      name: 'SequelizeBulkRecordError',
+      message: 'Validation error',
       errors:
         { name: 'SequelizeValidationError',
         message: 'Validation error',

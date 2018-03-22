@@ -419,7 +419,7 @@ Project.findAll({ offset: 5, limit: 5 })
 ```js
 Subtask.findAll({
   order: [
-    // 将转义用户名，并根据有效的方向参数列表验证DESC
+    // 将转义标题，并根据有效的方向参数列表验证DESC
     ['title', 'DESC'],
 
     // 将按最大值排序(age)
