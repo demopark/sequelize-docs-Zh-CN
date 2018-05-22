@@ -4,7 +4,7 @@
 
 ## 定义
 
-作用域在模型定义中定义，可以是finder对象或返回finder对象的函数，除了默认作用域，该作用于只能是一个对象：
+作用域在模型定义中定义，可以是finder对象或返回finder对象的函数，除了默认作用域，该作用域只能是一个对象：
 
 ```js
 const Project = sequelize.define('project', {
@@ -199,7 +199,7 @@ this.Post.hasMany(this.Comment, {
 
 那么考虑那个Post的默认作用域只显示活动的帖子：`where: { active: true }`。 该作用域存在于相关联的模型（Post）上，而不是像`commentable` 作用域那样在关联上。 就像在调用`Post.findAll()` 时一样应用默认作用域，当调用 `User.getPosts()` 时，它也会被应用 - 这只会返回该用户的活动帖子。
 
-要禁用默认作用域，将 `scope: null` 传递给 getter： `User.getPosts({ scope: null })`。 同样，如果要应用其他作用域，请像这样: 
+要禁用默认作用域，将 `scope: null` 传递给 getter： `User.getPosts({ scope: null })`。 同样，如果要应用其他作用域，请像这样:
 
 ```js
 User.getPosts({ scope: ['scope1', 'scope2']});
