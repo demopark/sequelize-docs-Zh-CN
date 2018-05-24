@@ -218,3 +218,67 @@ sequelize.transaction({
 `transaction` 选项与其他大多数选项一起使用，通常是方法的第一个参数。
 对于取值的方法，如 `.create`, `.update()`, `.updateAttributes()` 等。应该传递给第二个参数的选项。
 如果不确定，请参阅API文档中的用于确定签名的方法。
+
+
+## 后提交 hook
+
+`transaction` 对象允许跟踪是否提交以及何时提交。
+
+可以将 `afterCommit` hook 添加到托管和非托管事务对象：
+
+```js
+sequelize.transaction(t => {
+  t.afterCommit((transaction) => {
+    // 你的逻辑片段
+  });
+});
+
+sequelize.transaction().then(t => {
+  t.afterCommit((transaction) => {
+    // 你的逻辑片段
+  });
+
+  return t.commit();
+})
+```
+
+传递给 `afterCommit` 的函数可以有选择地返回一个承诺，在创建事务的承诺链解析之前这个承诺会被解析。
+
+`afterCommit` 如果事务回滚，hook _不会_ 被提升。
+
+`afterCommit` hook 不像标准 hook， _不会_ 修改事务的返回值。
+
+您可以将 `afterCommit` hook 与模型 hook 结合使用，以了解实例何时在事务外保存并可用
+
+```js
+model.afterSave((instance, options) => {
+  if (options.transaction) {
+    // 在事务内保存完成，等到事务被提交以通知监听器实例已被保存
+    options.transaction.afterCommit(() => /* Notify */)
+    return;
+  }
+  // 在事务之外保存完成，对于调用者来说可以安全地获取更新后的模型通知
+```
+
+## 锁定
+
+可以使用锁执行 `transaction` 内的查询
+
+```
+return User.findAll({
+  limit: 1,
+  lock: true,
+  transaction: t1
+})
+```
+
+事务内的查询可以跳过锁定的行
+
+```
+return User.findAll({
+  limit: 1,
+  lock: true,
+  skipLocked: true,
+  transaction: t2
+})
+```

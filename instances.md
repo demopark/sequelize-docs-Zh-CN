@@ -23,7 +23,7 @@ const task = Task.build({
 // 首先定义模型
 const Task = sequelize.define('task', {
   title: Sequelize.STRING,
-  rating: { type: Sequelize.STRING, defaultValue: 3 }
+  rating: { type: Sequelize.TINYINT, defaultValue: 3 }
 })
  
 // 现在实例化一个对象
