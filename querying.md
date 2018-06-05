@@ -54,7 +54,7 @@ Model.findAll({
 SELECT id, foo, bar, baz, quz, COUNT(hats) AS no_hats ...
 ```
 
-同样，它也可以删除一些指定的属性：
+同样，它也可以排除一些指定的表字段：
 
 ```js
 Model.findAll({
