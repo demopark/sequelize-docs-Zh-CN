@@ -115,7 +115,7 @@ const sequelize = new Sequelize('connectionUri', {
 
 const User = sequelize.define('user', {}); // 时间戳默认为 false
 const Post = sequelize.define('post', {}, {
-  timestamps: true // 时间戳此时为 false
+  timestamps: true // 时间戳此时为 true
 });
 ```
 
