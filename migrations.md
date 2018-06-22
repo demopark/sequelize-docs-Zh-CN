@@ -172,6 +172,12 @@ Seeders 如果使用了任何存储那么就可以被撤消。 有两个可用�
 node_modules/.bin/sequelize db:seed:undo
 ```
 
+如果你想要撤销指定的种子
+
+```bash
+node_modules/.bin/sequelize db:seed:undo --seed name-of-seed-as-in-data
+```
+
 如果你想撤消所有的种子
 
 ```bash
@@ -305,6 +311,38 @@ module.exports = {
 };
 ```
 
+### 使用 Babel
+现在你已经知道如何使用 `.sequelizerc` 文件。 接下来让我们看看如何用这个文件通过 `sequelize-cli` 的设置来使用 babel。 这里允许您使用 ES6/ES7 语法编写 migration 和 seeder。
+
+首先安装 `babel-register`
+
+```bash
+$ npm i --save-dev babel-register
+```
+
+现在让我们创建 `.sequelizerc` 文件，它可以包含您想为 `sequelize-cli` 更改的任何配置，除此之外，我们还希望它为我们的代码库注册 babel。 像下面这样
+
+```bash
+$ touch .sequelizerc # Create rc file
+```
+
+接下来在文件中引入 `babel-register` 设置
+
+```js
+require("babel-register");
+
+const path = require('path');
+
+module.exports = {
+  'config': path.resolve('config', 'config.json'),
+  'models-path': path.resolve('models'),
+  'seeders-path': path.resolve('seeders'),
+  'migrations-path': path.resolve('migrations')
+}
+```
+
+现在 CLI 将能够从 migration/seeder 等运行 ES6/ES7 代码。请记住，这取决于你的 `.babelrc` 的配置。更多内容请查阅 [babeljs.io](https://babeljs.io)。
+
 ### 使用环境变量
 
 使用CLI，您可以直接访问 `config/config.js` 内的环境变量。 您可以使用 `.sequelizerc` 来告诉CLI使用 `config/config.js` 进行配置。 这在上一节中有所解释。
@@ -334,6 +372,7 @@ module.exports = {
     host: process.env.PROD_DB_HOSTNAME,
     dialect: 'mysql'
   }
+};
 ```
 
 ### 指定方言选项

@@ -18,13 +18,6 @@ Sequelize v5 将仅支持 Node 6 以及更高版本 [#9015](https://github.com/s
 - 你仍然可以通过在 `operatorsAliases` 中传递一个运算符映射来使用字符串运算符，但这会产生弃用警告。
 - `Op.$raw` 已被移除。
 
-请查阅这些内容来了解更多信息
-
-- (Issue) https://github.com/sequelize/sequelize/issues/7310
-- (Fix) https://github.com/sequelize/sequelize/pull/8240
-- (Explanation) https://github.com/sequelize/sequelize/issues/8417#issuecomment-334056048
-- (Official Docs) http://docs.sequelizejs.com/manual/tutorial/querying.html#operators-security
-
 ### 模型
 
 **属性**
@@ -60,7 +53,37 @@ __注意__: _请不要将它与 `options.attributes` 混淆，它们仍然有效
 
 现在只支持一种标准格式 `[{ value: 1, inclusive: true }, { value: 20, inclusive: false }]` [#9364](https://github.com/sequelize/sequelize/pull/9364)
 
-## 变更记录
+### 其它
+
+Sequelize 现在对所有 INSERT / UPDATE操作（UPSERT除外）使用参数化查询。 它们可以更好地防范SQL注入攻击。
+
+`ValidationErrorItem` 现在持有对 `original` 属性中原始错误的引用，而不是 `__raw` 属性。
+
+[retry-as-promised](https://github.com/mickhansen/retry-as-promised) 已在 `3.0.0` 中更新, 它使用 [any-promise](https://github.com/kevinbeaty/any-promise). 这个模块重复所有 `sequelize.query` 操作。 您可以将 `any-promise` 配置为在 Node 4 或 6 上使用 `bluebird` 来获得更好的性能
+
+### 已删除
+
+- package: terraformer-wkt-parser [#9545](https://github.com/sequelize/sequelize/pull/9545)
+
+## 更新日志
+
+### 5.0.0-beta.8
+
+- feat(query-generator): Generate INSERT / UPDATE using bind parameters [#9431](https://github.com/sequelize/sequelize/pull/9431) [#9492](https://github.com/sequelize/sequelize/pull/9492)
+- performance: remove terraformer-wkt-parser dependency [#9545](https://github.com/sequelize/sequelize/pull/9545)
+- fix(constructor): set username, password, database via options in addition to connection string[#9517](https://github.com/sequelize/sequelize/pull/9517)
+- fix(associations/belongs-to-many): catch EmptyResultError in set/add helpers [#9535](https://github.com/sequelize/sequelize/pull/9535)
+- fix: sync with alter:true doesn't use field name [#9529](https://github.com/sequelize/sequelize/pull/9529)
+- fix(UnknownConstraintError): improper handling of error options [#9547](https://github.com/sequelize/sequelize/pull/9547)
+
+### 5.0.0-beta.7
+
+- fix(data-types/blob): only return null for mysql binary null [#9441](https://github.com/sequelize/sequelize/pull/9441)
+- fix(errors): use standard .original rather than .__raw for actual error
+- fix(connection-manager): mssql datatype parsing [#9470](https://github.com/sequelize/sequelize/pull/9470)
+- fix(query/removeConstraint): support schemas
+- fix: use Buffer.from
+- fix(transactions): return patched promise from sequelize.query [#9473](https://github.com/sequelize/sequelize/pull/9473)
 
 ### 5.0.0-beta.6
 

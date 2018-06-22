@@ -249,7 +249,7 @@ $gt: 6 // 等同于使用 Op.gt (> 6)
 
 有些框架会自动将用户输入解析为 js 对象，如果您不能清理输入内容，则可能会将具有字符串运算符的 Object 注入 Sequelize。
 
-为了更好的安全性，建议使用 `Sequelize.Op`，而不是依赖任何字符串别名。 您可以通过设置 `operatorsAliases` 选项来限制应用程序需要的别名，请记住要清理用户输入，特别是当您直接将它们传递给 Sequelize 方法时。
+为了更好的安全性，强烈建议在代码中使用像 `Op.and` / `Op.or` 这样的 `Sequelize.Op` 中的符号运算符，而不是依赖任何字符串别名，如  `$and` / `$or` 这种。 您可以通过设置 `operatorsAliases` 选项来限制应用程序需要的别名，请记住要清理用户输入，特别是当您直接将它们传递给 Sequelize 方法时。
 
 ```js
 const Op = Sequelize.Op;
