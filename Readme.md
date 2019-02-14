@@ -72,3 +72,6 @@ sequelize.sync()
 ```
 
 请通过 [Getting started - 入门](getting-started.md) 来学习更多相关内容。 如果你想要学习 Sequelize API 请通过 [API Reference](http://docs.sequelizejs.com/identifiers) (英文)。
+
+# 赞赏支持
+![赞赏支持](https://github.com/demopark/electron-api-demos-Zh_CN/blob/master/assets/img/td.png)
