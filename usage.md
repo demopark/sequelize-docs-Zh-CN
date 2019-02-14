@@ -51,8 +51,6 @@ const sequelize = new Sequelize('database', 'username', 'password', {
   
   // 自定义主机; 默认值: localhost
   host: 'my.server.tld',
-  // 对于 postgres，你还可以指定包含 UNIX 套接字的目录的绝对路径，
-  // 来通过 host: '/sockets/psql_sockets' 进行连接。
  
   // 自定义端口; 默认值: 依据 dialect 默认
   port: 12345,
@@ -197,18 +195,6 @@ PostgreSQL 的库是 `pg@^5.0.0 || ^6.0.0` 你只需要定义方言:
 const sequelize = new Sequelize('database', 'username', 'password', {
   // 定义为 postgres
   dialect: 'postgres'
-})
-```
-
-要通过 unix 域套接字进行连接，请在 `host` 选项中指定套接字目录的路径。
-
-套接字路径必须以 `/` 开头。
-
-```js
-const sequelize = new Sequelize('database', 'username', 'password', {
-  // 定义为 postgres
-  dialect: 'postgres',
-  host: '/path/to/socket_directory'
 })
 ```
 

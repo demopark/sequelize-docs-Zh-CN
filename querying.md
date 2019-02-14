@@ -229,7 +229,7 @@ const Op = Sequelize.Op
 
 #### 运算符别名
 
-Sequelize 允许将特定字符串设置为操作符的别名。对于 v5 将会显示弃用警告。
+Sequelize 允许将特定字符串设置为操作符的别名 -
 
 ```js
 const Op = Sequelize.Op;
@@ -245,11 +245,20 @@ $gt: 6 // 等同于使用 Op.gt (> 6)
 
 #### 运算符安全性
 
-默认情况下，Sequelize 将使用符号运算符。 使用没有别名的 Sequelize 可以提高安全性。 没有任何字符串别名将使得运算符可能被注入的可能性降到极低，但您应该始终正确验证和清理用户输入。
+使用没有别名的 Sequelize 可以提高安全性。
+有些框架会自动将用户输入解析为 js 对象，如果您不能清理输入的内容，则可能会将具有字符串运算符的 Object 注入 Sequelize。
 
-有些框架会自动将用户输入解析为 js 对象，如果您不能清理输入内容，则可能会将具有字符串运算符的 Object 注入 Sequelize。
+没有任何字符串别名将使得运算符可能被注入的可能性降到极低，但您应该始终正确验证和清理用户输入。
 
-为了更好的安全性，强烈建议在代码中使用像 `Op.and` / `Op.or` 这样的 `Sequelize.Op` 中的符号运算符，而不是依赖任何字符串别名，如  `$and` / `$or` 这种。 您可以通过设置 `operatorsAliases` 选项来限制应用程序需要的别名，请记住要清理用户输入，特别是当您直接将它们传递给 Sequelize 方法时。
+出于向后兼容性原因，Sequelize默认设置以下别名 - 
+
+$eq, $ne, $gte, $gt, $lte, $lt, $not, $in, $notIn, $is, $like, $notLike, $iLike, $notILike, $regexp, $notRegexp, $iRegexp, $notIRegexp, $between, $notBetween, $overlap, $contains, $contained, $adjacent, $strictLeft, $strictRight, $noExtendRight, $noExtendLeft, $and, $or, $any, $all, $values, $col
+
+目前还设置了以下旧版别名，但计划在不久的将来完全删除 - 
+
+ne, not, in, notIn, gte, gt, lte, lt, like, ilike, $ilike, nlike, $notlike, notilike, .., between, !.., notbetween, nbetween, overlap, &&, @>, <@
+
+为了更好的安全性，强烈建议在代码中使用 `Sequelize.Op` 中的符号运算符，而不是依赖任何字符串别名。 您可以通过设置 `operatorsAliases` 选项来限制应用程序需要的别名，请记住要清理用户输入，特别是当您直接将它们传递给 Sequelize 方法时。
 
 ```js
 const Op = Sequelize.Op;

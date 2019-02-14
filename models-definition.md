@@ -49,7 +49,7 @@ const Foo = sequelize.define('foo', {
  // autoIncrement可用于创建自增的整数列
  incrementMe: { type: Sequelize.INTEGER, autoIncrement: true },
 
- // 你可以通过'field'属性指定自定义列名称：
+ // 你可以通过'field'属性指定自定义字段名称：
  fieldWithUnderscores: { type: Sequelize.STRING, field: 'field_with_underscores' },
 
  // 这可以创建一个外键:
@@ -223,6 +223,13 @@ Array(ENUM) 类型需要特殊处理。 每当 Sequelize 与数据库通信时�
 Timeline.create({ range: [new Date(Date.UTC(2016, 0, 1)), new Date(Date.UTC(2016, 1, 1))] });
 
 // 控制包含
+const range = [new Date(Date.UTC(2016, 0, 1)), new Date(Date.UTC(2016, 1, 1))];
+range.inclusive = false; // '()'
+range.inclusive = [false, true]; // '(]'
+range.inclusive = true; // '[]'
+range.inclusive = [true, false]; // '[)'
+
+// 或作为单个表达
 const range = [
   { value: new Date(Date.UTC(2016, 0, 1)), inclusive: false },
   { value: new Date(Date.UTC(2016, 1, 1)), inclusive: true },
@@ -243,10 +250,11 @@ Timeline.create({ range });
 
 ```js
 // 储存的值: ("2016-01-01 00:00:00+00:00", "2016-02-01 00:00:00+00:00"]
-range // [{ value: Date, inclusive: false }, { value: Date, inclusive: true }]
+range // [Date, Date]
+range.inclusive // [false, true]
 ```
 
-你需要在使用范围类型更新实例之后调用 reload 或使用 `returns:true` 选项。
+确保在序列化之前将其转换为可序列化格式，因为阵列额外属性不会被序列化。
 
 **特殊情况**
 
@@ -325,9 +333,7 @@ Employee
 
 ### 定义为模型参数的一部分
 
-以下是在模型参数中定义 getter 和 setter 的示例。
-
- `fullName` getter，是一个说明如何在模型上定义伪属性的例子 - 这些属性实际上不是数据库模式的一部分。 事实上，伪属性可以通过两种方式定义：使用模型getter，或者使用[`虚拟`数据类型](http://docs.sequelizejs.com/variable/index.html#static-variable-DataTypes)的列。 虚拟数据类型可以有验证，而虚拟属性的getter则不能。
+以下是在模型参数中定义 getter 和 setter 的示例。 `fullName` getter，是一个说明如何在模型上定义伪属性的例子 - 这些属性实际上不是数据库模式的一部分。 事实上，伪属性可以通过两种方式定义：使用模型getter，或者使用[`虚拟`数据类型](http://docs.sequelizejs.com/variable/index.html#static-variable-DataTypes)的列。 虚拟数据类型可以有验证，而虚拟属性的getter则不能。
 
 请注意，`fullName` getter函数中引用的`this.firstname`和`this.lastname`将触发对相应getter函数的调用。 如果你不想那样使用`getDataValue()`方法来访问原始值（见下文）。
 
@@ -338,7 +344,7 @@ const Foo = sequelize.define('foo', {
 }, {
   getterMethods: {
     fullName() {
-      return this.firstname + ' ' + this.lastname;
+      return this.firstname + ' ' + this.lastname
     }
   },
 
@@ -348,7 +354,7 @@ const Foo = sequelize.define('foo', {
 
       this.setDataValue('firstname', names.slice(0, -1).join(' '));
       this.setDataValue('lastname', names.slice(-1).join(' '));
-    }
+    },
   }
 });
 ```
@@ -462,25 +468,7 @@ isIn: {
 
 ### 验证器 与 `allowNull`
 
-如果模型的特定字段设置为允许null（使用`allowNull：true`），并且该值已设置为 `null`，则其验证器不会运行。 
-
-这意味着，您可以有一个字符串字段，该字段验证其长度至少为5个字符，但也允许为 `null`。
-
-你可以通过设置 `notNull` 验证器来自定义 `allowNull` 错误消息, 像这样
-
-```js
-const User = sequelize.define('user', {
-  name: {
-    type: Sequelize.STRING,
-    allowNull: false,
-    validate: {
-      notNull: {
-        msg: 'Please enter your name'
-      }
-    }
-  }
-});
-```
+如果模型的特定字段设置为允许null（使用`allowNull：true`），并且该值已设置为 `null`，则其验证器不会运行。 这意味着，您可以有一个字符串字段，该字段验证其长度至少为5个字符，但也允许为 `null`。
 
 ### 模型验证
 

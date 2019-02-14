@@ -1,226 +1,6 @@
 # Associations - 关联
 
-本部分描述了 Sequelize 中的各种关联类型。 Sequelize 中有四种类型的关联
-
-1. BelongsTo
-2. HasOne
-3. HasMany
-4. BelongsToMany
-
-## 基本概念
-
-### Source & Target
-
-我们首先从一个基本概念开始，你将会在大多数关联中使用 **source** 和 **target** 模型。 假设您正试图在两个模型之间添加关联。 这里我们在 `User` 和 `Project` 之间添加一个 `hasOne` 关联。
-
-```js
-const User = sequelize.define('User', {
-  name: Sequelize.STRING,
-  email: Sequelize.STRING
-});
-
-const Project = sequelize.define('Project', {
-  name: Sequelize.STRING
-});
-
-User.hasOne(Project);
-```
-
-`User` 模型（函数被调用的模型）是 __source__ 。 `Project` 模型（作为参数传递的模型）是 __target__ 。
-
-### 外键
-
-当您在模型中创建关联时，会自动创建带约束的外键引用。 下面是设置：
-
-```js
-const Task = sequelize.define('task', { title: Sequelize.STRING });
-const User = sequelize.define('user', { username: Sequelize.STRING });
-
-User.hasMany(Task); // 将会添加 userId 到 Task 模型
-Task.belongsTo(User); // 也将会添加 userId 到 Task 模型
-```
-
-将生成以下SQL：
-
-```sql
-CREATE TABLE IF NOT EXISTS "users" (
-  "id" SERIAL,
-  "username" VARCHAR(255),
-  "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL,
-  "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL,
-  PRIMARY KEY ("id")
-);
-
-CREATE TABLE IF NOT EXISTS "tasks" (
-  "id" SERIAL,
-  "title" VARCHAR(255),
-  "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL,
-  "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL,
-  "userId" INTEGER REFERENCES "users" ("id") ON DELETE
-  SET
-    NULL ON UPDATE CASCADE,
-    PRIMARY KEY ("id")
-);
-```
-
-`tasks` 和 `users` 模型之间的关系通过在 `tasks` 表上注入 `userId` 外键，并将其标记为对 `users` 表的引用。 默认情况下，如果引用的用户被删除，`userId` 将被设置为 `NULL`，如果更新了 `userId`，则更新 `userId`。 这些选项可以通过将 `onUpdate` 和 `onDelete` 选项传递给关联调用来覆盖。 验证选项是 `RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL`。
-
-对于 1:1 和 1:m 关联，默认选项是 `SET NULL` 用于删除，`CASCADE` 用于更新。 对于 n:m，两者的默认值是 `CASCADE`。 这意味着，如果您从 n:m 关联的一侧删除或更新一行，则引用该行的连接表中的所有行也将被删除或更新。
-
-#### 下划线参数
-
-Sequelize 允许为模型设置 `underscored` 选项。 当 `true` 时，这个选项会将所有属性的 `field` 选项设置为其名称的下划线版本。 这也适用于由关联生成的外键。
-
-让我们修改最后一个例子来使用 `underscored` 选项。
-
-```js
-const Task = sequelize.define('task', {
-  title: Sequelize.STRING
-}, {
-  underscored: true
-});
-
-const User = sequelize.define('user', {
-  username: Sequelize.STRING
-}, {
-  underscored: true
-});
-
-// 将 userId 添加到 Task 模型，但字段将被设置为 `user_id`
-// 这意味着列名将是 `user_id`
-User.hasMany(Task);
-
-// 也会将 userId 添加到 Task 模型，但字段将被设置为 `user_id`
-// 这意味着列名将是 `user_id`
-Task.belongsTo(User);
-```
-
-将生成以下SQL：
-
-```sql
-CREATE TABLE IF NOT EXISTS "users" (
-  "id" SERIAL,
-  "username" VARCHAR(255),
-  "created_at" TIMESTAMP WITH TIME ZONE NOT NULL,
-  "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL,
-  PRIMARY KEY ("id")
-);
-
-CREATE TABLE IF NOT EXISTS "tasks" (
-  "id" SERIAL,
-  "title" VARCHAR(255),
-  "created_at" TIMESTAMP WITH TIME ZONE NOT NULL,
-  "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL,
-  "user_id" INTEGER REFERENCES "users" ("id") ON DELETE
-  SET
-    NULL ON UPDATE CASCADE,
-    PRIMARY KEY ("id")
-);
-```
-
-注入到模型中的下划线选项属性仍然是骆驼式的，但 `field` 选项设置为其下划线版本。
-
-#### 循环依赖 & 禁用约束
-
-在表之间添加约束意味着当使用 `sequelize.sync` 时，表必须以特定顺序在数据库中创建表。 如果 `Task` 具有对 `User` 的引用，`users` 表必须在创建 `tasks` 表之前创建。 这有时会导致循环引用，那么 sequelize 将无法找到要同步的顺序。 想象一下文档和版本的场景。 一个文档可以有多个版本，并且为了方便起见，文档引用了它的当前版本。
-
-```js
-const Document = sequelize.define('document', {
-  author: Sequelize.STRING
-});
-const Version = sequelize.define('version', {
-  timestamp: Sequelize.DATE
-});
-
-Document.hasMany(Version); // 这将 documentId 属性添加到 version
-Document.belongsTo(Version, {
-  as: 'Current',
-  foreignKey: 'currentVersionId'
-}); // 这将 currentVersionId 属性添加到 document
-```
-
-但是，上面的代码将导致以下错误: `Cyclic dependency found. documents is dependent of itself. Dependency chain: documents -> versions => documents`.
-
-为了缓解这一点，我们可以向其中一个关联传递 `constraints: false`：
-
-```js
-Document.hasMany(Version);
-Document.belongsTo(Version, {
-  as: 'Current',
-  foreignKey: 'currentVersionId',
-  constraints: false
-});
-```
-
-这将可以让我们正确地同步表：
-
-```sql
-CREATE TABLE IF NOT EXISTS "documents" (
-  "id" SERIAL,
-  "author" VARCHAR(255),
-  "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL,
-  "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL,
-  "currentVersionId" INTEGER,
-  PRIMARY KEY ("id")
-);
-
-CREATE TABLE IF NOT EXISTS "versions" (
-  "id" SERIAL,
-  "timestamp" TIMESTAMP WITH TIME ZONE,
-  "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL,
-  "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL,
-  "documentId" INTEGER REFERENCES "documents" ("id") ON DELETE
-  SET
-    NULL ON UPDATE CASCADE,
-    PRIMARY KEY ("id")
-);
-```
-
-#### 无限制地执行外键引用
-
-有时您可能想引用另一个表，而不添加任何约束或关联。 在这种情况下，您可以手动将参考属性添加到您的模式定义中，并标记它们之间的关系。
-
-```js 
-const Trainer = sequelize.define('trainer', {
-  firstName: Sequelize.STRING,
-  lastName: Sequelize.STRING
-});
-
-// Series 将有一个 trainerId = Trainer.id 外参考键
-// 之后我们调用 Trainer.hasMany(series)
-const Series = sequelize.define('series', {
-  title: Sequelize.STRING,
-  subTitle: Sequelize.STRING,
-  description: Sequelize.TEXT,
-  // 用 `Trainer` 设置外键关系（hasMany）
-  trainerId: {
-    type: Sequelize.INTEGER,
-    references: {
-      model: Trainer,
-      key: 'id'
-    }
-  }
-});
-
-// Video 将有 seriesId = Series.id 外参考键
-// 之后我们调用 Series.hasOne(Video)
-const Video = sequelize.define('video', {
-  title: Sequelize.STRING,
-  sequence: Sequelize.INTEGER,
-  description: Sequelize.TEXT,
-  // 用 `Series` 设置关系(hasOne) 
-  seriesId: {
-    type: Sequelize.INTEGER,
-    references: {
-      model: Series, // 既可以是表示表名的字符串，也可以是 Sequelize 模型
-      key: 'id'
-    }
-  }
-});
-
-Series.hasOne(Video);
-Trainer.hasMany(Series);
-```
+本部分描述了 Sequelize 中的各种关联类型。 当调用诸如 `User.hasOne(Project)` 之类的方法时，我们说`User` 模型（函数被调用的模型）是 __source__ 。 `Project` 模型（作为参数传递的模型）是 __target__ 。
 
 ## 一对一关联
 
@@ -249,8 +29,7 @@ Player.belongsTo(Team); // 将向 Player 添加一个 teamId 属性以保存 Tea
 const User = this.sequelize.define('user', {/* attributes */})
 const Company  = this.sequelize.define('company', {/* attributes */});
 
-// 将 companyId 添加到 user
-User.belongsTo(Company); 
+User.belongsTo(Company); // 将 companyId 添加到 user
 
 const User = this.sequelize.define('user', {/* attributes */}, {underscored: true})
 const Company  = this.sequelize.define('company', {
@@ -260,8 +39,7 @@ const Company  = this.sequelize.define('company', {
   }
 });
 
-// 将用字段 company_uuid 添加 companyUuid 到 user
-User.belongsTo(Company); 
+User.belongsTo(Company); // 将 company_uuid 添加到 user
 ```
 
 在已定义 `as` 的情况下，将使用它代替目标模型名称。
@@ -348,19 +126,6 @@ Game.belongsTo(Team);
 
 即使它被称为 HasOne 关联，对于大多数1：1关系，您通常需要BelongsTo关联，因为 BelongsTo 将会在 hasOne 将添加到目标的源上添加 foreignKey。
 
-#### 源键
-
-源关键是源模型中的属性，它的目标模型指向外键属性。 默认情况下，`hasOne` 关系的源键将是源模型的主要属性。 要使用自定义属性，请使用 `sourceKey` 选项。
-
-```js
-const User = this.sequelize.define('user', {/* 属性 */})
-const Company  = this.sequelize.define('company', {/* 属性 */});
-
-// 将 companyName 属性添加到 User
-// 使用 Company 的 name 属性作为源属性
-Company.hasOne(User, {foreignKey: 'companyName', sourceKey: 'name'});
-```
-
 ### HasOne 和 BelongsTo 之间的区别
 
 在Sequelize 1：1关系中可以使用HasOne和BelongsTo进行设置。 它们适用于不同的场景。 让我们用一个例子来研究这个差异。
@@ -427,7 +192,7 @@ const Project = sequelize.define('project', {/* ... */})
 Project.hasMany(User, {as: 'Workers'})
 ```
 
-这会将`projectId` 属性添加到 User。 根据您强调的设置，表中的列将被称为 `projectId` 或`project_id`。 Project 的实例将获得访问器 `getWorkers` 和 `setWorkers`。 
+这会将 `projectId` 或 `project_id` 属性添加到 User。Project 的实例将获得访问器 `getWorkers` 和 `setWorkers`。 
 
 有时您可能需要在不同的列上关联记录，您可以使用 `sourceKey` 选项：
 
@@ -525,6 +290,162 @@ User.findAll({
   }]
 });
 ```
+
+当通过模型不存在主键时，Belongs-To-Many会创建唯一键。 可以使用 **uniqueKey** 选项覆盖此唯一键名。
+
+```js
+Project.belongsToMany(User, { through: UserProjects, uniqueKey: 'my_custom_unique' })
+```
+
+## 作用域
+
+本节涉及关联作用域。 有关关联作用域与关联模型作用域的定义, 请参阅 [作用域](scopes.md)。
+
+关联作用域允许您在关联上放置作用域（`get` 和 `create`的一组默认属性）。 作用域可以放在关联模型（关联的目标）上，也可以放在n:m关系的中间表上。
+
+#### 1:m
+
+假设我们有表 Comment，Post 和 Image。 Comment可以通过 `commentable_id` 和 `commentable` 与Image或Post相关联 - 我们称 Post 和 Image 为 `Commentable'
+
+```js
+const Comment = this.sequelize.define('comment', {
+  title: Sequelize.STRING,
+  commentable: Sequelize.STRING,
+  commentable_id: Sequelize.INTEGER
+});
+
+Comment.prototype.getItem = function(options) {
+  return this['get' + this.get('commentable').substr(0, 1).toUpperCase() + this.get('commentable').substr(1)](options);
+};
+
+Post.hasMany(this.Comment, {
+  foreignKey: 'commentable_id',
+  constraints: false,
+  scope: {
+    commentable: 'post'
+  }
+});
+Comment.belongsTo(this.Post, {
+  foreignKey: 'commentable_id',
+  constraints: false,
+  as: 'post'
+});
+
+Image.hasMany(this.Comment, {
+  foreignKey: 'commentable_id',
+  constraints: false,
+  scope: {
+    commentable: 'image'
+  }
+});
+Comment.belongsTo(this.Image, {
+  foreignKey: 'commentable_id',
+  constraints: false,
+  as: 'image'
+});
+```
+
+`constraints: false,` 禁用引用约束 - 因为 `commentable_id` 列引用了几个表，我们不能为它添加`REFERENCES` 约束。 请注意，Image -> Comment和Post -> Comment关系分别定义了一个作用域，`commentable: 'image'`和`commentable: 'post'`。 使用关联函数时，将自动应用此作用域：
+
+```js
+image.getComments()
+SELECT * FROM comments WHERE commentable_id = 42 AND commentable = 'image';
+
+image.createComment({
+  title: 'Awesome!'
+})
+INSERT INTO comments (title, commentable_id, commentable) VALUES ('Awesome!', 42, 'image');
+
+image.addComment(comment);
+UPDATE comments SET commentable_id = 42, commentable = 'image'
+```
+
+`Comment` 上的 `getItem` 实用函数完成了图片 - 它只是将`commentable`字符串转换为对`getImage`或`getPost`的调用，提供了 comment 是属于post还是image的抽象。 您可以将普通选项对象作为参数传递给`getItem(options)` 以指定 where 条件或包含的任何位置。
+
+#### n:m
+
+继续使用多态模型的概念，考虑一个标签表 - 一个项目可以有多个标签，标签可以与多个项目相关联。
+
+为简洁起见，该示例仅显示Post模型，但实际上Tag将与其他几个模型相关。
+
+```js
+const ItemTag = sequelize.define('item_tag', {
+  id : {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  tag_id: {
+    type: DataTypes.INTEGER,
+    unique: 'item_tag_taggable'
+  },
+  taggable: {
+    type: DataTypes.STRING,
+    unique: 'item_tag_taggable'
+  },
+  taggable_id: {
+    type: DataTypes.INTEGER,
+    unique: 'item_tag_taggable',
+    references: null
+  }
+});
+const Tag = sequelize.define('tag', {
+  name: DataTypes.STRING
+});
+
+Post.belongsToMany(Tag, {
+  through: {
+    model: ItemTag,
+    unique: false,
+    scope: {
+      taggable: 'post'
+    }
+  },
+  foreignKey: 'taggable_id',
+  constraints: false
+});
+Tag.belongsToMany(Post, {
+  through: {
+    model: ItemTag,
+    unique: false
+  },
+  foreignKey: 'tag_id',
+  constraints: false
+});
+```
+
+请注意，作用域列（`taggable`）现在位于中间模型（`ItemTag`）上。
+
+我们还可以定义一个更具限制性的关联，例如，通过应用中间模型（`ItemTag`）和目标模型（`Tag`）的作用域来获取post的所有待定tag：
+
+```js
+Post.hasMany(Tag, {
+  through: {
+    model: ItemTag,
+    unique: false,
+    scope: {
+      taggable: 'post'
+    }
+  },
+  scope: {
+    status: 'pending'
+  },
+  as: 'pendingTags',
+  foreignKey: 'taggable_id',
+  constraints: false
+});
+
+Post.getPendingTags();
+```
+```sql
+SELECT `tag`.*  INNER JOIN `item_tags` AS `item_tag`
+ON `tag`.`id` = `item_tag`.`tagId`
+  AND `item_tag`.`taggable_id` = 42
+  AND `item_tag`.`taggable` = 'post'
+WHERE (`tag`.`status` = 'pending');
+```
+
+`constraints: false` 禁用 `taggable_id` 列的引用约束。 因为列是多态的，所以我们不能说它 `REFERENCES` 了一个特定的表。
 
 ## 命名策略
 
@@ -717,201 +638,126 @@ project.setUsers([user1, user2]).then(() => {
 })
 ```
 
-## 高级概念
+## 外键
 
-### 作用域
-
-本节涉及关联作用域。 有关关联作用域与相关模型上的作用域的定义，请参阅 [作用域](scopes.md)。
-
-关联作用域允许您在关联上放置一个作用域(一套 `get` 和 `create` 的默认属性)。作用域可以放在相关联的模型（关联的target）上，也可以通过表上的 n:m 关系。
-
-#### 1:n
-
-假设我们有模型 Comment，Post 和 Image。 一个评论可以通过 `commentableId` 和 `commentable` 关联到一个图像或一个帖子 - 我们说 Post 和 Image 是 `Commentable`
+当您在模型中创建关联时，会自动创建带约束的外键引用。 下面是设置：
 
 ```js
-const Post = sequelize.define('post', {
-  title: Sequelize.STRING,
-  text: Sequelize.STRING
-});
-
-const Image = sequelize.define('image', {
-  title: Sequelize.STRING,
-  link: Sequelize.STRING
-});
-
-const Comment = sequelize.define('comment', {
-  title: Sequelize.STRING,
-  commentable: Sequelize.STRING,
-  commentableId: Sequelize.INTEGER
-});
-
-Comment.prototype.getItem = function(options) {
-  return this[
-    'get' +
-      this.get('commentable')
-        .substr(0, 1)
-        .toUpperCase() +
-      this.get('commentable').substr(1)
-  ](options);
-};
-
-Post.hasMany(Comment, {
-  foreignKey: 'commentableId',
-  constraints: false,
-  scope: {
-    commentable: 'post'
-  }
-});
-
-Comment.belongsTo(Post, {
-  foreignKey: 'commentableId',
-  constraints: false,
-  as: 'post'
-});
-
-Image.hasMany(Comment, {
-  foreignKey: 'commentableId',
-  constraints: false,
-  scope: {
-    commentable: 'image'
-  }
-});
-
-Comment.belongsTo(Image, {
-  foreignKey: 'commentableId',
-  constraints: false,
-  as: 'image'
-});
+const Task = this.sequelize.define('task', { title: Sequelize.STRING })
+const User = this.sequelize.define('user', { username: Sequelize.STRING })
+ 
+User.hasMany(Task)
+Task.belongsTo(User)
 ```
 
-`constraints: false` 禁用了引用约束，因为 `commentable_id` 列引用了多个表，所以我们不能给它添加 `REFERENCES` 约束。
-
-请注意，Image - > Comment 和 Post - > Comment 关系分别定义了一个作用域：`commentable: 'image'`  和  `commentable: 'post'`。 使用关联功能时自动应用此作用域：
-
-```js
-image.getComments()
-// SELECT "id", "title", "commentable", "commentableId", "createdAt", "updatedAt" FROM "comments" AS "comment" WHERE "comment"."commentable" = 'image' AND "comment"."commentableId" = 1;
-
-image.createComment({
-  title: 'Awesome!'
-})
-// INSERT INTO "comments" ("id","title","commentable","commentableId","createdAt","updatedAt") VALUES (DEFAULT,'Awesome!','image',1,'2018-04-17 05:36:40.454 +00:00','2018-04-17 05:36:40.454 +00:00') RETURNING *;
-
-image.addComment(comment);
-// UPDATE "comments" SET "commentableId"=1,"commentable"='image',"updatedAt"='2018-04-17 05:38:43.948 +00:00' WHERE "id" IN (1)
-```
-
-`Comment` 上的 `getItem` 作用函数完成了图片 - 它只是将 `commentable` 字符串转换为 `getImage` 或 `getPost` 的一个调用，提供一个注释是属于一个帖子还是一个图像的抽象概念。您可以将普通选项对象作为参数传递给 `getItem(options)`，以指定任何条件或包含的位置。
-
-#### n:m
-
-继续多态模型的思路，考虑一个 tag 表 - 一个 item 可以有多个 tag，一个 tag 可以与多个 item 相关。
-
-为了简洁起见，该示例仅显示了 Post 模型，但实际上 Tag 与其他几个模型相关。
-
-```js
-const ItemTag = sequelize.define('item_tag', {
-  id: {
-    type: Sequelize.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  tagId: {
-    type: Sequelize.INTEGER,
-    unique: 'item_tag_taggable'
-  },
-  taggable: {
-    type: Sequelize.STRING,
-    unique: 'item_tag_taggable'
-  },
-  taggableId: {
-    type: Sequelize.INTEGER,
-    unique: 'item_tag_taggable',
-    references: null
-  }
-});
-
-const Tag = sequelize.define('tag', {
-  name: Sequelize.STRING,
-  status: Sequelize.STRING
-});
-
-Post.belongsToMany(Tag, {
-  through: {
-    model: ItemTag,
-    unique: false,
-    scope: {
-      taggable: 'post'
-    }
-  },
-  foreignKey: 'taggableId',
-  constraints: false
-});
-
-Tag.belongsToMany(Post, {
-  through: {
-    model: ItemTag,
-    unique: false
-  },
-  foreignKey: 'tagId',
-  constraints: false
-});
-```
-
-请注意，作用域列（`taggable`）现在在 through 模型（`ItemTag`）上。
-
-我们还可以定义一个更具限制性的关联，例如，通过应用through 模型（`ItemTag`）和目标模型（`Tag`）的作用域来获取所有挂起的 tag。
-
-```js
-Post.belongsToMany(Tag, {
-  through: {
-    model: ItemTag,
-    unique: false,
-    scope: {
-      taggable: 'post'
-    }
-  },
-  scope: {
-    status: 'pending'
-  },
-  as: 'pendingTags',
-  foreignKey: 'taggableId',
-  constraints: false
-});
-
-post.getPendingTags();
-```
+将生成以下SQL：
 
 ```sql
-SELECT
-  "tag"."id",
-  "tag"."name",
-  "tag"."status",
-  "tag"."createdAt",
-  "tag"."updatedAt",
-  "item_tag"."id" AS "item_tag.id",
-  "item_tag"."tagId" AS "item_tag.tagId",
-  "item_tag"."taggable" AS "item_tag.taggable",
-  "item_tag"."taggableId" AS "item_tag.taggableId",
-  "item_tag"."createdAt" AS "item_tag.createdAt",
-  "item_tag"."updatedAt" AS "item_tag.updatedAt"
-FROM
-  "tags" AS "tag"
-  INNER JOIN "item_tags" AS "item_tag" ON "tag"."id" = "item_tag"."tagId"
-  AND "item_tag"."taggableId" = 1
-  AND "item_tag"."taggable" = 'post'
-WHERE
-  ("tag"."status" = 'pending');
+CREATE TABLE IF NOT EXISTS `User` (
+  `id` INTEGER PRIMARY KEY,
+  `username` VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS `Task` (
+  `id` INTEGER PRIMARY KEY,
+  `title` VARCHAR(255),
+  `user_id` INTEGER REFERENCES `User` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+);
 ```
 
-`constraints: false` 禁用 `taggableId ` 列上的引用约束。 因为列是多态的，我们不能说它是 `REFERENCES` 一个特定的表。
+`tasks` 和 `users` 模型之间的关系通过在 `tasks` 表上注入 `userId` 外键，并将其标记为对 `users` 表的引用。 默认情况下，如果引用的用户被删除，`userId` 将被设置为 `NULL`，如果更新了 `userId`，则更新 `userId`。 这些选项可以通过将 `onUpdate` 和 `onDelete` 选项传递给关联调用来覆盖。 验证选项是 `RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL`。
 
-### 用关联创建
+对于 1:1 和 1:m 关联，默认选项是 `SET NULL` 用于删除，`CASCADE` 用于更新。 对于 n:m，两者的默认值是 `CASCADE`。 这意味着，如果您从 n:m 关联的一侧删除或更新一行，则引用该行的连接表中的所有行也将被删除或更新。
+
+在表之间添加约束意味着在使用 `sequelize.sync` 时，必须以特定顺序在数据库中创建表。 如果Task具有对User的引用，则必须先创建User表，然后才能创建Task表。 这有时会导致循环引用，其中sequelize无法找到要同步的顺序。 想象一下文档和版本的场景。 文档可以有多个版本，为方便起见，文档可以引用其当前版本。
+
+```js
+const Document = this.sequelize.define('document', {
+  author: Sequelize.STRING
+})
+const Version = this.sequelize.define('version', {
+  timestamp: Sequelize.DATE
+})
+
+Document.hasMany(Version) // 这将 document_id 属性添加到 version
+Document.belongsTo(Version, { as: 'Current', foreignKey: 'current_version_id'}) // 这将 current_version_id 属性添加到 document
+```
+
+但是，上面的代码将导致以下错误: `Cyclic dependency found. 'Document' is dependent of itself. Dependency Chain: Document -> Version => Document`。为了解决这一点，我们可以向其中一个关联传递 `constraints: false`：
+
+```js
+Document.hasMany(Version)
+Document.belongsTo(Version, { as: 'Current', foreignKey: 'current_version_id', constraints: false})
+```
+
+这将可以让我们正确地同步表：
+
+```sql
+CREATE TABLE IF NOT EXISTS `Document` (
+  `id` INTEGER PRIMARY KEY,
+  `author` VARCHAR(255),
+  `current_version_id` INTEGER
+);
+CREATE TABLE IF NOT EXISTS `Version` (
+  `id` INTEGER PRIMARY KEY,
+  `timestamp` DATETIME,
+  `document_id` INTEGER REFERENCES `Document` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+);
+```
+
+### 在没有约束的情况下强制执行外键引用
+
+有时您可能想引用另一个表，而不添加任何约束或关联。 在这种情况下，您可以手动将参考属性添加到您的模式定义中，并标记它们之间的关系。
+
+```js 
+// Series 将有一个 trainerId = Trainer.id 外参考键
+// 之后我们调用 Trainer.hasMany(series)
+const Series = sequelize.define('series', {
+  title:        DataTypes.STRING,
+  sub_title:    DataTypes.STRING,
+  description:  DataTypes.TEXT,
+ 
+  // 用 `Trainer` 设置外键关系（hasMany）
+  trainer_id: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: "trainer",
+      key: "id"
+    }
+  }
+})
+ 
+const Trainer = sequelize.define('trainer', {
+  first_name: DataTypes.STRING,
+  last_name:  DataTypes.STRING
+});
+ 
+// Video 将有 seriesId = Series.id 外参考键
+// 之后我们调用 Series.hasOne(Video)
+const Video = sequelize.define('video', {
+  title:        DataTypes.STRING,
+  sequence:     DataTypes.INTEGER,
+  description:  DataTypes.TEXT,
+ 
+  // set relationship (hasOne) with `Series`
+  series_id: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: Series, // 既可以是表示表名的字符串，也可以是 Sequelize 模型
+      key:   "id"
+    }
+  }
+});
+ 
+Series.hasOne(Video);
+Trainer.hasMany(Series);
+```
+
+## 用关联创建
 
 如果所有元素都是新的，则可以在一个步骤中创建具有嵌套关联的实例。
 
-#### BelongsTo / HasMany / HasOne 关联
+### BelongsTo / HasMany / HasOne 关联
 
 考虑以下模型：
 
@@ -920,13 +766,13 @@ const Product = this.sequelize.define('product', {
   title: Sequelize.STRING
 });
 const User = this.sequelize.define('user', {
-  firstName: Sequelize.STRING,
-  lastName: Sequelize.STRING
+  first_name: Sequelize.STRING,
+  last_name: Sequelize.STRING
 });
 const Address = this.sequelize.define('address', {
   type: Sequelize.STRING,
-  line1: Sequelize.STRING,
-  line2: Sequelize.STRING,
+  line_1: Sequelize.STRING,
+  line_2: Sequelize.STRING,
   city: Sequelize.STRING,
   state: Sequelize.STRING,
   zip: Sequelize.STRING,
@@ -943,11 +789,11 @@ User.Addresses = User.hasMany(Address);
 return Product.create({
   title: 'Chair',
   user: {
-    firstName: 'Mick',
-    lastName: 'Broadstone',
+    first_name: 'Mick',
+    last_name: 'Broadstone',
     addresses: [{
       type: 'home',
-      line1: '100 Main St.',
+      line_1: '100 Main St.',
       city: 'Austin',
       state: 'TX',
       zip: '78704'
@@ -963,7 +809,7 @@ return Product.create({
 
 这里，我们的用户模型称为`user`，带小写u - 这意味着对象中的属性也应该是`user`。 如果给`sequelize.define`指定的名称为`User`，对象中的键也应为`User`。 对于`addresses`也是同样的，除了它是一个 `hasMany` 关联的复数。
 
-#### 用别名创建 BelongsTo 关联
+### 用别名创建 BelongsTo 关联
 
 可以将前面的示例扩展为支持关联别名。
 
@@ -973,15 +819,15 @@ const Creator = Product.belongsTo(User, { as: 'creator' });
 return Product.create({
   title: 'Chair',
   creator: {
-    firstName: 'Matt',
-    lastName: 'Hansen'
+    first_name: 'Matt',
+    last_name: 'Hansen'
   }
 }, {
   include: [ Creator ]
 });
 ```
 
-#### HasMany / BelongsToMany 关联
+### HasMany / BelongsToMany 关联
 
 我们来介绍将产品与许多标签相关联的功能。 设置模型可能如下所示：
 

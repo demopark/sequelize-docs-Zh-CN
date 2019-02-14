@@ -259,26 +259,3 @@ model.afterSave((instance, options) => {
   }
   // 在事务之外保存完成，对于调用者来说可以安全地获取更新后的模型通知
 ```
-
-## 锁定
-
-可以使用锁执行 `transaction` 内的查询
-
-```
-return User.findAll({
-  limit: 1,
-  lock: true,
-  transaction: t1
-})
-```
-
-事务内的查询可以跳过锁定的行
-
-```
-return User.findAll({
-  limit: 1,
-  lock: true,
-  skipLocked: true,
-  transaction: t2
-})
-```

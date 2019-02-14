@@ -25,9 +25,14 @@ sequelize.query("SELECT * FROM `users`", { type: sequelize.QueryTypes.SELECT})
 
 ```js
 // Callee 是模型定义。 这样您就可以轻松地将查询映射到预定义的模型
-sequelize.query('SELECT * FROM projects', { model: Projects }).then(projects => {
-  // 每个记录现在将是Project的一个实例
-})
+sequelize
+  .query('SELECT * FROM projects', {
+    model: Projects,
+    mapToModel: true // 如果您有任何映射字段，则在此处传递true
+  })
+  .then(projects => {
+    // 每个记录现在将是Project的一个实例
+  })
 ```
 
 ## 替换
