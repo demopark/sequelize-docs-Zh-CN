@@ -335,7 +335,7 @@ Employee
 
 以下是在模型参数中定义 getter 和 setter 的示例。 `fullName` getter，是一个说明如何在模型上定义伪属性的例子 - 这些属性实际上不是数据库模式的一部分。 事实上，伪属性可以通过两种方式定义：使用模型getter，或者使用[`虚拟`数据类型](http://docs.sequelizejs.com/variable/index.html#static-variable-DataTypes)的列。 虚拟数据类型可以有验证，而虚拟属性的getter则不能。
 
-请注意，`fullName` getter函数中引用的`this.firstname`和`this.lastname`将触发对相应getter函数的调用。 如果你不想那样使用`getDataValue()`方法来访问原始值（见下文）。
+请注意，`fullName` getter函数中引用的`this.firstname`和`this.lastname`将触发对相应getter函数的调用。 如果你不想这样，可以使用`getDataValue()`方法来访问原始值（见下文）。
 
 ```js
 const Foo = sequelize.define('foo', {
