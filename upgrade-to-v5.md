@@ -10,48 +10,52 @@ Sequelize v5 将仅支持 Node 6 以及更高版本 [#9015](https://github.com/s
 
 ### 安全的运算符
 
-在 v4 中，你会开始收到弃用警告 `String based operators are now deprecated (基于字符串的运算符现在已弃用)`。 同时也介绍了运算符的概念。这些运算符是一些防止散列注入攻击的符号。
+在 v4 中,你会开始收到弃用警告 `String based operators are now deprecated (基于字符串的运算符现在已弃用)`. 同时也介绍了运算符的概念.这些运算符是一些防止散列注入攻击的符号.
 
 **对于 v5**
 
-- 运算符现在默认启用。
-- 你仍然可以通过在 `operatorsAliases` 中传递一个运算符映射来使用字符串运算符，但这会产生弃用警告。
-- `Op.$raw` 已被移除。
+- 运算符现在默认启用.
+- 你仍然可以通过在 `operatorsAliases` 中传递一个运算符映射来使用字符串运算符,但这会产生弃用警告.
+- `Op.$raw` 已被移除.
+
+### Typescript 支持
+
+Sequelize 现在正式支持官方类型 [#10287](https://github.com/sequelize/sequelize/pull/10287). 你可以考虑远离可能不同步的外部类型.
 
 ### 池
 
-对于 v5 Sequelize现在使用 `sequelize-pool`，它是 `generic-pool@2.5` 的现代化分支。 你不再需要调用 `sequelize.close` 来关闭池，这有助于 lambda 执行。[#8468](https://github.com/sequelize/sequelize/issues/8468)。
+对于 v5 Sequelize现在使用 `sequelize-pool`,它是 `generic-pool@2.5` 的现代化分支. 你不再需要调用 `sequelize.close` 来关闭池,这有助于 lambda 执行.[#8468](https://github.com/sequelize/sequelize/issues/8468).
 
 ### 模型
 
 **验证器**
 
-现在，当属性的值为 `null` 且 `allowNull` 为 `true` 时，运行每个属性定义的自定义验证器（与模型选项中定义的自定义验证器相对，之前它们没有运行且验证立即成功）。为了避免升级时出现问题，请检查每个属性定义的所有自定义验证器，其中 `allowNull` 为 `true`，并确保当值为 `null` 时所有这些验证器都能正常运行。 参见 [#9143](https://github.com/sequelize/sequelize/issues/9143)。
+现在,当属性的值为 `null` 且 `allowNull` 为 `true` 时,运行每个属性定义的自定义验证器(与模型选项中定义的自定义验证器相对,之前它们没有运行且验证立即成功).为了避免升级时出现问题,请检查每个属性定义的所有自定义验证器,其中 `allowNull` 为 `true`,并确保当值为 `null` 时所有这些验证器都能正常运行. 参见 [#9143](https://github.com/sequelize/sequelize/issues/9143).
 
 **属性**
 
-`Model.attributes` 现在已被移除, 请使用 `Model.rawAttributes`。 [#5320](https://github.com/sequelize/sequelize/issues/5320)
+`Model.attributes` 现在已被移除, 请使用 `Model.rawAttributes`. [#5320](https://github.com/sequelize/sequelize/issues/5320)
 
-__注意__: _请不要将它与 `options.attributes` 混淆，它们仍然有效_
+__注意__: _请不要将它与 `options.attributes` 混淆,它们仍然有效_
 
 **偏执模式**
 
-对于 v5 如果设置了 `deletedAt`， 该数据将被视为已删除. `paranoid` 选项只会使用 `deletedAt` 作为标志。 [#8496](https://github.com/sequelize/sequelize/issues/8496)
+对于 v5 如果设置了 `deletedAt`, 该数据将被视为已删除. `paranoid` 选项只会使用 `deletedAt` 作为标志. [#8496](https://github.com/sequelize/sequelize/issues/8496)
 
 **Model.bulkCreate**
 
-`updateOnDuplicate` 选项用于接受布尔值和数组，现在只接受非空的数组属性。 [#9288](https://github.com/sequelize/sequelize/issues/9288)
+`updateOnDuplicate` 选项用于接受布尔值和数组,现在只接受非空的数组属性. [#9288](https://github.com/sequelize/sequelize/issues/9288)
 
 
 **下划线模式**
 
-`Model.options.underscored` 的实现方式被改变了。你可以在 [这里](https://github.com/sequelize/sequelize/issues/6423#issuecomment-379472035) 找到完整的说明 。
+`Model.options.underscored` 的实现方式被改变了.你可以在 [这里](https://github.com/sequelize/sequelize/issues/6423#issuecomment-379472035) 找到完整的说明 .
 
 大致内容
 
 1. `underscoredAll` 和 `underscored` 选项都合并为一个 `underscored` 选项
-2. 现在，所有属性都默认使用 camelcase 命名生成。 将 `underscored `选项设置为 `true`，属性的 `field` 选项将被设置为属性名称的下划线版本。
-3. `underscored` 将控制所有属性，包括时间戳，版本和外键。 它不会影响任何已经指定 `field` 选项的属性。
+2. 现在,所有属性都默认使用 camelcase 命名生成. 将 `underscored `选项设置为 `true`,属性的 `field` 选项将被设置为属性名称的下划线版本.
+3. `underscored` 将控制所有属性,包括时间戳,版本和外键. 它不会影响任何已经指定 `field` 选项的属性.
 
 [#9304](https://github.com/sequelize/sequelize/pull/9304)
 
@@ -76,17 +80,13 @@ __注意__: _请不要将它与 `options.attributes` 混淆，它们仍然有效
 
 现在只支持一种标准格式 `[{ value: 1, inclusive: true }, { value: 20, inclusive: false }]` [#9364](https://github.com/sequelize/sequelize/pull/9364)
 
-**网络类型**
-
-为 Postgres 添加了对`CIDR`，`INET` 和 `MACADDR` 的支持
-
 **不区分大小写的文本**
 
 为 Postgres 和 SQLite 添加了对 `CITEXT` 的支持
 
 **已删除**
 
-`NONE` 类型已被删除，请使用 `VIRTUAL`
+`NONE` 类型已被删除,请使用 `VIRTUAL`
 
 ### Hooks
 
@@ -104,7 +104,7 @@ Hooks aliases has been removed [#9372](https://github.com/sequelize/sequelize/is
 
 **删除的别名**
 
-已删除许多常量，对象和类的原型引用 [#9372](https://github.com/sequelize/sequelize/issues/9372)
+已删除许多常量,对象和类的原型引用 [#9372](https://github.com/sequelize/sequelize/issues/9372)
 
 | v5 删除 | 官方替代 |
 | :------ | :------ |
@@ -170,26 +170,82 @@ Model.findAll({
 
 ### 查询接口
 
-- `changeColumn`不再使用`_idx`后缀生成约束。 现在Sequelize没有为约束指定任何名称，因此默认为数据库引擎命名。 这对齐了`sync`，`createTable`和`changeColumn`的行为。
+- `changeColumn`不再使用`_idx`后缀生成约束. 现在Sequelize没有为约束指定任何名称,因此默认为数据库引擎命名. 这对齐了`sync`,`createTable`和`changeColumn`的行为.
+- `addIndex` 别名的参数别名已被删除,请改用以下内容.
+  - `indexName` => `name`
+  - `indicesType` => `type`
+  - `indexType`/`method` => `using`
 
 ### 其它
 
-- Sequelize 现在对所有 INSERT / UPDATE操作（UPSERT除外）使用参数化查询。 它们可以更好地防范SQL注入攻击。
+- Sequelize 现在对所有 INSERT / UPDATE操作(UPSERT除外)使用参数化查询. 它们可以更好地防范SQL注入攻击.
 
-- `ValidationErrorItem` 现在持有对 `original` 属性中原始错误的引用，而不是 `__raw` 属性。
+- `ValidationErrorItem` 现在持有对 `original` 属性中原始错误的引用,而不是 `__raw` 属性.
 
-- [retry-as-promised](https://github.com/mickhansen/retry-as-promised) 已在 `3.1.0` 中更新, 它使用 [any-promise](https://github.com/kevinbeaty/any-promise). 这个模块重复所有 `sequelize.query` 操作。 您可以将 `any-promise` 配置为在 Node 4 或 6 上使用 `bluebird` 来获得更好的性能
+- [retry-as-promised](https://github.com/mickhansen/retry-as-promised) 已在 `3.1.0` 中更新, 它使用 [any-promise](https://github.com/kevinbeaty/any-promise). 这个模块重复所有 `sequelize.query` 操作. 你可以将 `any-promise` 配置为在 Node 4 或 6 上使用 `bluebird` 来获得更好的性能
 
-- Sequelize将抛出`where`选项中的所有`undefined`键，在过去的版本中`undefined`被转换为`null`。
+- Sequelize将抛出`where`选项中的所有`undefined`键,在过去的版本中`undefined`被转换为`null`.
+
+### 方言相关
+
+#### MSSQL
+
+- Sequelize 现在可以使用 `tedious >= 6.0.0`. 必须更新旧的 `dialectOptions` 以匹配其新格式. 请参阅 tedious [文档](http://tediousjs.github.io/tedious/api-connection.html#function_newConnection). 下面给出了一个新的 `dialectOptions` 的例子
+
+```javascript
+dialectOptions: {
+  authentication: {
+    domain: 'my-domain'
+  },
+  options: {
+    requestTimeout: 60000,
+    cryptoCredentialsDetails: {
+      ciphers: "RC4-MD5"
+    }
+  }
+}
+```
+
+#### MySQL
+
+- 现有封装需要 `mysql2 >= 1.5.2`
+
+#### MariaDB
+
+- `dialect: 'mariadb'` 现在 [已支持](https://github.com/sequelize/sequelize/pull/10192) 使用 `mariadb` 包
 
 ### 包
 
 - removed: terraformer-wkt-parser [#9545](https://github.com/sequelize/sequelize/pull/9545)
-- mysql2: use `1.5.2` or above to support prepared statements
-- updated: retry-as-promised: `3.1.0`
-- change: `generic-pool` to `sequelize-pool`
+- removed: `generic-pool`
+- added: `sequelize-pool`
 
 ## 更新日志
+
+### 5.0.0-beta.17
+
+- fix(build): default null for multiple primary keys
+- fix(util): improve performance of classToInvokable [#10534](https://github.com/sequelize/sequelize/pull/10534)
+- fix(model/update): propagate paranoid to individualHooks query [#10369](https://github.com/sequelize/sequelize/pull/10369)
+- fix(association): use minimal select for hasAssociation [#10529](https://github.com/sequelize/sequelize/pull/10529)
+- fix(query-interface): reject with error for describeTable [#10528](https://github.com/sequelize/sequelize/pull/10528)
+- fix(model): throw for invalid include type [#10527](https://github.com/sequelize/sequelize/pull/10527)
+- fix(types): additional options for db.query and add missing retry [#10512](https://github.com/sequelize/sequelize/pull/10512)
+- fix(query): don't prepare options & sql for every retry [#10498](https://github.com/sequelize/sequelize/pull/10498)
+- feat: expose Sequelize.BaseError
+- feat: upgrade to tedious@6.0.0 [#10494](https://github.com/sequelize/sequelize/pull/10494)
+- feat(sqlite/query-generator): support restart identity for truncate-table [#10522](https://github.com/sequelize/sequelize/pull/10522)
+- feat(data-types): handle numbers passed as objects [#10492](https://github.com/sequelize/sequelize/pull/10492)
+- feat(types): enabled string association [#10481](https://github.com/sequelize/sequelize/pull/10481)
+- feat(postgres): allow customizing client_min_messages [#10448](https://github.com/sequelize/sequelize/pull/10448)
+- refactor(data-types): move to classes [#10495](https://github.com/sequelize/sequelize/pull/10495)
+- docs(legacy): fix N:M example [#10509](https://github.com/sequelize/sequelize/pull/10509)
+- docs(migrations): use migrationStorageTableSchema [#10417](https://github.com/sequelize/sequelize/pull/10417)
+- docs(hooks): add documentation for connection hooks [#10410](https://github.com/sequelize/sequelize/pull/10410)
+- docs(addIndex): concurrently option [#10409](https://github.com/sequelize/sequelize/pull/10409)
+- docs(model): fix typo [#10405](https://github.com/sequelize/sequelize/pull/10405)
+- docs(usage): fix broken link on Basic Usage [#10381](https://github.com/sequelize/sequelize/pull/10381)
+- docs(package.json): add homepage [#10372](https://github.com/sequelize/sequelize/pull/10372)
 
 ### 5.0.0-beta.16
 

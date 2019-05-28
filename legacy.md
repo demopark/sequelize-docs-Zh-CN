@@ -1,62 +1,68 @@
 # Working with legacy tables - 使用遗留表
 
-虽然 Sequelize 自认为可以开箱即用, 但是如果你要使用应用之前遗留的资产和凭据,仅需要做一点微不足道的设置即可。
+虽然 Sequelize 自认为可以开箱即用, 但是如果你要使用应用之前遗留的资产和凭据,仅需要通过定义(否则生成)表和字段名称即可.
 
 ## 表
 ```js
-sequelize.define('user', {
-
+class User extends Model {}
+User.init({
+  // ...
 }, {
-  tableName: 'users'
+  modelName: 'user',
+  tableName: 'users',
+  sequelize,
 });
 ```
 
 ## 字段
 ```js
-sequelize.define('modelName', {
+class MyModel extends Model {}
+MyModel.init({
   userId: {
     type: Sequelize.INTEGER,
     field: 'user_id'
   }
-});
+}, { sequelize });
 ```
 
 ## 主键
 
-Sequelize将假设您的表默认具有`id`主键属性。
+Sequelize将假设你的表默认具有`id`主键属性.
 
-要定义你自己的主键：
+要定义你自己的主键:
 
 ```js
-sequelize.define('collection', {
+class Collection extends Model {}
+Collection.init({
   uid: {
     type: Sequelize.INTEGER,
     primaryKey: true,
-    autoIncrement: true // Automatically gets converted to SERIAL for postgres
+    autoIncrement: true // 对于 postgres 自动转换为 SERIAL
   }
-});
+}, { sequelize });
 
-sequelize.define('collection', {
+class Collection extends Model {}
+Collection.init({
   uuid: {
     type: Sequelize.UUID,
     primaryKey: true
   }
-});
+}, { sequelize });
 ```
 
-如果你的模型根本没有主键，你可以使用 `Model.removeAttribute('id');`
+如果你的模型根本没有主键,你可以使用 `Model.removeAttribute('id');`
 
 ## 外键
 ```js
 // 1:1
-Organization.belongsTo(User, {foreignKey: 'owner_id'});
-User.hasOne(Organization, {foreignKey: 'owner_id'});
+Organization.belongsTo(User, { foreignKey: 'owner_id' });
+User.hasOne(Organization, { foreignKey: 'owner_id' });
 
 // 1:M
-Project.hasMany(Task, {foreignKey: 'tasks_pk'});
-Task.belongsTo(Project, {foreignKey: 'tasks_pk'});
+Project.hasMany(Task, { foreignKey: 'tasks_pk' });
+Task.belongsTo(Project, { foreignKey: 'tasks_pk' });
 
 // N:M
-User.hasMany(Role, {through: 'user_has_roles', foreignKey: 'user_role_user_id'});
-Role.hasMany(User, {through: 'user_has_roles', foreignKey: 'roles_identifier'});
+User.belongsToMany(Role, { through: 'user_has_roles', foreignKey: 'user_role_user_id' });
+Role.belongsToMany(User, { through: 'user_has_roles', foreignKey: 'roles_identifier' });
 ```

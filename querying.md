@@ -2,7 +2,7 @@
 
 ## 属性
 
-想要只选择某些属性，可以使用 `attributes` 选项。 通常是传递一个数组：
+想要只选择某些属性,可以使用 `attributes` 选项. 通常是传递一个数组:
 
 ```js
 Model.findAll({
@@ -13,7 +13,7 @@ Model.findAll({
 SELECT foo, bar ...
 ```
 
-属性可以使用嵌套数组来重命名：
+属性可以使用嵌套数组来重命名:
 
 ```js
 Model.findAll({
@@ -24,7 +24,7 @@ Model.findAll({
 SELECT foo, bar AS baz ...
 ```
 
-也可以使用 `sequelize.fn` 来进行聚合：
+也可以使用 `sequelize.fn` 来进行聚合:
 
 ```js
 Model.findAll({
@@ -35,9 +35,9 @@ Model.findAll({
 SELECT COUNT(hats) AS no_hats ...
 ```
 
-使用聚合功能时，必须给它一个别名，以便能够从模型中访问它。 在上面的例子中，您可以使用  `instance.get('no_hats')` 获得帽子数量。
+使用聚合功能时,必须给它一个别名,以便能够从模型中访问它. 在上面的例子中,你可以使用  `instance.get('no_hats')` 获得帽子数量.
 
-有时，如果您只想添加聚合，则列出模型的所有属性可能令人厌烦：
+有时,如果你只想添加聚合,则列出模型的所有属性可能令人厌烦:
 
 ```js
 // This is a tiresome way of getting the number of hats...
@@ -54,7 +54,7 @@ Model.findAll({
 SELECT id, foo, bar, baz, quz, COUNT(hats) AS no_hats ...
 ```
 
-同样，它也可以排除一些指定的表字段：
+同样,它也可以排除一些指定的表字段:
 
 ```js
 Model.findAll({
@@ -68,11 +68,11 @@ SELECT id, foo, bar, quz ...
 
 ## Where
 
-无论您是通过 findAll/find 或批量 updates/destroys 进行查询，都可以传递一个 `where` 对象来过滤查询。
+无论你是通过 findAll/find 或批量 updates/destroys 进行查询,都可以传递一个 `where` 对象来过滤查询.
 
-`where` 通常用 attribute:value 键值对获取一个对象，其中 value 可以是匹配等式的数据或其他运算符的键值对象。
+`where` 通常用 attribute:value 键值对获取一个对象,其中 value 可以是匹配等式的数据或其他运算符的键值对象.
 
-也可以通过嵌套 `or` 和 `and` `运算符` 的集合来生成复杂的 AND/OR 条件。
+也可以通过嵌套 `or` 和 `and` `运算符` 的集合来生成复杂的 AND/OR 条件.
 
 ### 基础
 ```js
@@ -157,6 +157,9 @@ const Op = Sequelize.Op
 [Op.notLike]: '%hat'       // 不包含 '%hat'
 [Op.iLike]: '%hat'         // 包含 '%hat' (不区分大小写)  (仅限 PG)
 [Op.notILike]: '%hat'      // 不包含 '%hat'  (仅限 PG)
+[Op.startsWith]: 'hat'     // 类似 'hat%'
+[Op.endsWith]: 'hat'       // 类似 '%hat'
+[Op.substring]: 'hat'      // 类似 '%hat%'
 [Op.regexp]: '^[h|a|t]'    // 匹配正则表达式/~ '^[h|a|t]' (仅限 MySQL/PG)
 [Op.notRegexp]: '^[h|a|t]' // 不匹配正则表达式/!~ '^[h|a|t]' (仅限 MySQL/PG)
 [Op.iRegexp]: '^[h|a|t]'    // ~* '^[h|a|t]' (仅限 PG)
@@ -172,9 +175,9 @@ const Op = Sequelize.Op
 
 #### 范围选项
 
-所有操作符都支持支持的范围类型查询。
+所有操作符都支持支持的范围类型查询.
 
-请记住，提供的范围值也可以[定义绑定的 inclusion/exclusion](models-definition.md#范围类型)。
+请记住,提供的范围值也可以[定义绑定的 inclusion/exclusion](models-definition.md#范围类型).
 
 ```js
 // 所有上述相等和不相等的操作符加上以下内容:
@@ -229,7 +232,7 @@ const Op = Sequelize.Op
 
 #### 运算符别名
 
-Sequelize 允许将特定字符串设置为操作符的别名 -
+Sequelize 允许将特定字符串设置为操作符的别名.使用v5,将为你提供弃用警告.
 
 ```js
 const Op = Sequelize.Op;
@@ -245,20 +248,11 @@ $gt: 6 // 等同于使用 Op.gt (> 6)
 
 #### 运算符安全性
 
-使用没有别名的 Sequelize 可以提高安全性。
-有些框架会自动将用户输入解析为 js 对象，如果您不能清理输入的内容，则可能会将具有字符串运算符的 Object 注入 Sequelize。
+默认情况下,Sequelize 将使用 Symbol 运算符. 使用没有任何别名的 Sequelize 可以提高安全性.没有任何字符串别名将使得运算符可能被注入的可能性降到极低,但你应该始终正确验证和清理用户输入.
 
-没有任何字符串别名将使得运算符可能被注入的可能性降到极低，但您应该始终正确验证和清理用户输入。
+一些框架会自动将用户输入解析为js对象,如果你无法清理输入,则可能会将带有字符串运算符的 Object 注入Sequelize.
 
-出于向后兼容性原因，Sequelize默认设置以下别名 - 
-
-$eq, $ne, $gte, $gt, $lte, $lt, $not, $in, $notIn, $is, $like, $notLike, $iLike, $notILike, $regexp, $notRegexp, $iRegexp, $notIRegexp, $between, $notBetween, $overlap, $contains, $contained, $adjacent, $strictLeft, $strictRight, $noExtendRight, $noExtendLeft, $and, $or, $any, $all, $values, $col
-
-目前还设置了以下旧版别名，但计划在不久的将来完全删除 - 
-
-ne, not, in, notIn, gte, gt, lte, lt, like, ilike, $ilike, nlike, $notlike, notilike, .., between, !.., notbetween, nbetween, overlap, &&, @>, <@
-
-为了更好的安全性，强烈建议在代码中使用 `Sequelize.Op` 中的符号运算符，而不是依赖任何字符串别名。 您可以通过设置 `operatorsAliases` 选项来限制应用程序需要的别名，请记住要清理用户输入，特别是当您直接将它们传递给 Sequelize 方法时。
+为了更好的安全性,强烈建议在代码中使用 `Sequelize.Op` 中的符号运算符,如`Op.and` / `Op.or`,而不依赖于任何基于字符串的运算符,如 `$and` / `$or`. 你可以通过设置 `operatorsAliases` 参数来限制应用程序所需的别名,记住清理用户输入,特别是当你直接将它们传递给 Sequelize 方法时.
 
 ```js
 const Op = Sequelize.Op;
@@ -270,7 +264,7 @@ const connection = new Sequelize(db, user, pass, { operatorsAliases: false });
 const connection2 = new Sequelize(db, user, pass, { operatorsAliases: { $and: Op.and } });
 ```
 
-如果你使用默认别名并且不限制它们，Sequelize会发出警告。如果您想继续使用所有默认别名（不包括旧版别名）而不发出警告，您可以传递以下运算符参数 -
+如果你使用默认别名并且不限制它们,Sequelize会发出警告.如果你想继续使用所有默认别名(不包括旧版别名)而不发出警告,你可以传递以下运算符参数 -
 
 ```js
 const Op = Sequelize.Op;
@@ -316,15 +310,15 @@ const connection = new Sequelize(db, user, pass, { operatorsAliases });
 
 ### JSON
 
-JSON 数据类型仅由 PostgreSQL，SQLite 和 MySQL 语言支持。
+JSON 数据类型仅由 PostgreSQL,SQLite, MySQL 和 MariaDB 语言支持.
 
 #### PostgreSQL
 
-PostgreSQL 中的 JSON 数据类型将值存储为纯文本，而不是二进制表示。 如果您只是想存储和检索 JSON 格式数据，那么使用 JSON 将占用更少的磁盘空间，并且从其输入数据中构建时间更少。 但是，如果您想对 JSON 值执行任何操作，则应该使用下面描述的 JSONB 数据类型。
+PostgreSQL 中的 JSON 数据类型将值存储为纯文本,而不是二进制表示. 如果你只是想存储和检索 JSON 格式数据,那么使用 JSON 将占用更少的磁盘空间,并且从其输入数据中构建时间更少. 但是,如果你想对 JSON 值执行任何操作,则应该使用下面描述的 JSONB 数据类型.
 
 #### MSSQL
 
-MSSQL 没有 JSON 数据类型，但是它确实提供了对于自 SQL Server 2016 以来通过某些函数存储为字符串的 JSON 的支持。使用这些函数，您将能够查询存储在字符串中的 JSON，但是任何返回的值将需要分别进行解析。
+MSSQL 没有 JSON 数据类型,但是它确实提供了对于自 SQL Server 2016 以来通过某些函数存储为字符串的 JSON 的支持.使用这些函数,你将能够查询存储在字符串中的 JSON,但是任何返回的值将需要分别进行解析.
 
 ```js
 // ISJSON - 测试一个字符串是否包含有效的 JSON
@@ -350,7 +344,7 @@ User.findAll({
 
 ### JSONB
 
-JSONB 可以以三种不同的方式进行查询。
+JSONB 可以以三种不同的方式进行查询.
 
 #### 嵌套对象
 ```js
@@ -389,7 +383,7 @@ JSONB 可以以三种不同的方式进行查询。
 
 ### 关系 / 关联
 ```js
-// 找到所有具有至少一个 task 的  project，其中 task.state === project.state
+// 找到所有具有至少一个 task 的  project,其中 task.state === project.state
 Project.findAll({
     include: [{
         model: Task,
@@ -407,18 +401,18 @@ Project.findAll({ limit: 10 })
 // 跳过8个实例/行
 Project.findAll({ offset: 8 })
 
-// 跳过5个实例，然后取5个
+// 跳过5个实例,然后取5个
 Project.findAll({ offset: 5, limit: 5 })
 ```
 
 ## 排序
 
-`order` 需要一个条目的数组来排序查询或者一个 sequelize 方法。一般来说，你将要使用任一属性的 tuple/array，并确定排序的正反方向。
+`order` 需要一个条目的数组来排序查询或者一个 sequelize 方法.一般来说,你将要使用任一属性的 tuple/array,并确定排序的正反方向.
 
 ```js
 Subtask.findAll({
   order: [
-    // 将转义标题，并根据有效的方向参数列表验证DESC
+    // 将转义标题,并根据有效的方向参数列表验证DESC
     ['title', 'DESC'],
 
     // 将按最大值排序(age)
@@ -430,13 +424,13 @@ Subtask.findAll({
     // 将按 otherfunction 排序(`col1`, 12, 'lalala') DESC
     [sequelize.fn('otherfunction', sequelize.col('col1'), 12, 'lalala'), 'DESC'],
 
-    // 将使用模型名称作为关联的名称排序关联模型的 created_at。
+    // 将使用模型名称作为关联的名称排序关联模型的 created_at.
     [Task, 'createdAt', 'DESC'],
 
     // Will order through an associated model's created_at using the model names as the associations' names.
     [Task, Project, 'createdAt', 'DESC'],
 
-    // 将使用关联的名称由关联模型的created_at排序。
+    // 将使用关联的名称由关联模型的created_at排序.
     ['Task', 'createdAt', 'DESC'],
 
     // Will order by a nested associated model's created_at using the names of the associations.
@@ -458,7 +452,7 @@ Subtask.findAll({
   // 将按年龄最大值降序排列
   order: sequelize.literal('max(age) DESC')
 
-  // 按最年龄大值升序排列，当省略排序条件时默认是升序排列
+  // 按最年龄大值升序排列,当省略排序条件时默认是升序排列
   order: sequelize.fn('max', sequelize.col('age'))
 
   // 按升序排列是省略排序条件的默认顺序
@@ -471,9 +465,9 @@ Subtask.findAll({
 
 ## Table Hint
 
-当使用 mssql 时，可以使用 `tableHint` 来选择传递一个表提示。 该提示必须是来自 `Sequelize.TableHints` 的值，只能在绝对必要时使用。 每个查询当前仅支持单个表提示。
+当使用 mssql 时,可以使用 `tableHint` 来选择传递一个表提示. 该提示必须是来自 `Sequelize.TableHints` 的值,只能在绝对必要时使用. 每个查询当前仅支持单个表提示.
 
-表提示通过指定某些选项来覆盖 mssql 查询优化器的默认行为。 它们只影响该子句中引用的表或视图。
+表提示通过指定某些选项来覆盖 mssql 查询优化器的默认行为. 它们只影响该子句中引用的表或视图.
 
 ```js
 const TableHints = Sequelize.TableHints;
@@ -484,3 +478,35 @@ Project.findAll({
   // 这将生成 SQL 'WITH (NOLOCK)'
 })
 ```
+
+## 索引提示
+
+使用mysql时,`indexHints` 可用于选择性地传递索引提示. 提示类型必须是来自 `Sequelize.IndexHints` 的值,值应该引用现有索引.
+
+索引提示[覆盖 mysql 查询优化器的默认行为](https://dev.mysql.com/doc/refman/5.7/en/index-hints.html).
+
+```js
+Project.findAll({
+  indexHints: [
+    { type: IndexHints.USE, values: ['index_project_on_name'] }
+  ],
+  where: {
+    id: {
+      [Op.gt]: 623
+    },
+    name: {
+      [Op.like]: 'Foo %'
+    }
+  }
+})
+```
+
+将生成一个如下所示的 mysql 查询:
+
+```sql
+SELECT * FROM Project USE INDEX (index_project_on_name) WHERE name LIKE 'FOO %' AND id > 623;
+```
+
+`Sequelize.IndexHints` 包含 `USE`, `FORCE`, 和 `IGNORE`.
+
+有关原始API提案,请参阅[Issue #9421](https://github.com/sequelize/sequelize/issues/9421).
