@@ -175,7 +175,7 @@ const Op = Sequelize.Op
 
 #### 范围选项
 
-所有操作符都支持支持的范围类型查询.
+所有操作符都支持范围类型查询.
 
 请记住,提供的范围值也可以[定义绑定的 inclusion/exclusion](models-definition.md#范围类型).
 
