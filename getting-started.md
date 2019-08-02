@@ -39,7 +39,7 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 const sequelize = new Sequelize('postgres://user:pass@example.com:5432/dbname');
 ```
 
-Sequelize 构造函数采用了 [Sequelize构造函数的API参考](/class/lib/sequelize.js~Sequelize.html#instance-constructor-constructor) 中记录的大量参数.
+Sequelize 构造函数采用了 [Sequelize构造函数的API参考](http://docs.sequelizejs.com/class/lib/sequelize.js~Sequelize.html#instance-constructor-constructor) 中记录的大量参数.
 
 ### 注意: 设置 SQLite
 
@@ -68,7 +68,7 @@ const sequelize = new Sequelize(/* ... */, {
 });
 ```
 
-在[Sequelize构造函数API参考](/class/lib/sequelize.js~Sequelize.html#instance-constructor-constructor)中了解更多信息. 如果从多个进程连接到数据库,则必须为每个进程创建一个实例,但每个实例应具有最大连接池大小,以便遵守总的最大大小.例如,如果你希望最大连接池大小为 90 并且你有三个进程,则每个进程的 Sequelize 实例的最大连接池大小应为 30.
+在[Sequelize构造函数API参考](http://docs.sequelizejs.com/class/lib/sequelize.js~Sequelize.html#instance-constructor-constructor)中了解更多信息. 如果从多个进程连接到数据库,则必须为每个进程创建一个实例,但每个实例应具有最大连接池大小,以便遵守总的最大大小.例如,如果你希望最大连接池大小为 90 并且你有三个进程,则每个进程的 Sequelize 实例的最大连接池大小应为 30.
 
 ## 测试连接
 
