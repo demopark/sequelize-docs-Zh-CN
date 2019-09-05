@@ -526,6 +526,70 @@ Person.belongsToMany(Person, { as: 'Children', through: 'PersonChildren' })
 
 ```
 
+#### 来源(Source)键 和 目标(Target)键
+
+如果要创建不使用默认主键的 belongsToMany 关系,则需要进行一些设置工作.
+你必须为 belongsToMany 的两端设置恰当的 `sourceKey` (`targetKey` 可选).此外,你还必须确保在关系中创建适合的索引.例如:
+
+```js
+const User = this.sequelize.define('User', {
+  id: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    primaryKey: true,
+    defaultValue: DataTypes.UUIDV4,
+    field: 'user_id'
+  },
+  userSecondId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    defaultValue: DataTypes.UUIDV4,
+    field: 'user_second_id'
+  }
+}, {
+  tableName: 'tbl_user',
+  indexes: [
+    {
+      unique: true,
+      fields: ['user_second_id']
+    }
+  ]
+});
+
+const Group = this.sequelize.define('Group', {
+  id: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    primaryKey: true,
+    defaultValue: DataTypes.UUIDV4,
+    field: 'group_id'
+  },
+  groupSecondId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    defaultValue: DataTypes.UUIDV4,
+    field: 'group_second_id'
+  }
+}, {
+  tableName: 'tbl_group',
+  indexes: [
+    {
+      unique: true,
+      fields: ['group_second_id']
+    }
+  ]
+});
+
+User.belongsToMany(Group, {
+  through: 'usergroups',
+  sourceKey: 'userSecondId'
+});
+Group.belongsToMany(User, {
+  through: 'usergroups',
+  sourceKey: 'groupSecondId'
+});
+```
+
 如果你想要连接表中的其他属性,则可以在定义关联之前为连接表定义一个模型,然后再说明它应该使用该模型进行连接,而不是创建一个新的关联:
 
 ```js

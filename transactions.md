@@ -2,8 +2,8 @@
 
 Sequelize 支持两种使用事务的方法:
 
-* 一个将根据 promise 链的结果自动提交或回滚事务,(如果启用)用回调将该事务传递给所有调用
-* 而另一个 leave committing,回滚并将事务传递给用户.
+1. **已托管** 一个将根据 promise 链的结果自动提交或回滚事务,(如果启用)用回调将该事务传递给所有调用
+2. **未托管** 而另一个 leave committing,回滚并将事务传递给用户.
 
 主要区别在于托管事务使用一个回调,对非托管事务而言期望 promise 返回一个 promise 的结果.
 
@@ -58,7 +58,7 @@ return sequelize.transaction(t => {
 
 ```js
 const cls = require('continuation-local-storage'),
-    namespace = cls.createNamespace('my-very-own-namespace');
+const namespace = cls.createNamespace('my-very-own-namespace');
 ```
 
 要启用CLS,你必须通过使用sequelize构造函数的静态方法来告诉Sequelize要使用的命名空间:
@@ -142,6 +142,20 @@ return sequelize.transaction({
   });
 ```
 
+`isolationLevel` 可以在初始化 Sequelize 实例时全局设置,也可以在本地为每个事务设置：
+
+```js
+// 全局的
+new Sequelize('db', 'user', 'pw', {
+  isolationLevel: Sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE
+});
+
+// 本地的
+sequelize.transaction({
+  isolationLevel: Sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE
+});
+```
+
 **注意:** _在MSSQL的情况下,SET ISOLATION LEVEL 查询不被记录, 指定的 isolationLevel 直接传递到 tedious_
 
 ## 非托管事务(then-callback)
@@ -164,52 +178,6 @@ return sequelize.transaction().then(t => {
     return t.rollback();
   });
 });
-```
-
-## 参数
-
-可以使用options对象作为第一个参数来调用`transaction`方法,这允许配置事务.
-
-```js
-return sequelize.transaction({ /* options */ });
-```
-
-以下选项(使用默认值)可用:
-
-```js
-{
-  isolationLevel: 'REPEATABLE_READ',
-  deferrable: 'NOT DEFERRABLE' // postgres 的默认设置
-}
-```
-
-在为 Sequelize 实例或每个局部事务初始化时,`isolationLevel`可以全局设置:
-
-```js
-// 全局
-new Sequelize('db', 'user', 'pw', {
-  isolationLevel: Sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE
-});
-
-// 局部
-sequelize.transaction({
-  isolationLevel: Sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE
-});
-```
-
-`deferrable` 选项在事务开始后触发一个额外的查询,可选地将约束检查设置为延迟或立即. 请注意,这仅在PostgreSQL中受支持.
-
-```js
-sequelize.transaction({
-  // 推迟所有约束:
-  deferrable: Sequelize.Deferrable.SET_DEFERRED,
-
-  // 推迟具体约束:
-  deferrable: Sequelize.Deferrable.SET_DEFERRED(['some_constraint']),
-
-  // 不推迟约束:
-  deferrable: Sequelize.Deferrable.SET_IMMEDIATE
-})
 ```
 
 ## 使用其他 Sequelize 方法

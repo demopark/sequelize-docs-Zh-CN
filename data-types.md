@@ -176,7 +176,7 @@ const sequelizeConfig = require('../config/sequelize')
 const sequelizeAdditions = require('./sequelize-additions')
 
 // 添加新数据类型的函数
-sequelizeAdditions(Sequelize.DataTypes)
+sequelizeAdditions(Sequelize)
 
 // 在这个例子中,创建并导出Sequelize实例
 const sequelize = new Sequelize(sequelizeConfig)
@@ -225,13 +225,15 @@ modules.exports = function sequelizeAdditions(Sequelize) {
       return Number.parseInt(value)
     }
   }
+  
+  DataTypes.NEWTYPE = NEWTYPE;
 
   // 强制,设置 Key
   DataTypes.NEWTYPE.prototype.key = DataTypes.NEWTYPE.key = 'NEWTYPE'
 
   // 可选, 在stringifier后禁用转义. 不建议.
   // 警告:禁用针对SQL注入的Sequelize保护
-  //DataTypes.NEWTYPE.escape = false
+  // DataTypes.NEWTYPE.escape = false
 
   // 为了简便`classToInvokable` 允许你使用没有 `new` 的数据类型
   Sequelize.NEWTYPE = Sequelize.Utils.classToInvokable(DataTypes.NEWTYPE)
@@ -276,7 +278,7 @@ modules.exports = function sequelizeAdditions(Sequelize) {
 
   // 强制, 创建,覆盖或重新分配postgres特定的解析器
   //PgTypes.NEWTYPE.parse = value => value;
-  PgTypes.NEWTYPE.parse = BaseTypes.NEWTYPE.parse;
+  PgTypes.NEWTYPE.parse = DataTypes.NEWTYPE.parse;
 
   // 可选, 添加或覆盖 postgres 特定数据类型的方法
   // 比如 toSql, escape, validate, _stringify, _sanitize...

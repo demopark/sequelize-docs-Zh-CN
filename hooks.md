@@ -188,11 +188,13 @@ new Sequelize(..., {
 
 ### 连接 Hook
 
-Sequelize 提供了两个在获取数据库连接之前和之后立即执行的 hook:
+Sequelize 提供了四个在获取或释放数据库连接之前和之后立即执行的 hook:
 
 ```text
 beforeConnect(config)
 afterConnect(connection, config)
+beforeDisconnect(connection)
+afterDisconnect(connection)
 ```
 
 如果需要异步获取数据库凭据,或者需要在创建后直接访问低级数据库连接,这些 hook 非常有用.

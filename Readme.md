@@ -30,7 +30,7 @@ Sequelize 遵从 [SEMVER](http://semver.org). 支持 Node v6 及更高版本以�
 
 ## 版本
 
-### [v4 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/v4)
+### [v4 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/v4)(停止更新)
 
 ### [v5 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/master)
 

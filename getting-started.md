@@ -159,7 +159,7 @@ class Bar extends Model {}
 Bar.init({ /* ... */ }, { sequelize, timestamps: true });
 ```
 
-你可以在[Model.init API 参考](/class/lib/model.js~Model.html#static-method-init) 或  [sequelize.define API 参考](/class/lib/sequelize.js~Sequelize.html#instance-method-define) 中阅读有关创建模型的更多信息.
+你可以在[Model.init API 参考](http://docs.sequelizejs.com/class/lib/model.js~Model.html#static-method-init) 或  [sequelize.define API 参考](http://docs.sequelizejs.com/class/lib/sequelize.js~Sequelize.html#instance-method-define) 中阅读有关创建模型的更多信息.
 
 ## 将模型与数据库同步
 

@@ -59,7 +59,7 @@ $ npx sequelize-cli init
 }
 ```
 
-现在编辑此文件并设置正确的数据库凭据和方言.
+现在编辑此文件并设置正确的数据库凭据和方言.对象的键(例如 "development")用于 `model/index.js` 以匹配 `process.env.NODE_ENV`(当未定义时,默认值是 "development").
 
 **注意:** _如果你的数据库还不存在,你可以调用 `db:create` 命令. 通过正确的访问,它将为你创建该数据库._
 
@@ -139,7 +139,9 @@ module.exports = {
     return queryInterface.bulkInsert('Users', [{
         firstName: 'John',
         lastName: 'Doe',
-        email: 'demo@demo.com'
+        email: 'demo@demo.com',
+        createdAt: new Date(),
+        updatedAt: new Date()
       }], {});
   },
 
@@ -247,6 +249,90 @@ module.exports = {
             ])
         })
     }
+};
+```
+
+下一个是具有外键的迁移示例. 你可以使用 references 来指定外键:
+
+```js
+module.exports = {
+  up: (queryInterface, Sequelize) => {
+    return queryInterface.createTable('Person', {
+      name: Sequelize.STRING,
+      isBetaMember: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+        allowNull: false
+      },
+      userId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: {
+            tableName: 'users',
+            schema: 'schema'
+          }
+          key: 'id'
+        },
+        allowNull: false
+      },
+    });
+  },
+
+  down: (queryInterface, Sequelize) => {
+    return queryInterface.dropTable('Person');
+  }
+}
+
+```
+
+下一个是使用 async/await 的迁移示例,你可以在其中为新列创建唯一索引:
+
+```js
+module.exports = {
+  async up(queryInterface, Sequelize) {
+    const transaction = await queryInterface.sequelize.transaction();
+    try {
+      await queryInterface.addColumn(
+        'Person',
+        'petName',
+        {
+          type: Sequelize.STRING,
+        },
+        { transaction }
+      );
+      await queryInterface.addIndex(
+        'Person',
+        'petName',
+        {
+          fields: 'petName',
+          unique: true,
+        },
+        { transaction }
+      );
+      await transaction.commit();
+    } catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
+  },
+
+  async down(queryInterface, Sequelize) {
+    const transaction = await queryInterface.sequelize.transaction();
+    try {
+      await queryInterface.removeColumn(
+        'Person',
+        'petName',
+        {
+          type: Sequelize.STRING,
+        },
+        { transaction }
+      );
+      await transaction.commit();
+    } catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
+  },
 };
 ```
 

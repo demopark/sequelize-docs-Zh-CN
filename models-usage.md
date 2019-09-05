@@ -37,6 +37,9 @@ Project.findOne({
 
 假设我们有一个空的数据库,一个 `User` 模型有一个 `username` 和 `job`.
 
+`where` 参数将添加到创建的案例的 `defaults`.
+
+
 ```js
 User
   .findOrCreate({where: {username: 'sdepold'}, defaults: {job: 'Technical Lead JavaScript'}})

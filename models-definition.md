@@ -709,7 +709,7 @@ User.init({}, {
     // 具有有序字段的BTREE索引
     {
       name: 'title_index',
-      method: 'BTREE',
+      using: 'BTREE',
       fields: ['author', {attribute: 'title', collate: 'en_US', order: 'DESC', length: 5}]
     }
   ],
@@ -717,7 +717,7 @@ User.init({}, {
 });
 ```
 
-[0]: /manual/models-definition.html#configuration
-[1]: /manual/data-types.html
+[0]: models-definition.html#configuration
+[1]: data-types.html
 [3]: https://github.com/chriso/validator.js
 [5]: /docs/final/misc#asynchronicity

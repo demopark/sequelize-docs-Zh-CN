@@ -148,6 +148,7 @@ const Op = Sequelize.Op
 [Op.lte]: 10,              // id <= 10
 [Op.ne]: 20,               // id != 20
 [Op.eq]: 3,                // = 3
+[Op.is]: null              // 为 NULL
 [Op.not]: true,            // 不是 TRUE
 [Op.between]: [6, 10],     // 在 6 和 10 之间
 [Op.notBetween]: [11, 15], // 不在 11 和 15 之间
@@ -171,6 +172,7 @@ const Op = Sequelize.Op
 [Op.any]: [2,3]            // 任何数组[2, 3]::INTEGER (仅限PG)
 
 [Op.col]: 'user.organization_id' // = 'user'.'organization_id', 使用数据库语言特定的列标识符, 本例使用 PG
+[Op.gt]: { [Op.all]: literal('SELECT 1') }     // > ALL (SELECT 1)
 ```
 
 #### 范围选项

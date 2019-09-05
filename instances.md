@@ -140,7 +140,7 @@ task.destroy({ force: true })
 Task.create({ title: 'a task' }).then(task => {
   // 进行软删除...
   return task.destroy();
-}).then(() => {
+}).then((task) => {
   // 恢复软删除...
   return task.restore();
 })
@@ -168,6 +168,32 @@ User.bulkCreate([
 }).then(users => {
   console.log(users) // ... 以获取 user 对象的数组
 })
+```
+
+插入多行并返回所有列(仅限Postgres):
+
+```js
+User.bulkCreate([
+  { username: 'barfooz', isAdmin: true },
+  { username: 'foo', isAdmin: true },
+  { username: 'bar', isAdmin: false }
+], { returning: true }) // 将返回插入的每一行的所有列
+.then((result) => {
+  console.log(result);
+});
+```
+
+插入多行并返回特定列(仅限Postgres):
+
+```js
+User.bulkCreate([
+  { username: 'barfooz', isAdmin: true },
+  { username: 'foo', isAdmin: true },
+  { username: 'bar', isAdmin: false }
+], { returning: ['username'] }) // 将仅返回插入的每行的指定列
+.then((result) => {
+  console.log(result);
+});
 ```
 
 一次更新几行:

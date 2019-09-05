@@ -18,7 +18,7 @@
 
 ```ts
 import { Sequelize, Model, DataTypes, BuildOptions } from 'sequelize';
-import { HasManyGetAssociationsMixin, HasManyAddAssociationMixin, HasManyHasAssociationMixin, Association, HasManyCountAssociationsMixin, HasManyCreateAssociationMixin } from '../../lib/associations';
+import { HasManyGetAssociationsMixin, HasManyAddAssociationMixin, HasManyHasAssociationMixin, Association, HasManyCountAssociationsMixin, HasManyCreateAssociationMixin } from 'sequelize';
 
 class User extends Model {
   public id!: number; // 注意在严格模式下需要 `null assertion` 或 `！`.
@@ -101,7 +101,7 @@ User.init({
     allowNull: true
   }
 }, {
-  tableName: 'users',
+  tableName: 'address',
   sequelize: sequelize, // 这一点很重要
 });
 

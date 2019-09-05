@@ -12,7 +12,7 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 })
 ```
 
-**注意:** 你可以通过设置 `dialectOptions` 参数将选项直接传递给方言库.参考[参数](/manual/usage.html#options).
+**注意:** 你可以通过设置 `dialectOptions` 参数将选项直接传递给方言库.
 
 ## MariaDB
 

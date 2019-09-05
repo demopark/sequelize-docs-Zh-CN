@@ -12,6 +12,8 @@ Sequelize v5 将仅支持 Node 6 以及更高版本 [#9015](https://github.com/s
 
 在 v4 中,你会开始收到弃用警告 `String based operators are now deprecated (基于字符串的运算符现在已弃用)`. 同时也介绍了运算符的概念.这些运算符是一些防止散列注入攻击的符号.
 
+详阅 `Querying - 查询`中的`运算符安全性` 内容
+
 **对于 v5**
 
 - 运算符现在默认启用.
