@@ -73,7 +73,7 @@ sequelize.sync()
 - [Migrations - 迁移](migrations.md)
 - [Resources - 资源](resources.md)
 - [TypeScript](typescript.md)
-- [Upgrade to V5 - 升级到 V5](upgrade-to-v5.md)
+- [Upgrade to V6 - 升级到 V5](upgrade-to-v6.md)
 - [Working with legacy tables - 使用遗留表](legacy.md)
 
 # 赞赏支持
