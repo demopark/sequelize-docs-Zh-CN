@@ -140,7 +140,7 @@ Sequelize 可用于创建更复杂比较的符号运算符 -
 ```js
 const Op = Sequelize.Op
 
-[Op.and]: {a: 5}           // 且 (a = 5)
+[Op.and]: [{a: 5}, {b: 6}] // (a = 5) 且 (b = 6)
 [Op.or]: [{a: 5}, {a: 6}]  // (a = 5 或 a = 6)
 [Op.gt]: 6,                // id > 6
 [Op.gte]: 6,               // id >= 6

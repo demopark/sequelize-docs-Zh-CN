@@ -78,10 +78,18 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 
 ## MSSQL
 
-MSSQL的库是 `tedious@^6.0.0` 你只需要定义方言:
+MSSQL的库是 `tedious@^6.0.0` 你只需要定义方言.
+
+请注意: `tedious@^6.0.0` 要求你将特定的 MSSQL 参数嵌套在 `dialectOptions`-对象内的另一个 `options`-对象内.
 
 ```js
 const sequelize = new Sequelize('database', 'username', 'password', {
-  dialect: 'mssql'
+  dialect: 'mssql',
+  dialectOptions: {
+    options: {
+      useUTC: false,
+      dateFirst: 1,
+    }
+  }
 })
 ```

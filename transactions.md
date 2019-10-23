@@ -15,7 +15,6 @@ Sequelize 支持两种使用事务的方法:
 
 ```js
 return sequelize.transaction(t => {
-
   // 在这里链接你的所有查询. 确保你返回他们.
   return User.create({
     firstName: 'Abraham',
@@ -54,10 +53,10 @@ return sequelize.transaction(t => {
 
 ### 自动将事务传递给所有查询
 
-在上面的例子中,事务仍然是手动传递的,通过传递 `{transaction:t}` 作为第二个参数. 要自动将事务传递给所有查询,你必须安装 [continuation local storage](https://github.com/othiym23/node-continuation-local-storage) (CLS) 模块,并在你自己的代码中实例化一个命名空间:
+在上面的例子中,事务仍然是手动传递的,通过传递 `{transaction:t}` 作为第二个参数. 要自动将事务传递给所有查询,你必须安装 [cls-hooked](https://github.com/Jeff-Lewis/cls-hooked) (CLS) 模块,并在你自己的代码中实例化一个命名空间:
 
 ```js
-const cls = require('continuation-local-storage'),
+const cls = require('cls-hooked');
 const namespace = cls.createNamespace('my-very-own-namespace');
 ```
 
@@ -92,10 +91,6 @@ sequelize.transaction(t1 => {
   return User.create({ name: 'Alice' });
 });
 ```
-
-在使用 `Sequelize.useCLS()` 后,从 sequelize 返回的所有 promise 将被修补以维护 CLS 上下文. CLS 是一个复杂的课题 - [cls-bluebird](https://www.npmjs.com/package/cls-bluebird)的文档中有更多细节,用于使 bluebird promise 的补丁与CLS一起工作.
-
-**注意:** _[当使用 cls-hooked 软件包的时候,CLS 仅支持 async/await](https://github.com/othiym23/node-continuation-local-storage/issues/98#issuecomment-323503807). 即使, [cls-hooked](https://github.com/Jeff-Lewis/cls-hooked/blob/master/README.md) 依靠 *试验性的 API* [async_hooks](https://github.com/nodejs/node/blob/master/doc/api/async_hooks.md)_
 
 ## 并行/部分事务
 

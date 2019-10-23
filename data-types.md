@@ -1,6 +1,6 @@
 # Datatypes - 数据类型
 
-以下是 sequelize 支持的一些数据类型. 有关完整和更新的列表请参阅[数据类型](/variable/index.html#static-variable-DataTypes).
+以下是 sequelize 支持的一些数据类型. 有关完整和更新的列表请参阅[数据类型](/master/variable/index.html#static-variable-DataTypes).
 
 ```js
 Sequelize.STRING                      // VARCHAR(255)
@@ -181,13 +181,13 @@ sequelizeAdditions(Sequelize)
 // 在这个例子中,创建并导出Sequelize实例
 const sequelize = new Sequelize(sequelizeConfig)
 
-modules.exports = sequelize
+module.exports = sequelize
 ```
 
 ```js
 // myproject/lib/sequelize-additions.js
 
-modules.exports = function sequelizeAdditions(Sequelize) {
+module.exports = function sequelizeAdditions(Sequelize) {
 
   DataTypes = Sequelize.DataTypes
 
@@ -250,7 +250,7 @@ modules.exports = function sequelizeAdditions(Sequelize) {
 ```js
 // myproject/lib/sequelize-additions.js
 
-modules.exports = function sequelizeAdditions(Sequelize) {
+module.exports = function sequelizeAdditions(Sequelize) {
 
   DataTypes = Sequelize.DataTypes
 
@@ -295,7 +295,7 @@ modules.exports = function sequelizeAdditions(Sequelize) {
 ```js
 // myproject/lib/sequelize-additions.js
 
-modules.exports = function sequelizeAdditions(Sequelize) {
+module.exports = function sequelizeAdditions(Sequelize) {
 
   DataTypes = Sequelize.DataTypes
 

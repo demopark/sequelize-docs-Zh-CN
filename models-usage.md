@@ -128,7 +128,7 @@ Project
 ```js
 User.findAndCountAll({
   include: [
-     { model: Profile, required: true}
+     { model: Profile, required: true }
   ],
   limit: 3
 });
@@ -751,4 +751,50 @@ User.findAll({
 
 ```js
 User.findAll({ include: [{ all: true, nested: true }]});
+```
+
+### 使用 right join 进行关联
+
+默认情况下, 关联是使用 left join 加载的, 也就是说, 它仅包括来自父表的记录. 如果您使用的方言支持，可以通过传递 `right` 属性来将这种行为更改为右连接. 目前, `sqlite` *不*支持[right joins](https://www.sqlite.org/omitted.html).
+
+*注意:* 仅当 `required` 是 false 时才遵循 `right`.
+
+```js
+User.findAll({
+    include: [{
+        model: Tool // 将创建 left join
+    }]
+});
+
+User.findAll({
+    include: [{
+        model: Tool,
+        right: true // 将创建 right join
+    }]
+});
+
+User.findAll({
+    include: [{
+        model: Tool,
+        required: true,
+        right: true // 没有作用, 将创建一个 inner join
+    }]
+});
+
+User.findAll({
+    include: [{
+        model: Tool,
+        where: { name: { [Op.like]: '%ooth%' } },
+        right: true // 没有作用, 将创建一个 inner join
+    }]
+});
+
+User.findAll({
+    include: [{
+        model: Tool,
+        where: { name: { [Op.like]: '%ooth%' } },
+        required: false
+        right: true // 因为我们设置 `required` 为 false, 这将创建一个 right join
+    }]
+});
 ```

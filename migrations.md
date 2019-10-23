@@ -204,6 +204,12 @@ module.exports = {
 }
 ```
 
+我们可以使用 `migration:generate` 生成该文件. 这将在您的迁移文件夹中创建 `xxx-migration-skeleton.js`.
+
+```bash
+$ npx sequelize-cli migration:generate --name migration-skeleton
+```
+
 传递的 `queryInterface` 对象可以用来修改数据库. `Sequelize` 对象存储可用的数据类型,如 `STRING` 或 `INTEGER`. 函数 `up` 或 `down` 应该返回一个 `Promise` . 让我们来看一个例子
 
 ```js
@@ -319,14 +325,7 @@ module.exports = {
   async down(queryInterface, Sequelize) {
     const transaction = await queryInterface.sequelize.transaction();
     try {
-      await queryInterface.removeColumn(
-        'Person',
-        'petName',
-        {
-          type: Sequelize.STRING,
-        },
-        { transaction }
-      );
+      await queryInterface.removeColumn('Person', 'petName', { transaction });
       await transaction.commit();
     } catch (err) {
       await transaction.rollback();
@@ -338,7 +337,18 @@ module.exports = {
 
 ### `.sequelizerc` 文件
 
-这是一个特殊的配置文件. 它允许你指定通常作为参数传递给CLI的各种选项. 在某些情况下,你可以使用它.
+这是一个特殊的配置文件. 它允许你指定通常作为参数传递给CLI的各种选项:
+
+- `env`: 在其中运行命令的环境
+- `config`: 配置文件的路径
+- `options-path`: 带有其他参数的 JSON 文件的路径
+- `migrations-path`: migrations 文件夹的路径
+- `seeders-path`: seeders 文件夹的路径
+- `models-path`: models 文件夹的路径
+- `url`: 要使用的数据库连接字符串. 替代使用 --config 文件
+- `debug`: 可用时显示各种调试信息
+
+在某些情况下,你可以使用它.
 
 - 你想要覆盖到 `migrations`, `models`, `seeders` 或 `config` 文件夹的路径.
 - 你想要重命名 `config.json` 成为别的名字比如 `database.json`

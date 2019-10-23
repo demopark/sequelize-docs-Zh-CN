@@ -2,6 +2,8 @@
 
 Hook(也称为生命周期事件)是执行 sequelize 调用之前和之后调用的函数. 例如,如果要在保存模型之前始终设置值,可以添加一个 `beforeUpdate`  hook.
 
+**注意:** _你不能将 hook 与实例一起使用。 hook 用于模型._
+
 获取完整列表, 请查看 [Hooks file](https://github.com/sequelize/sequelize/blob/master/lib/hooks.js#L7).
 
 ## 操作清单
