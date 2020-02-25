@@ -53,10 +53,10 @@ return sequelize.transaction(t => {
 
 ### 自动将事务传递给所有查询
 
-在上面的例子中,事务仍然是手动传递的,通过传递 `{transaction:t}` 作为第二个参数. 要自动将事务传递给所有查询,你必须安装 [cls-hooked](https://github.com/Jeff-Lewis/cls-hooked) (CLS) 模块,并在你自己的代码中实例化一个命名空间:
+在上面的例子中,事务仍然是手动传递的,通过传递 `{transaction:t}` 作为第二个参数. 要自动将事务传递给所有查询,你必须安装 [continuation local storage](https://github.com/othiym23/node-continuation-local-storage) (CLS) 模块,并在你自己的代码中实例化一个命名空间:
 
 ```js
-const cls = require('cls-hooked');
+const cls = require('continuation-local-storage');
 const namespace = cls.createNamespace('my-very-own-namespace');
 ```
 
@@ -91,6 +91,10 @@ sequelize.transaction(t1 => {
   return User.create({ name: 'Alice' });
 });
 ```
+
+使用完 `Sequelize.useCLS()` 之后, 从 sequelize 返回的所有 promise 都将 patch 以维护 CLS 上下文. CLS 是一个复杂的主题 - [cls-bluebird](https://www.npmjs.com/package/cls-bluebird) 的文档中有更多详细信息，该 patch 用于让 bluebird promise 与 CLS 一同使用。
+
+**注意:** _[当使用 cls-hooked 包时，CLS 目前仅支持async/await](https://github.com/othiym23/node-continuation-local-storage/issues/98#issuecomment-323503807). 虽然, [cls-hooked](https://github.com/Jeff-Lewis/cls-hooked/blob/master/README.md) 依赖于 *实验性 API* [async_hooks](https://github.com/nodejs/node/blob/master/doc/api/async_hooks.md)_
 
 ## 并行/部分事务
 

@@ -21,15 +21,9 @@
 
 Sequelize 是一个基于 promise 的 Node.js ORM, 目前支持 Postgres, MySQL, SQLite 和 Microsoft SQL Server. 它具有强大的事务支持, 关联关系, 预读和延迟加载,读取复制等功能.
 
-Sequelize 遵从 [SEMVER](http://semver.org). 支持 Node v10 及更高版本以便使用 ES6 功能.
+Sequelize 遵从 [SEMVER](http://semver.org). 支持 Node v6 及更高版本以便使用 ES6 功能.
 
 你目前正在查看 Sequelize 的**教程和指南**.你可能还对[API 参考](http://docs.sequelizejs.com/identifiers) (英文)感兴趣.
-
-## 版本
-
-### [v4 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/v4)(停止更新)
-
-### [v5 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/master)
 
 ## 简单示例
 
