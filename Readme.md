@@ -25,6 +25,14 @@ Sequelize 遵从 [SEMVER](http://semver.org). 支持 Node v6 及更高版本以�
 
 你目前正在查看 Sequelize 的**教程和指南**.你可能还对[API 参考](http://docs.sequelizejs.com/identifiers) (英文)感兴趣.
 
+## 版本
+
+### [v6 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/master)
+
+### [v5 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/v5)
+
+### [v4 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/v4)(停止更新)
+
 ## 简单示例
 
 ```js
@@ -51,6 +59,8 @@ sequelize.sync()
 
 ## 文档(v5)
 
+### 核心概念
+
 - [Getting started - 入门](getting-started.md)
 - [Dialects - 方言](dialects.md)
 - [Datatypes - 数据类型](data-types.md)
@@ -60,14 +70,17 @@ sequelize.sync()
 - [Querying - 查询](querying.md)
 - [Instances - 实例](instances.md)
 - [Associations - 关联](associations.md)
+- [Raw queries - 原始查询](raw-queries.md)
+
+### 其它主题
+
 - [Transactions - 事务](transactions.md)
 - [Scopes - 作用域](scopes.md)
-- [Raw queries - 原始查询](raw-queries.md)
 - [Read replication - 读取复制](read-replication.md)
 - [Migrations - 迁移](migrations.md)
 - [Resources - 资源](resources.md)
 - [TypeScript](typescript.md)
-- [Upgrade to V6 - 升级到 V6](upgrade-to-v6.md)
+- [Upgrade to V5 - 升级到 V5](upgrade-to-v5.md)
 - [Working with legacy tables - 使用遗留表](legacy.md)
 
 # 赞赏支持
