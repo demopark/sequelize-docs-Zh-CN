@@ -20,7 +20,7 @@ Sequelize 是一个基于 promise 的 Node.js ORM, 目前支持 Postgres, MySQL,
 
 ### [v4 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/v4)(停止更新)
 
-## 文档
+## 文档(v4)
 
 - [Getting started - 入门](getting-started.md)
 - [Model definition - 模型定义](models-definition.md)
