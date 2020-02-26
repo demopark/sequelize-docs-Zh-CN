@@ -33,30 +33,6 @@ Sequelize 遵从 [SEMVER](http://semver.org). 支持 Node v6 及更高版本以�
 
 ### [v4 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/v4)(停止更新)
 
-## 简单示例
-
-```js
-const { Sequelize, Model, DataTypes } = require('sequelize');
-const sequelize = new Sequelize('sqlite::memory:');
-
-class User extends Model {}
-User.init({
-  username: DataTypes.STRING,
-  birthday: DataTypes.DATE
-}, { sequelize, modelName: 'user' });
-
-sequelize.sync()
-  .then(() => User.create({
-    username: 'janedoe',
-    birthday: new Date(1980, 6, 20)
-  }))
-  .then(jane => {
-    console.log(jane.toJSON());
-  });
-```
-
-请通过 [Getting started - 入门](getting-started.md) 来学习更多相关内容. 如果你想要学习 Sequelize API 请通过 [API 参考](http://docs.sequelizejs.com/identifiers) (英文).
-
 ## 文档(v5)
 
 ### 核心概念
@@ -82,6 +58,30 @@ sequelize.sync()
 - [TypeScript](typescript.md)
 - [Upgrade to V5 - 升级到 V5](upgrade-to-v5.md)
 - [Working with legacy tables - 使用遗留表](legacy.md)
+
+## 简单示例
+
+```js
+const { Sequelize, Model, DataTypes } = require('sequelize');
+const sequelize = new Sequelize('sqlite::memory:');
+
+class User extends Model {}
+User.init({
+  username: DataTypes.STRING,
+  birthday: DataTypes.DATE
+}, { sequelize, modelName: 'user' });
+
+sequelize.sync()
+  .then(() => User.create({
+    username: 'janedoe',
+    birthday: new Date(1980, 6, 20)
+  }))
+  .then(jane => {
+    console.log(jane.toJSON());
+  });
+```
+
+请通过 [Getting started - 入门](getting-started.md) 来学习更多相关内容. 如果你想要学习 Sequelize API 请通过 [API 参考](http://docs.sequelizejs.com/identifiers) (英文).
 
 # 赞赏支持
 ![赞赏支持](https://raw.githubusercontent.com/demopark/electron-api-demos-Zh_CN/master/assets/img/td.png)
