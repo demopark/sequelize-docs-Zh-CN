@@ -34,7 +34,6 @@ Sequelize 是一个基于 promise 的 Node.js ORM, 目前支持 Postgres, MySQL,
 - [Raw queries - 原始查询](raw-queries.md)
 - [Migrations - 迁移](migrations.md)
 - [Upgrade to V4 - 升级到 V4](upgrade-to-v4.md)
-- [Upgrade to V5 - 升级到 V5](upgrade-to-v5.md)
 - [Working with legacy tables - 使用遗留表](legacy.md)
 
 ## 使用示例
