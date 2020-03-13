@@ -1,8 +1,9 @@
-# Working with legacy tables - 使用遗留表
+# Working with Legacy Tables - 使用遗留表
 
-虽然 Sequelize 自认为可以开箱即用, 但是如果你要使用应用之前遗留的资产和凭据,仅需要通过定义(否则生成)表和字段名称即可.
+虽然 Sequelize 自认为可以开箱即用, 但是如果你要处理遗留表并向前验证应用程序,仅需要通过定义(否则生成)表和字段名称即可.
 
 ## 表
+
 ```js
 class User extends Model {}
 User.init({
@@ -15,11 +16,12 @@ User.init({
 ```
 
 ## 字段
+
 ```js
 class MyModel extends Model {}
 MyModel.init({
   userId: {
-    type: Sequelize.INTEGER,
+    type: DataTypes.INTEGER,
     field: 'user_id'
   }
 }, { sequelize });
@@ -27,32 +29,33 @@ MyModel.init({
 
 ## 主键
 
-Sequelize将假设你的表默认具有`id`主键属性.
+默认情况下,Sequelize 会假设你的表具有 `id` 主键属性.
 
-要定义你自己的主键:
+定义自己的主键:
 
 ```js
 class Collection extends Model {}
 Collection.init({
   uid: {
-    type: Sequelize.INTEGER,
+    type: DataTypes.INTEGER,
     primaryKey: true,
-    autoIncrement: true // 对于 postgres 自动转换为 SERIAL
+    autoIncrement: true // 自动转换为 PostgreSQL 的 SERIAL
   }
 }, { sequelize });
 
 class Collection extends Model {}
 Collection.init({
   uuid: {
-    type: Sequelize.UUID,
+    type: DataTypes.UUID,
     primaryKey: true
   }
 }, { sequelize });
 ```
 
-如果你的模型根本没有主键,你可以使用 `Model.removeAttribute('id');`
+如果你的模型根本没有主键,则可以使用 `Model.removeAttribute('id');`
 
 ## 外键
+
 ```js
 // 1:1
 Organization.belongsTo(User, { foreignKey: 'owner_id' });
