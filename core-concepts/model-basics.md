@@ -67,7 +67,8 @@ User.init({
   }
 }, {
   // 这是其他模型参数
-  sequelize, // 我们需要传递连接实例
+  sequelize, // 我们需要传递连接实例 
+  //如果你的实例化对象名字不为sequelize 请使用 sequelize:<实例化对象名>  ，如果想知道为什么,请参考http://es6-features.org/#Constants
   modelName: 'User' // 我们需要选择模型名称
 });
 
