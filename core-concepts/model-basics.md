@@ -67,7 +67,7 @@ User.init({
   }
 }, {
   // 这是其他模型参数
-  sequelize, // 我们需要传递连接实例
+  sequelize, // 我们需要传递连接实例 (缩写) 相当于 sequlize:sequlize
   modelName: 'User' // 我们需要选择模型名称
 });
 
