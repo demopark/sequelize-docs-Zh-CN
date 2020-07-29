@@ -8,19 +8,47 @@
 
 为了避免非 TS 用户的安装膨胀,你必须手动安装以下键入程序包:
 
-- `@types/node` (这是通常是必须的)
+- `@types/node` (在 node 项目中这是通常是必须的)
 - `@types/validator`
-- `@types/bluebird`
 
 ## 使用
 
-最小 TypeScript 项目的示例:
+带有严格类型检查的最小 TypeScript 项目示例.
+
+<!--
+NOTE! 
+Keep the following code in sync with `typescriptDocs/ModelInit.ts` to ensure
+it typechecks correctly.
+-->
 
 ```ts
-import { Sequelize, Model, DataTypes, BuildOptions } from 'sequelize';
-import { HasManyGetAssociationsMixin, HasManyAddAssociationMixin, HasManyHasAssociationMixin, Association, HasManyCountAssociationsMixin, HasManyCreateAssociationMixin } from 'sequelize';
+import {
+  Sequelize,
+  Model,
+  DataTypes,
+  HasManyGetAssociationsMixin,
+  HasManyAddAssociationMixin,
+  HasManyHasAssociationMixin,
+  Association,
+  HasManyCountAssociationsMixin,
+  HasManyCreateAssociationMixin,
+  Optional,
+} from 'sequelize';
 
-class User extends Model {
+const sequelize = new Sequelize('mysql://root:asd123@localhost:3306/mydb');
+
+// These are all the attributes in the User model
+interface UserAttributes {
+  id: number;
+  name: string;
+  preferredName: string | null;
+}
+
+// Some attributes are optional in `User.build` and `User.create` calls
+interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
+
+class User extends Model<UserAttributes, UserCreationAttributes>
+  implements UserAttributes {
   public id!: number; // Note that the `null assertion` `!` is required in strict mode.
   public name!: string;
   public preferredName!: string | null; // for nullable fields
@@ -32,7 +60,6 @@ class User extends Model {
   // Since TS cannot determine model association at compile time
   // we have to declare them here purely virtually
   // these will not exist until `Model.init` was called.
-
   public getProjects!: HasManyGetAssociationsMixin<Project>; // Note the null assertions!
   public addProject!: HasManyAddAssociationMixin<Project, number>;
   public hasProject!: HasManyHasAssociationMixin<Project, number>;
@@ -48,9 +75,16 @@ class User extends Model {
   };
 }
 
-const sequelize = new Sequelize('mysql://root:asd123@localhost:3306/mydb');
+interface ProjectAttributes {
+  id: number;
+  ownerId: number;
+  name: string;
+}
 
-class Project extends Model {
+interface ProjectCreationAttributes extends Optional<ProjectAttributes, 'id'> {}
+
+class Project extends Model<ProjectAttributes, ProjectCreationAttributes>
+  implements ProjectAttributes {
   public id!: number;
   public ownerId!: number;
   public name!: string;
@@ -59,7 +93,14 @@ class Project extends Model {
   public readonly updatedAt!: Date;
 }
 
-class Address extends Model {
+interface AddressAttributes {
+  userId: number;
+  address: string;
+}
+
+// You can write `extends Model<AddressAttributes, AddressAttributes>` instead,
+// but that will do the exact same thing as below
+class Address extends Model<AddressAttributes> implements AddressAttributes {
   public userId!: number;
   public address!: string;
 
@@ -67,70 +108,77 @@ class Address extends Model {
   public readonly updatedAt!: Date;
 }
 
-Project.init({
-  id: {
-    type: DataTypes.INTEGER.UNSIGNED, // you can omit the `new` but this is discouraged
-    autoIncrement: true,
-    primaryKey: true,
+Project.init(
+  {
+    id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    ownerId: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
+    name: {
+      type: new DataTypes.STRING(128),
+      allowNull: false,
+    },
   },
-  ownerId: {
-    type: DataTypes.INTEGER.UNSIGNED,
-    allowNull: false,
+  {
+    sequelize,
+    tableName: 'projects',
   },
-  name: {
-    type: new DataTypes.STRING(128),
-    allowNull: false,
-  }
-}, {
-  sequelize,
-  tableName: 'projects',
-});
+);
 
-User.init({
-  id: {
-    type: DataTypes.INTEGER.UNSIGNED,
-    autoIncrement: true,
-    primaryKey: true,
+User.init(
+  {
+    id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    name: {
+      type: new DataTypes.STRING(128),
+      allowNull: false,
+    },
+    preferredName: {
+      type: new DataTypes.STRING(128),
+      allowNull: true,
+    },
   },
-  name: {
-    type: new DataTypes.STRING(128),
-    allowNull: false,
+  {
+    tableName: 'users',
+    sequelize, // passing the `sequelize` instance is required
   },
-  preferredName: {
-    type: new DataTypes.STRING(128),
-    allowNull: true
-  }
-}, {
-  tableName: 'users',
-  sequelize: sequelize, // this bit is important
-});
+);
 
-Address.init({
-  userId: {
-    type: DataTypes.INTEGER.UNSIGNED,
+Address.init(
+  {
+    userId: {
+      type: DataTypes.INTEGER.UNSIGNED,
+    },
+    address: {
+      type: new DataTypes.STRING(128),
+      allowNull: false,
+    },
   },
-  address: {
-    type: new DataTypes.STRING(128),
-    allowNull: false,
-  }
-}, {
-  tableName: 'address',
-  sequelize: sequelize, // this bit is important
-});
+  {
+    tableName: 'address',
+    sequelize, // passing the `sequelize` instance is required
+  },
+);
 
 // Here we associate which actually populates out pre-declared `association` static and other methods.
 User.hasMany(Project, {
   sourceKey: 'id',
   foreignKey: 'ownerId',
-  as: 'projects' // this determines the name in `associations`!
+  as: 'projects', // this determines the name in `associations`!
 });
 
-Address.belongsTo(User, {targetKey: 'id'});
-User.hasOne(Address,{sourceKey: 'id'});
+Address.belongsTo(User, { targetKey: 'id' });
+User.hasOne(Address, { sourceKey: 'id' });
 
-async function stuff() {
-  // Please note that when using async/await you lose the `bluebird` promise context
-  // and you fall back to native
+async function doStuffWithUser() {
   const newUser = await User.create({
     name: 'Johnny',
     preferredName: 'John',
@@ -145,38 +193,149 @@ async function stuff() {
     include: [User.associations.projects],
     rejectOnEmpty: true, // Specifying true here removes `null` from the return type!
   });
-  console.log(ourUser.projects![0].name); // Note the `!` null assertion since TS can't know if we included
-                                          // the model or not
+
+  // Note the `!` null assertion since TS can't know if we included
+  // the model or not
+  console.log(ourUser.projects![0].name);
+}
+```
+
+### 使用非严格类型
+
+Sequelize v5 的类型允许你定义模型而无需指定属性类型. 对于向后兼容以及在你觉得对属性进行严格检查是不值得的情况下, 这仍然是可行的.
+
+<!--
+NOTE! 
+Keep the following code in sync with `typescriptDocs/ModelInitNoAttributes.ts` to ensure
+it typechecks correctly.
+-->
+
+```ts
+import { Sequelize, Model, DataTypes } from 'sequelize';
+
+const sequelize = new Sequelize('mysql://root:asd123@localhost:3306/mydb');
+
+class User extends Model {
+  public id!: number; // Note that the `null assertion` `!` is required in strict mode.
+  public name!: string;
+  public preferredName!: string | null; // for nullable fields
+}
+
+User.init(
+  {
+    id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    name: {
+      type: new DataTypes.STRING(128),
+      allowNull: false,
+    },
+    preferredName: {
+      type: new DataTypes.STRING(128),
+      allowNull: true,
+    },
+  },
+  {
+    tableName: 'users',
+    sequelize, // passing the `sequelize` instance is required
+  },
+);
+
+async function doStuffWithUserModel() {
+  const newUser = await User.create({
+    name: 'Johnny',
+    preferredName: 'John',
+  });
+  console.log(newUser.id, newUser.name, newUser.preferredName);
+
+  const foundUser = await User.findOne({ where: { name: 'Johnny' } });
+  if (foundUser === null) return;
+  console.log(foundUser.name);
 }
 ```
 
 ## 使用 `sequelize.define`
 
-当我们使用 `sequelize.define` 方法定义模型时,TypeScript 不知道如何生成 `class` 定义. 因此,我们需要做一些手动工作,并声明一个接口和一个类型,并最终将 `.define`  的结果转换为 _static_ 类型.
+在 v5 之前的 Sequelize 版本中, 定义模型的默认方式涉及使用 `sequelize.define`. 仍然可以使用它来定义模型, 也可以使用接口在这些模型中添加类型.
+
+<!--
+NOTE! 
+Keep the following code in sync with `typescriptDocs/Define.ts` to ensure
+it typechecks correctly.
+-->
 
 ```ts
-// 我们需要为模型声明一个接口,该接口基本上就是我们的类
-interface MyModel extends Model {
-  readonly id: number;
+import { Sequelize, Model, DataTypes, Optional } from 'sequelize';
+
+const sequelize = new Sequelize('mysql://root:asd123@localhost:3306/mydb');
+
+// We recommend you declare an interface for the attributes, for stricter typechecking
+interface UserAttributes {
+  id: number;
+  name: string;
 }
 
-// 需要声明静态模型,以便 `findOne` 等使用正确的类型.
-type MyModelStatic = typeof Model & {
-  new (values?: object, options?: BuildOptions): MyModel;
-}
+// Some fields are optional when calling UserModel.create() or UserModel.build()
+interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
 
-// TS 无法从 `.define` 调用中派生出正确的类定义,因此我们需要在此处进行强制转换.
-const MyDefineModel = <MyModelStatic>sequelize.define('MyDefineModel', {
+// We need to declare an interface for our model that is basically what our class would be
+interface UserInstance
+  extends Model<UserAttributes, UserCreationAttributes>,
+    UserAttributes {}
+
+const UserModel = sequelize.define<UserInstance>('User', {
   id: {
     primaryKey: true,
     type: DataTypes.INTEGER.UNSIGNED,
+  },
+  name: {
+    type: DataTypes.STRING,
   }
 });
 
-async function stuffTwo() {
-  const myModel = await MyDefineModel.findByPk(1, {
+async function doStuff() {
+  const instance = await UserModel.findByPk(1, {
     rejectOnEmpty: true,
   });
-  console.log(myModel.id);
+  console.log(instance.id);
+}
+```
+
+如果你对模型上非严格的属性检查命令感到满意，则可以通过定义 Instance 来扩展 `Model` 而无需泛型类型中的任何属性, 从而节省一些代码.
+
+<!--
+NOTE! 
+Keep the following code in sync with `typescriptDocs/DefineNoAttributes.ts` to ensure
+it typechecks correctly.
+-->
+
+```ts
+import { Sequelize, Model, DataTypes } from 'sequelize';
+
+const sequelize = new Sequelize('mysql://root:asd123@localhost:3306/mydb');
+
+// We need to declare an interface for our model that is basically what our class would be
+interface UserInstance extends Model {
+  id: number;
+  name: string;
+}
+
+const UserModel = sequelize.define<UserInstance>('User', {
+  id: {
+    primaryKey: true,
+    type: DataTypes.INTEGER.UNSIGNED,
+  },
+  name: {
+    type: DataTypes.STRING,
+  },
+});
+
+async function doStuff() {
+  const instance = await UserModel.findByPk(1, {
+    rejectOnEmpty: true,
+  });
+  console.log(instance.id);
 }
 ```

@@ -104,8 +104,8 @@ const sequelize = new Sequelize('sqlite::memory:', {
 });
 ```
 
-## Bluebird Promises 和 async/await
+## Promises 和 async/await
 
-Sequelize 提供的大多数方法都是异步的,因此返回 Promises. 它们都是 [Bluebird](http://bluebirdjs.com) Promises,因此你可以使用丰富的Bluebird API(例如,使用`finally`,`tap`,`tapCatch`,`map`,`mapSeries`, 等). 如果要设置任何特定的 Bluebird 的参数,则可以使用 `Sequelize.Promise` 访问 Sequelize 内部使用的 Bluebird 构造函数.
+Sequelize 提供的大多数方法都是异步的,因此返回 Promises. 它们都是 [Promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise), 因此你可以直接使用Promise API(例如,使用 `then`, `catch`, `finally`). 
 
 当然,使用 `async` 和 `await` 也可以正常工作.

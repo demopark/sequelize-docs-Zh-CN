@@ -25,16 +25,27 @@ Sequelize 遵从 [语义版本控制](http://semver.org). 支持 Node v10 及更
 
 你目前正在查看 Sequelize 的**教程和指南**.你可能还对[API 参考](http://docs.sequelizejs.com/identifiers) (英文)感兴趣.
 
+# 数据库引擎支持
+
+## v6
+|  引擎 |  支持的最低版本 |
+| :------------: | :------------: |
+|  Postgre | [9.5 ](https://www.postgresql.org/docs/9.5/ ) |
+|  MySQL |  [5.7](https://dev.mysql.com/doc/refman/5.7/en/) |
+|  MariaDB |  [10.1](https://mariadb.com/kb/en/changes-improvements-in-mariadb-101/) |
+|  Microsoft SQL |  `12.0.2000` |
+|  SQLite |  [3.0](https://www.sqlite.org/version3.html) 
+
 ## 版本
 
-### [v6 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/master)(v6 现在处于 beta 阶段)
+### [v6 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/master)(现行版本)
 
-### [v5 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/v5)
+### [v5 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/v5)(计划停止)
 
 ### [v4 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/v4)(停止更新)
 
 
-## 文档(v6-beta)
+## 文档(v6)
 
 ### 核心概念
 

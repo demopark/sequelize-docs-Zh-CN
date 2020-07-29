@@ -309,6 +309,12 @@ CREATE TABLE IF NOT EXISTS "ActorMovies" (
 
 与一对一和一对多关系不同,对于多对多关系,`ON UPDATE` 和 `ON DELETE` 的默认值为 `CASCADE`.
 
+当模型中不存在主键时，Belongs-to-Many 将创建一个唯一键。 可以使用 **uniqueKey**  参数覆盖此唯一键名.
+
+```js
+Project.belongsToMany(User, { through: UserProjects, uniqueKey: 'my_custom_unique' })
+```
+
 ## 基本的涉及关联的查询
 
 了解了定义关联的基础知识之后,我们可以查看涉及关联的查询. 最常见查询是 *read* 查询(即 SELECT). 稍后,将展示其他类型的查询.

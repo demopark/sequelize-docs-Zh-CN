@@ -58,7 +58,7 @@ Bar.addScope('open', {
     }
 });
 Foo.hasMany(Bar);
-Foo.hasMany(Bar.scope('testTitleScope'), { as: 'openBars' });
+Foo.hasMany(Bar.scope('open'), { as: 'openBars' });
 ```
 
 使用上面的代码,`myFoo.getOpenBars()` 产生与上面所示相同的 SQL.

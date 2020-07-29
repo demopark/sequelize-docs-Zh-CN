@@ -147,7 +147,7 @@ Also, if only a few attributes have changed when you call `save`, only those fie
 
 ```js
 const jane = await User.create({ name: "Jane", age: 100 });
-const incrementResult = await user.increment('age', { by: 2 });
+const incrementResult = await jane.increment('age', { by: 2 });
 // 注意: 如只增加 1, 你可以省略 'by' 参数, 只需执行 `user.increment('age')`
 
 // 在 PostgreSQL 中, 除非设置了 `{returning：false}` 参数(不然它将是 undefined),
