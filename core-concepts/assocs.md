@@ -324,12 +324,12 @@ Project.belongsToMany(User, { through: UserProjects, uniqueKey: 'my_custom_uniqu
 ```js
 // 这是我们用于以下示例的模型的设置
 const Ship = sequelize.define('ship', {
-  name: DataTypes.TEXT,
+  name: DataTypes.STRING,
   crewCapacity: DataTypes.INTEGER,
   amountOfSails: DataTypes.INTEGER
 }, { timestamps: false });
 const Captain = sequelize.define('captain', {
-  name: DataTypes.TEXT,
+  name: DataTypes.STRING,
   skillLevel: {
     type: DataTypes.INTEGER,
     validate: { min: 1, max: 10 }
@@ -412,8 +412,8 @@ console.log('Amount of Sails:', awesomeCaptain.ship.amountOfSails);
 让我们以简化的形式考虑 Ship 和 Captain 模型,仅着眼于当前主题,如下所示(较少的字段)：
 
 ```js
-const Ship = sequelize.define('ship', { name: DataTypes.TEXT }, { timestamps: false });
-const Captain = sequelize.define('captain', { name: DataTypes.TEXT }, { timestamps: false });
+const Ship = sequelize.define('ship', { name: DataTypes.STRING }, { timestamps: false });
+const Captain = sequelize.define('captain', { name: DataTypes.STRING }, { timestamps: false });
 ```
 
 有三种方法可以为外键指定不同的名称：
@@ -714,12 +714,12 @@ console.log((await ship.getCaptain()).name); // "Jack Sparrow"
 
 ```js
 const Foo = sequelize.define('foo', {
-  name: { type: DataTypes.TEXT, unique: true }
+  name: { type: DataTypes.STRING, unique: true }
 }, { timestamps: false });
 const Bar = sequelize.define('bar', {
-  title: { type: DataTypes.TEXT, unique: true }
+  title: { type: DataTypes.STRING, unique: true }
 }, { timestamps: false });
-const Baz = sequelize.define('baz', { summary: DataTypes.TEXT }, { timestamps: false });
+const Baz = sequelize.define('baz', { summary: DataTypes.STRING }, { timestamps: false });
 Foo.hasOne(Bar, { sourceKey: 'name', foreignKey: 'fooName' });
 Bar.hasMany(Baz, { sourceKey: 'title', foreignKey: 'barTitle' });
 // [...]
@@ -735,10 +735,10 @@ await Baz.addBar("Bar's Title Here");
 
 ```js
 const Foo = sequelize.define('foo', {
-  name: { type: DataTypes.TEXT, unique: true }
+  name: { type: DataTypes.STRING, unique: true }
 }, { timestamps: false });
 const Bar = sequelize.define('bar', {
-  title: { type: DataTypes.TEXT, unique: true }
+  title: { type: DataTypes.STRING, unique: true }
 }, { timestamps: false });
 ```
 
