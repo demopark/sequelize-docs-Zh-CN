@@ -686,9 +686,9 @@ Game.belongsTo(Team);
 让我们再次使用"船和船长"的示例. 此外,我们将假定船长姓名是唯一的：
 
 ```js
-const Ship = sequelize.define('ship', { name: DataTypes.TEXT }, { timestamps: false });
+const Ship = sequelize.define('ship', { name: DataTypes.STRING }, { timestamps: false });
 const Captain = sequelize.define('captain', {
-  name: { type: DataTypes.TEXT, unique: true }
+  name: { type: DataTypes.STRING, unique: true }
 }, { timestamps: false });
 ```
 
