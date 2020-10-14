@@ -15,7 +15,7 @@ const User = sequelize.define('user', {
   username: {
     type: DataTypes.STRING,
     get() {
-      const rawValue = this.getDataValue(username);
+      const rawValue = this.getDataValue('username');
       return rawValue ? rawValue.toUpperCase() : null;
     }
   }
@@ -27,10 +27,10 @@ const User = sequelize.define('user', {
 ```js
 const user = User.build({ username: 'SuperUser123' });
 console.log(user.username); // 'SUPERUSER123'
-console.log(user.getDataValue(username)); // 'SuperUser123'
+console.log(user.getDataValue('username')); // 'SuperUser123'
 ```
 
-注意,尽管上面记录为 `SUPERUSER123`,但是真正存储在数据库中的值仍然是 `SuperUser123`. 我们使用了 `this.getDataValue(username)` 来获得该值,并将其转换为大写.
+注意,尽管上面记录为 `SUPERUSER123`,但是真正存储在数据库中的值仍然是 `SuperUser123`. 我们使用了 `this.getDataValue('username')` 来获得该值,并将其转换为大写.
 
 如果我们尝试在获取器中使用 `this.username`,我们将陷入无限循环！ 这就是为什么 Sequelize 提供 `getDataValue` 方法的原因.
 
@@ -55,7 +55,7 @@ const User = sequelize.define('user', {
 ```js
 const user = User.build({ username: 'someone', password: 'NotSo§tr0ngP4$SW0RD!' });
 console.log(user.password); // '7cfc84b8ea898bb72462e78b4643cfccd77e9f05678ec2ce78754147ba947acc'
-console.log(user.getDataValue(password)); // '7cfc84b8ea898bb72462e78b4643cfccd77e9f05678ec2ce78754147ba947acc'
+console.log(user.getDataValue('password')); // '7cfc84b8ea898bb72462e78b4643cfccd77e9f05678ec2ce78754147ba947acc'
 ```
 
 Sequelize 在将数据发送到数据库之前自动调用了设置器. 数据库得到的唯一数据是已经散列过的值.
