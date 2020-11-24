@@ -98,7 +98,7 @@ try {
 使用托管事务时,你 *不应* 手动提交或回滚事务. 如果所有查询都成功(就不引发任何错误而言),但是你仍然想回滚事务,那么你应该自己引发一个错误：
 
 ```js
-await sequelize.transaction(t => {
+await sequelize.transaction(async t => {
   const user = await User.create({
     firstName: 'Abraham',
     lastName: 'Lincoln'

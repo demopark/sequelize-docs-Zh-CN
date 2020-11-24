@@ -5,7 +5,7 @@
 Sequelize 为模型提供了 `underscored` 参数. 设为 `true` 时,此参数会将所有属性的 `field` 参数设置为其名称的 [snake_case](https://en.wikipedia.org/wiki/Snake_case) 版本. 这也适用于由关联和其他自动生成的字段自动生成的外键. 例：
 
 ```js
-const User = sequelize.define('task', { username: Sequelize.STRING }, {
+const User = sequelize.define('user', { username: Sequelize.STRING }, {
   underscored: true
 });
 const Task = sequelize.define('task', { title: Sequelize.STRING }, {

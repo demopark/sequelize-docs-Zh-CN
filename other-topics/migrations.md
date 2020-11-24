@@ -330,6 +330,34 @@ module.exports = {
 };
 ```
 
+下一个示例, 该迁移创建具多个字段组成的唯一索引, 该索引允许一个关系存在多次, 但只有一个满足条件:
+
+```js
+module.exports = {
+  up: (queryInterface, Sequelize) => {
+    queryInterface.createTable('Person', {
+      name: Sequelize.DataTypes.STRING,
+      bool: {
+        type: Sequelize.DataTypes.BOOLEAN,
+        defaultValue: false
+      }
+    }).then((queryInterface, Sequelize) => {
+      queryInterface.addIndex(
+        'Person',
+        ['name', 'bool'],
+        {
+          indicesType: 'UNIQUE',
+          where: { bool : 'true' },
+        }
+      );
+    });
+  },
+  down: (queryInterface, Sequelize) => {
+    return queryInterface.dropTable('Person');
+  }
+}
+```
+
 ### `.sequelizerc` 文件
 
 这是一个特殊的配置文件. 它允许你指定通常作为参数传递给CLI的各种选项:
