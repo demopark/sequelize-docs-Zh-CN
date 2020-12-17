@@ -2,7 +2,7 @@
 
 作用域用于帮助你重用代码. 你可以定义常用查询,并指定诸如 `where`, `include`, `limit` 等参数.
 
-本指南涉及模型作用域. 你可能也对[关联作用域指南](advanced-association-concepts/association-scopes.md)感兴趣,它们相似但又不同.
+本指南涉及模型作用域. 你可能也对[关联作用域指南](../advanced-association-concepts/association-scopes.md)感兴趣,它们相似但又不同.
 
 ## 定义
 

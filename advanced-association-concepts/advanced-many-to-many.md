@@ -1,6 +1,6 @@
 # Advanced M:N Associations - 高级 M:N 关联
 
-阅读本指南之前,请确保已阅读 [关联指南](core-concepts/assocs.md).
+阅读本指南之前,请确保已阅读 [关联指南](../core-concepts/assocs.md).
 
 让我们从  `User` 和 `Profile` 之间的多对多关系示例开始.
 
@@ -293,7 +293,7 @@ User.findAll({
 
 与其他关系类似,可以为多对多关系定义别名.
 
-在继续之前,请回顾[关联指南](core-concepts/assocs.md)上的 `belongsTo` 别名示例. 请注意,在这种情况下,定义关联影响 include 完成方式(即传递关联名称)和 Sequelize 为外键选择的名称(在该示例中,`leaderId` 是在 `Ship` 模型上创建的) .
+在继续之前,请回顾[关联指南](../core-concepts/assocs.md)上的 `belongsTo` 别名示例. 请注意,在这种情况下,定义关联影响 include 完成方式(即传递关联名称)和 Sequelize 为外键选择的名称(在该示例中,`leaderId` 是在 `Ship` 模型上创建的) .
 
 为一个 `belongsToMany` 关联定义一个别名也会影响 include 执行的方式：
 

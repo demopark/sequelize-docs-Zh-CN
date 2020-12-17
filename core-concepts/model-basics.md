@@ -334,7 +334,7 @@ DataTypes.DATEONLY   // 不带时间的 DATE
 
 ### 其它
 
-还有其他数据类型,请参见[其它数据类型](other-topics/other-data-types.md).
+还有其他数据类型,请参见[其它数据类型](../other-topics/other-data-types.md).
 
 ## 列参数
 

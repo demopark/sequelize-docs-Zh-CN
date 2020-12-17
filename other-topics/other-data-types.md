@@ -1,6 +1,6 @@
 # Other Data Types - 其他数据类型
 
-除了[模型基础](core-concepts/model-basics.md)指南中提到的最常见的数据类型外,Sequelize 还提供了其他几种数据类型.
+除了[模型基础](../core-concepts/model-basics.md)指南中提到的最常见的数据类型外,Sequelize 还提供了其他几种数据类型.
 
 ## 范围 (仅限 PostgreSQL)
 

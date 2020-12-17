@@ -383,7 +383,7 @@ console.log('Amount of Sails:', awesomeCaptain.ship.amountOfSails);
 
 如上所示,通过使用 include 参数 在 Sequelize 中执行预先加载. 观察到这里只对数据库执行了一个查询(与实例一起带回关联的数据).
 
-这只是 Sequelize 中预先加载的简单介绍. 还有更多内容,你可以在[预先加载的专用指南](advanced-association-concepts/eager-loading.md)中学习
+这只是 Sequelize 中预先加载的简单介绍. 还有更多内容,你可以在[预先加载的专用指南](../advanced-association-concepts/eager-loading.md)中学习
 
 ### 创建, 更新和删除
 

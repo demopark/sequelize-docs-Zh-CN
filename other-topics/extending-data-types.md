@@ -1,6 +1,6 @@
 # Extending Data Types - 扩展数据类型
 
-你尝试实现的类型很可能已经包含在[数据类型](core-concepts/model-basics.md)中. 如果不包括新的数据类型,本手册将说明如何自己编写它.
+你尝试实现的类型很可能已经包含在[数据类型](../core-concepts/model-basics.md)中. 如果不包括新的数据类型,本手册将说明如何自己编写它.
 
 Sequelize 不会在数据库中创建新的数据类型. 本教程说明了如何使 Sequelize 识别新数据类型,并假定这些新数据类型已在数据库中创建.
 

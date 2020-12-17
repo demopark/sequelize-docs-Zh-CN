@@ -2,7 +2,7 @@
 
 Sequelize 提供了多种方法来协助查询数据库中的数据.
 
-*重要说明：要使用 Sequelize 执行生产级别的查询,请确保你还阅读了[事务指南](other-topics/transactions.md). 事务对于确保数据完整性和提供其它好处很重要.*
+*重要说明：要使用 Sequelize 执行生产级别的查询,请确保你还阅读了[事务指南](../other-topics/transactions.md). 事务对于确保数据完整性和提供其它好处很重要.*
 
 本指南将说明如何进行标准的 [增删改查(CRUD)](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) 查询.
 
@@ -423,7 +423,7 @@ WHERE (
 
 可以使用所有支持的运算符查询范围类型.
 
-请记住,提供的范围值也可以[定义绑定的 包含/排除](other-topics/other-data-types.md).
+请记住,提供的范围值也可以[定义绑定的 包含/排除](../other-topics/other-data-types.md).
 
 ```js
 [Op.contains]: 2,            // @> '2'::integer  (PG range 包含元素运算符)

@@ -52,7 +52,7 @@ console.log(isDeepEqual(image, commentable)); // true
 * 在 `Comment` 模型中定义一个名为 `commentableType` 的字符串字段;
 * 在 `Image`/`Video` 和 `Comment` 之间定义 `hasMany` 和 `belongsTo` 关联:
   * 禁用约束(即使用 `{ constraints: false }`),因为同一个外键引用了多个表;
-  * 指定适当的 [关联作用域](advanced-association-concepts/association-scopes.md);
+  * 指定适当的 [关联作用域](../advanced-association-concepts/association-scopes.md);
 * 为了适当地支持延迟加载,请在 `Comment` 模型上定义一个名为 `getCommentable` 的新实例方法,该方法在后台调用正确的 mixin 来获取适当的注释对象;
 * 为了正确支持预先加载,请在 `Comment` 模型上定义一个 `afterFind` hook,该 hook 将在每个实例中自动填充 `commentable` 字段;
 * 为了防止预先加载的 bug/错误,你还可以在相同的 `afterFind` hook 中从 Comment 实例中删除具体字段 `image` 和 `video`,仅保留抽象的 `commentable` 字段可用.
@@ -130,7 +130,7 @@ Comment.addHook("afterFind", findResult => {
 * *Image -> Comment* 关联定义了一个关联作用域: `{ commentableType: 'image' }`
 * *Video -> Comment* 关联定义了一个关联作用域: `{ commentableType: 'video' }`
 
-使用关联函数时,这些作用域会自动应用(如[关联作用域](advanced-association-concepts/association-scopes.md)指南中所述). 以下是一些示例及其生成的 SQL 语句：
+使用关联函数时,这些作用域会自动应用(如[关联作用域](../advanced-association-concepts/association-scopes.md)指南中所述). 以下是一些示例及其生成的 SQL 语句：
 
 * `image.getComments()`:
 
@@ -227,7 +227,7 @@ Found comment #1 with image commentable: { id: 1,
 * 在联结模型中定义一个名为 `taggableType` 的字符串字段;
 * 定义两个模型之间的 `belongsToMany` 关联和 `标签`:
   * 禁用约束 (即, 使用 `{ constraints: false }`), 因为同一个外键引用了多个表;
-  * 指定适当的 [关联作用域](advanced-association-concepts/association-scopes.md);
+  * 指定适当的 [关联作用域](../advanced-association-concepts/association-scopes.md);
 * 在 `Tag` 模型上定义一个名为 `getTaggables` 的新实例方法,该方法在后台调用正确的 mixin 来获取适当的 taggables.
 
 实践:

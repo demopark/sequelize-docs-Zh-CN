@@ -1,6 +1,6 @@
 # Eager Loading - 预先加载
 
-如[关联指南](core-concepts/assocs.md)中简要提到的,预先加载是一次查询多个模型(一个"主"模型和一个或多个关联模型)的数据的行为. 在 SQL 级别上,这是具有一个或多个 [join](https://en.wikipedia.org/wiki/Join_(SQL)) 的查询.
+如[关联指南](../core-concepts/assocs.md)中简要提到的,预先加载是一次查询多个模型(一个"主"模型和一个或多个关联模型)的数据的行为. 在 SQL 级别上,这是具有一个或多个 [join](https://en.wikipedia.org/wiki/Join_(SQL)) 的查询.
 
 完成此操作后,Sequelize 将在返回的对象中将适当关联的模型添加到适当命名的自动创建的字段中.
 
@@ -577,7 +577,7 @@ User.findAll({
 
 ### 涉及子查询的复杂排序
 
-查看[子查询指南](other-topics/sub-queries.md)上的示例,了解如何使用子查询来协助更复杂的排序.
+查看[子查询指南](../other-topics/sub-queries.md)上的示例,了解如何使用子查询来协助更复杂的排序.
 
 ## 嵌套的预先加载
 
