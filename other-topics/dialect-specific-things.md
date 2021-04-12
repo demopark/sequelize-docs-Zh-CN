@@ -83,7 +83,7 @@ Sequelize 用于 MSSQL 的基础连接器库是 [tedious](https://www.npmjs.com/
 
 ```js
 const sequelize = new Sequelize('database', 'username', 'password', {
-  dialect: 'postgres',
+  dialect: 'mssql',
   dialectOptions: {
     // 观察 MSSQL 这个嵌套的 `options` 字段
     options: {

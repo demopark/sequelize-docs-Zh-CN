@@ -255,7 +255,7 @@ sequelize.define('Foo', {
 
 ## 数据类型
 
-你在模型中定义的每一列都必须具有数据类型. Sequelize 提供[很多内置数据类型](https://github.com/sequelize/sequelize/blob/master/lib/data-types.js). 要访问内置数据类型,必须导入 `DataTypes`：
+你在模型中定义的每一列都必须具有数据类型. Sequelize 提供[很多内置数据类型](https://github.com/sequelize/sequelize/blob/main/lib/data-types.js). 要访问内置数据类型,必须导入 `DataTypes`：
 
 ```js
 const { DataTypes } = require("sequelize"); // 导入内置数据类型
@@ -270,6 +270,7 @@ DataTypes.STRING.BINARY      // VARCHAR BINARY
 DataTypes.TEXT               // TEXT
 DataTypes.TEXT('tiny')       // TINYTEXT
 DataTypes.CITEXT             // CITEXT          仅 PostgreSQL 和 SQLite.
+DataTypes.TSVECTOR           // TSVECTOR        仅 PostgreSQL.
 ```
 
 ### 布尔

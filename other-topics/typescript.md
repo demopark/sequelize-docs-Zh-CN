@@ -15,16 +15,14 @@
 
 带有严格类型检查的最小 TypeScript 项目示例.
 
-<!--
-NOTE! 
-Keep the following code in sync with `typescriptDocs/ModelInit.ts` to ensure
-it typechecks correctly.
--->
+**注意:** 保持下代码与 `/types/test/typescriptDocs/ModelInit.ts` 保持同步，以确保其类型检查正确.
+
 
 ```ts
 import {
   Sequelize,
   Model,
+  ModelDefined,
   DataTypes,
   HasManyGetAssociationsMixin,
   HasManyAddAssociationMixin,
@@ -108,6 +106,15 @@ class Address extends Model<AddressAttributes> implements AddressAttributes {
   public readonly updatedAt!: Date;
 }
 
+// 你还可以通过功能性方式定义模块
+interface NoteAttributes {
+  id: number;
+  title: string;
+  content: string;
+}
+
+// 你还可以一次将多个属性设置为可选, 接口 NoteCreationAttributes 扩展了 Optional<NoteAttributes, 'id' | 'title'> {};
+
 Project.init(
   {
     id: {
@@ -165,7 +172,33 @@ Address.init(
   {
     tableName: 'address',
     sequelize, // passing the `sequelize` instance is required
+  }
+);
+
+// And with a functional approach defining a module looks like this
+const Note: ModelDefined<
+  NoteAttributes,
+  NoteCreationAttributes
+> = sequelize.define(
+  'Note',
+  {
+    id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    title: {
+      type: new DataTypes.STRING(64),
+      defaultValue: 'Unnamed Note',
+    },
+    content: {
+      type: new DataTypes.STRING(4096),
+      allowNull: false,
+    },
   },
+  {
+    tableName: 'notes',
+  }
 );
 
 // Here we associate which actually populates out pre-declared `association` static and other methods.
@@ -204,11 +237,7 @@ async function doStuffWithUser() {
 
 Sequelize v5 的类型允许你定义模型而无需指定属性类型. 对于向后兼容以及在你觉得对属性进行严格检查是不值得的情况下, 这仍然是可行的.
 
-<!--
-NOTE! 
-Keep the following code in sync with `typescriptDocs/ModelInitNoAttributes.ts` to ensure
-it typechecks correctly.
--->
+**注意:** 使以下代码与 `typescriptDocs/ModelInitNoAttributes.ts` 保持同步，以确保其类型检查正确。
 
 ```ts
 import { Sequelize, Model, DataTypes } from 'sequelize';
@@ -260,11 +289,7 @@ async function doStuffWithUserModel() {
 
 在 v5 之前的 Sequelize 版本中, 定义模型的默认方式涉及使用 `sequelize.define`. 仍然可以使用它来定义模型, 也可以使用接口在这些模型中添加类型.
 
-<!--
-NOTE! 
-Keep the following code in sync with `typescriptDocs/Define.ts` to ensure
-it typechecks correctly.
--->
+**注意:** 使以下代码与 `typescriptDocs/Define.ts` 保持同步，以确保其类型检查正确。
 
 ```ts
 import { Sequelize, Model, DataTypes, Optional } from 'sequelize';
@@ -305,11 +330,7 @@ async function doStuff() {
 
 如果你对模型上非严格的属性检查命令感到满意，则可以通过定义 Instance 来扩展 `Model` 而无需泛型类型中的任何属性, 从而节省一些代码.
 
-<!--
-NOTE! 
-Keep the following code in sync with `typescriptDocs/DefineNoAttributes.ts` to ensure
-it typechecks correctly.
--->
+**注意:** 使以下代码与 `typescriptDocs/DefineNoAttributes.ts` 保持同步，以确保其类型检查正确。
 
 ```ts
 import { Sequelize, Model, DataTypes } from 'sequelize';

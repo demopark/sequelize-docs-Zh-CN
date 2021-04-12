@@ -18,7 +18,7 @@ const users = await sequelize.query("SELECT * FROM `users`", { type: QueryTypes.
 
 ```
 
-还有其他几种查询类型可用. [详细了解来源](https://github.com/sequelize/sequelize/blob/master/src/query-types.ts).
+还有其他几种查询类型可用. [详细了解来源](https://github.com/sequelize/sequelize/blob/main/src/query-types.ts).
 
 第二种选择是模型. 如果传递模型,返回的数据将是该模型的实例.
 

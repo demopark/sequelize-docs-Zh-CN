@@ -18,7 +18,7 @@ console.log("Jane's auto-generated ID:", jane.id);
 
 [`Model.create()`](https://sequelize.org/master/class/lib/model.js~Model.html#static-method-create) 方法是使用 [`Model.build()`](https://sequelize.org/master/class/lib/model.js~Model.html#static-method-build) 构建未保存实例并使用 [`instance.save()`](https://sequelize.org/master/class/lib/model.js~Model.html#instance-method-save) 保存实例的简写形式.
 
-也可以定义在 `create` 方法中的属性. 如果你基于用户填写的表单创建数据库条目,这将特别有用. 例如,使用它可以允许你将 `User` 模型限制为仅设置用户名和地址,而不设置管理员标志：
+也可以定义在 `create` 方法中的属性. 如果你基于用户填写的表单创建数据库条目,这将特别有用. 例如,使用它可以允许你将 `User` 模型限制为仅设置用户名和地址,而不设置管理员标志 (例如, `isAdmin`)：
 
 ```js
 const user = await User.create({
@@ -77,7 +77,7 @@ SELECT foo, bar AS baz, qux FROM ...
 Model.findAll({
   attributes: [
     'foo',
-    [sequelize.fn('COUNT', sequelize.col('hats')), 'n_hats']
+    [sequelize.fn('COUNT', sequelize.col('hats')), 'n_hats'],
     'bar'
   ]
 });
@@ -261,6 +261,7 @@ Post.findAll({
       [Op.notIRegexp]: '^[h|a|t]',             // !~* '^[h|a|t]' (仅 PG)
 
       [Op.any]: [2, 3],                        // ANY ARRAY[2, 3]::INTEGER (仅 PG)
+      [Op.match]: Sequelize.fn('to_tsquery', 'fat & rat') // 匹配文本搜索字符串 'fat' 和 'rat' (仅 PG)
 
       // 在 Postgres 中, Op.like/Op.iLike/Op.notLike 可以结合 Op.any 使用:
       [Op.like]: { [Op.any]: ['cat', 'hat'] }  // LIKE ANY ARRAY['cat', 'hat']

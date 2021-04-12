@@ -288,8 +288,8 @@ const ActorMovies = sequelize.define('ActorMovies', {
     }
   }
 });
-Movie.belongsToMany(Actor, { through: 'ActorMovies' });
-Actor.belongsToMany(Movie, { through: 'ActorMovies' });
+Movie.belongsToMany(Actor, { through: ActorMovies });
+Actor.belongsToMany(Movie, { through: ActorMovies });
 ```
 
 上面的代码在 PostgreSQL 中产生了以下 SQL,与上面所示的代码等效：
@@ -309,7 +309,7 @@ CREATE TABLE IF NOT EXISTS "ActorMovies" (
 
 与一对一和一对多关系不同,对于多对多关系,`ON UPDATE` 和 `ON DELETE` 的默认值为 `CASCADE`.
 
-当模型中不存在主键时，Belongs-to-Many 将创建一个唯一键。 可以使用 **uniqueKey**  参数覆盖此唯一键名.
+当模型中不存在主键时，Belongs-to-Many 将创建一个唯一键. 可以使用 **uniqueKey**  参数覆盖此唯一键名. 若不希望产生唯一键, 可以使用 ***unique: false*** 参数.
 
 ```js
 Project.belongsToMany(User, { through: UserProjects, uniqueKey: 'my_custom_unique' })

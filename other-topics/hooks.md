@@ -6,7 +6,7 @@ Hooks(也称为生命周期事件)是在执行 sequelize 中的调用之前和�
 
 ## 可用的 hooks
 
-Sequelize 提供了很多 hook. 完整列表可以直接在[源代码 - lib/hooks.js](https://github.com/sequelize/sequelize/blob/master/lib/hooks.js#L7) 中找到.
+Sequelize 提供了很多 hook. 完整列表可以直接在[源代码 - lib/hooks.js](https://github.com/sequelize/sequelize/blob/v6/lib/hooks.js#L7) 中找到.
 
 ## Hooks 触发顺序
 
