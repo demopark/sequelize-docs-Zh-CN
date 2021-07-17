@@ -282,6 +282,8 @@ DataTypes.BOOLEAN            // TINYINT(1)
 ### 数字
 
 ```js
+DataTypes.TINYINT            // TINYINT
+
 DataTypes.INTEGER            // INTEGER
 DataTypes.BIGINT             // BIGINT
 DataTypes.BIGINT(11)         // BIGINT(11)
