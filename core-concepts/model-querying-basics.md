@@ -355,10 +355,10 @@ Project.findAll({
 SELECT *
 FROM `Projects`
 WHERE (
-  `Projects`.`name` = 'a project'
+  `Projects`.`name` = 'Some Project'
   AND NOT (
     `Projects`.`id` IN (1,2,3)
-    OR
+    AND
     `Projects`.`description` LIKE 'Hello%'
   )
 )

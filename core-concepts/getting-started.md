@@ -38,7 +38,7 @@ const sequelize = new Sequelize({
   storage: 'path/to/database.sqlite'
 });
 
-// 方法 2: 分别传递参数 (其它数据库)
+// 方法 3: 分别传递参数 (其它数据库)
 const sequelize = new Sequelize('database', 'username', 'password', {
   host: 'localhost',
   dialect: /* 选择 'mysql' | 'mariadb' | 'postgres' | 'mssql' 其一 */

@@ -46,7 +46,7 @@ const User = sequelize.define("user", {
 } /* ... */
 ```
 
-同步此模型后(例如,通过调用`sequelize.sync`),在表中将 `username` 字段创建为`` `name` TEXT UNIQUE``,如果尝试插入已存在的用户名将抛出 `SequelizeUniqueConstraintError`.
+同步此模型后(例如,通过调用`sequelize.sync`),在表中将 `username` 字段创建为 `` `username` TEXT UNIQUE``,如果尝试插入已存在的用户名将抛出 `SequelizeUniqueConstraintError`.
 
 ## 允许/禁止 null 值
 

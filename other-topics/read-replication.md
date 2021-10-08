@@ -5,7 +5,7 @@ Sequelize 支持 [读取复制](https://en.wikipedia.org/wiki/Replication_%28com
 ```js
 const sequelize = new Sequelize('database', null, null, {
   dialect: 'mysql',
-  port: 3306
+  port: 3306,
   replication: {
     read: [
       { host: '8.8.8.8', username: 'read-1-username', password: process.env.READ_DB_1_PW },
