@@ -139,7 +139,7 @@ Post.findAll({
     authorId: 2
   }
 });
-// SELECT * FROM post WHERE authorId = 2
+// SELECT * FROM post WHERE authorId = 2;
 ```
 
 可以看到没有显式传递任何运算符(来自`Op`),因为默认情况下 Sequelize 假定进行相等比较. 上面的代码等效于：
@@ -153,7 +153,7 @@ Post.findAll({
     }
   }
 });
-// SELECT * FROM post WHERE authorId = 2
+// SELECT * FROM post WHERE authorId = 2;
 ```
 
 可以传递多个校验:
@@ -161,7 +161,7 @@ Post.findAll({
 ```js
 Post.findAll({
   where: {
-    authorId: 12
+    authorId: 12,
     status: 'active'
   }
 });
@@ -698,4 +698,15 @@ await User.min('age'); // 5
 await User.min('age', { where: { age: { [Op.gt]: 5 } } }); // 10
 await User.sum('age'); // 55
 await User.sum('age', { where: { age: { [Op.gt]: 5 } } }); // 50
+```
+
+### `increment`, `decrement`
+
+Sequelize 还提供了 `increment` 简便方法。
+
+假设我们有一个用户, 他的年龄是 10 岁.
+
+```js
+await User.increment({age: 5}, { where: { id: 1 } }) // 将年龄增加到15岁
+await User.increment({age: -5}, { where: { id: 1 } }) // 将年龄降至5岁
 ```

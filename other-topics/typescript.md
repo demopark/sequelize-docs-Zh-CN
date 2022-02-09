@@ -1,8 +1,13 @@
 # TypeScript
 
-从 v5 开始,Sequelize 提供了自己的 TypeScript 定义. 请注意,仅支持 TS >= 3.1.
+Sequelize 提供了自己的 TypeScript 定义.
 
-由于 Sequelize 严重依赖于运行时属性分配,因此 TypeScript 在开箱即用时不会很有用. 为了使模型可用,需要大量的手动类型声明.
+请注意, 仅支持 **TypeScript >= 4.1**.
+我们对 TypeScript 的支持不遵循 SemVer. 我们将支持 TypeScript 版本至少一年, 之后它们可能会在 SemVer MINOR 版本中被删除.
+
+由于 Sequelize 严重依赖于运行时属性分配, 因此 TypeScript 无法立即开箱即用. 
+
+为了使模型可用, 需要大量的手动类型声明.
 
 ## 安装
 
@@ -13,128 +18,177 @@
 
 ## 使用
 
-带有严格类型检查的最小 TypeScript 项目示例.
+**重要**: 您必须在类属性类型上使用 `declare` 以确保 TypeScript 不会触发这些类属性.
+参阅 [公共类字段的注意事项](./model-basics.html#caveat-with-public-class-fields)
 
-**注意:** 保持下代码与 `/types/test/typescriptDocs/ModelInit.ts` 保持同步，以确保其类型检查正确.
+Sequelize Models 接受两种通用类型来定义模型的属性和创建属性是什么样的:
 
+```typescript
+import { Model, Optional } from 'sequelize';
 
-```ts
+// We don't recommend doing this. Read on for the new way of declaring Model typings.
+
+type UserAttributes = {
+  id: number,
+  name: string,
+  // other attributes...
+};
+
+// we're telling the Model that 'id' is optional
+// when creating an instance of the model (such as using Model.create()).
+type UserCreationAttributes = Optional<UserAttributes, 'id'>;
+
+class User extends Model<UserAttributes, UserCreationAttributes> {
+  declare id: number;
+  declare string: number;
+  // other attributes...
+}
+```
+
+这个解决方案很冗长. Sequelize >=6.14.0 提供了新的实用程序类型, 将大大减少数量
+必需的样板: `InferAttributes` 和 `InferCreationAttributes`. 他们将提取属性类型
+直接来自模型:
+
+```typescript
+import { Model, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
+
+// order of InferAttributes & InferCreationAttributes is important.
+class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+  // 'CreationOptional' is a special type that marks the field as optional
+  // when creating an instance of the model (such as using Model.create()).
+  declare id: CreationOptional<number>;
+  declare string: number;
+  // other attributes...
+}
+```
+
+关于 `InferAttributes` 和 `InferCreationAttributes` 工作需要了解的重要事项: 它们将选择类的所有声明属性，除了:
+
+- 静态字段和方法.
+- 方法（任何类型为函数的东西）.
+- 类型使用铭记类型 `NonAttribute` 的那些.
+- 像这样使用 AttributesOf 排除的那些: `InferAttributes<User, { omit: 'properties' | 'to' | 'omit' }>`.
+- 由 Model 超类声明的那些（但不是中间类！）.
+  如果您的属性之一与 `Model` 的属性之一同名, 请更改其名称.
+  无论如何, 这样做可能会导致问题.
+- Getter & setter 不会被自动排除. 将它们的 return / parameter 类型设置为 `NonAttribute`,
+  或将它们添加到 `omit` 以排除它们.
+
+`InferCreationAttributes` 的工作方式与 `AttributesOf` 相同, 但有一个例外: 使用 `CreationOptional` 类型键入的属性将被标记为可选.
+
+您只需要在类实例字段或 getter 上使用 `CreationOptional` 和 `NonAttribute`.
+
+对属性进行严格类型检查的最小 TypeScript 项目示例:
+
+[//]: # (注意: 保持下代码与 `/types/test/typescriptDocs/ModelInit.ts` 保持同步，以确保其类型检查正确.)
+
+```typescript
 import {
-  Sequelize,
-  Model,
-  ModelDefined,
-  DataTypes,
-  HasManyGetAssociationsMixin,
-  HasManyAddAssociationMixin,
-  HasManyHasAssociationMixin,
-  Association,
-  HasManyCountAssociationsMixin,
-  HasManyCreateAssociationMixin,
-  Optional,
+  Association, DataTypes, HasManyAddAssociationMixin, HasManyCountAssociationsMixin,
+  HasManyCreateAssociationMixin, HasManyGetAssociationsMixin, HasManyHasAssociationMixin,
+  HasManySetAssociationsMixin, HasManyAddAssociationsMixin, HasManyHasAssociationsMixin,
+  HasManyRemoveAssociationMixin, HasManyRemoveAssociationsMixin, Model, ModelDefined, Optional,
+  Sequelize, InferAttributes, InferCreationAttributes, CreationOptional, NonAttribute
 } from 'sequelize';
 
 const sequelize = new Sequelize('mysql://root:asd123@localhost:3306/mydb');
 
-// These are all the attributes in the User model
-interface UserAttributes {
-  id: number;
-  name: string;
-  preferredName: string | null;
-}
-
-// Some attributes are optional in `User.build` and `User.create` calls
-interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
-
-class User extends Model<UserAttributes, UserCreationAttributes>
-  implements UserAttributes {
-  public id!: number; // Note that the `null assertion` `!` is required in strict mode.
-  public name!: string;
-  public preferredName!: string | null; // for nullable fields
+// 'projects' is excluded as it's not an attribute, it's an association.
+class User extends Model<InferAttributes<User, { omit: 'projects' }>, InferCreationAttributes<User, { omit: 'projects' }>> {
+  // id can be undefined during creation when using `autoIncrement`
+  declare id: CreationOptional<number>;
+  declare name: string;
+  declare preferredName: string | null; // for nullable fields
 
   // timestamps!
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  // createdAt can be undefined during creation
+  declare createdAt: CreationOptional<Date>;
+  // updatedAt can be undefined during creation
+  declare updatedAt: CreationOptional<Date>;
 
   // Since TS cannot determine model association at compile time
   // we have to declare them here purely virtually
   // these will not exist until `Model.init` was called.
-  public getProjects!: HasManyGetAssociationsMixin<Project>; // Note the null assertions!
-  public addProject!: HasManyAddAssociationMixin<Project, number>;
-  public hasProject!: HasManyHasAssociationMixin<Project, number>;
-  public countProjects!: HasManyCountAssociationsMixin;
-  public createProject!: HasManyCreateAssociationMixin<Project>;
+  declare getProjects: HasManyGetAssociationsMixin<Project>; // Note the null assertions!
+  declare addProject: HasManyAddAssociationMixin<Project, number>;
+  declare addProjects: HasManyAddAssociationsMixin<Project, number>;
+  declare setProjects: HasManySetAssociationsMixin<Project, number>;
+  declare removeProject: HasManyRemoveAssociationMixin<Project, number>;
+  declare removeProjects: HasManyRemoveAssociationsMixin<Project, number>;
+  declare hasProject: HasManyHasAssociationMixin<Project, number>;
+  declare hasProjects: HasManyHasAssociationsMixin<Project, number>;
+  declare countProjects: HasManyCountAssociationsMixin;
+  declare createProject: HasManyCreateAssociationMixin<Project, 'ownerId'>;
 
   // You can also pre-declare possible inclusions, these will only be populated if you
   // actively include a relation.
-  public readonly projects?: Project[]; // Note this is optional since it's only populated when explicitly requested in code
+  declare projects?: NonAttribute<Project[]>; // Note this is optional since it's only populated when explicitly requested in code
 
-  public static associations: {
+  // getters that are not attributes should be tagged using NonAttribute
+  // to remove them from the model's Attribute Typings.
+  get fullName(): NonAttribute<string> {
+    return this.name;
+  }
+
+  declare static associations: {
     projects: Association<User, Project>;
   };
 }
 
-interface ProjectAttributes {
-  id: number;
-  ownerId: number;
-  name: string;
+class Project extends Model<
+  InferAttributes<Project>,
+  InferCreationAttributes<Project>
+> {
+  // id can be undefined during creation when using `autoIncrement`
+  declare id: CreationOptional<number>;
+  declare ownerId: number;
+  declare name: string;
+
+  // `owner` is an eagerly-loaded association.
+  // We tag it as `NonAttribute`
+  declare owner?: NonAttribute<User>;
+
+  // createdAt can be undefined during creation
+  declare createdAt: CreationOptional<Date>;
+  // updatedAt can be undefined during creation
+  declare updatedAt: CreationOptional<Date>;
 }
 
-interface ProjectCreationAttributes extends Optional<ProjectAttributes, 'id'> {}
+class Address extends Model<
+  InferAttributes<Address>,
+  InferCreationAttributes<Address>
+> {
+  declare userId: number;
+  declare address: string;
 
-class Project extends Model<ProjectAttributes, ProjectCreationAttributes>
-  implements ProjectAttributes {
-  public id!: number;
-  public ownerId!: number;
-  public name!: string;
-
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  // createdAt can be undefined during creation
+  declare createdAt: CreationOptional<Date>;
+  // updatedAt can be undefined during creation
+  declare updatedAt: CreationOptional<Date>;
 }
-
-interface AddressAttributes {
-  userId: number;
-  address: string;
-}
-
-// You can write `extends Model<AddressAttributes, AddressAttributes>` instead,
-// but that will do the exact same thing as below
-class Address extends Model<AddressAttributes> implements AddressAttributes {
-  public userId!: number;
-  public address!: string;
-
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
-}
-
-// 你还可以通过功能性方式定义模块
-interface NoteAttributes {
-  id: number;
-  title: string;
-  content: string;
-}
-
-// 你还可以一次将多个属性设置为可选, 接口 NoteCreationAttributes 扩展了 Optional<NoteAttributes, 'id' | 'title'> {};
 
 Project.init(
   {
     id: {
       type: DataTypes.INTEGER.UNSIGNED,
       autoIncrement: true,
-      primaryKey: true,
+      primaryKey: true
     },
     ownerId: {
       type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false,
+      allowNull: false
     },
     name: {
       type: new DataTypes.STRING(128),
-      allowNull: false,
+      allowNull: false
     },
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE,
   },
   {
     sequelize,
-    tableName: 'projects',
-  },
+    tableName: 'projects'
+  }
 );
 
 User.init(
@@ -142,38 +196,52 @@ User.init(
     id: {
       type: DataTypes.INTEGER.UNSIGNED,
       autoIncrement: true,
-      primaryKey: true,
+      primaryKey: true
     },
     name: {
       type: new DataTypes.STRING(128),
-      allowNull: false,
+      allowNull: false
     },
     preferredName: {
       type: new DataTypes.STRING(128),
-      allowNull: true,
+      allowNull: true
     },
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE,
   },
   {
     tableName: 'users',
-    sequelize, // passing the `sequelize` instance is required
-  },
+    sequelize // passing the `sequelize` instance is required
+  }
 );
 
 Address.init(
   {
     userId: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.INTEGER.UNSIGNED
     },
     address: {
       type: new DataTypes.STRING(128),
-      allowNull: false,
+      allowNull: false
     },
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE,
   },
   {
     tableName: 'address',
-    sequelize, // passing the `sequelize` instance is required
+    sequelize // passing the `sequelize` instance is required
   }
 );
+
+// You can also define modules in a functional way
+interface NoteAttributes {
+  id: number;
+  title: string;
+  content: string;
+}
+
+// You can also set multiple attributes optional at once
+type NoteCreationAttributes = Optional<NoteAttributes, 'id' | 'title'>;
 
 // And with a functional approach defining a module looks like this
 const Note: ModelDefined<
@@ -185,19 +253,19 @@ const Note: ModelDefined<
     id: {
       type: DataTypes.INTEGER.UNSIGNED,
       autoIncrement: true,
-      primaryKey: true,
+      primaryKey: true
     },
     title: {
       type: new DataTypes.STRING(64),
-      defaultValue: 'Unnamed Note',
+      defaultValue: 'Unnamed Note'
     },
     content: {
       type: new DataTypes.STRING(4096),
-      allowNull: false,
-    },
+      allowNull: false
+    }
   },
   {
-    tableName: 'notes',
+    tableName: 'notes'
   }
 );
 
@@ -205,7 +273,7 @@ const Note: ModelDefined<
 User.hasMany(Project, {
   sourceKey: 'id',
   foreignKey: 'ownerId',
-  as: 'projects', // this determines the name in `associations`!
+  as: 'projects' // this determines the name in `associations`!
 });
 
 Address.belongsTo(User, { targetKey: 'id' });
@@ -219,25 +287,30 @@ async function doStuffWithUser() {
   console.log(newUser.id, newUser.name, newUser.preferredName);
 
   const project = await newUser.createProject({
-    name: 'first!',
+    name: 'first!'
   });
 
   const ourUser = await User.findByPk(1, {
     include: [User.associations.projects],
-    rejectOnEmpty: true, // Specifying true here removes `null` from the return type!
+    rejectOnEmpty: true // Specifying true here removes `null` from the return type!
   });
 
   // Note the `!` null assertion since TS can't know if we included
   // the model or not
   console.log(ourUser.projects![0].name);
 }
+
+(async () => {
+  await sequelize.sync();
+  await doStuffWithUser();
+})();
 ```
 
 ### 使用非严格类型
 
 Sequelize v5 的类型允许你定义模型而无需指定属性类型. 对于向后兼容以及在你觉得对属性进行严格检查是不值得的情况下, 这仍然是可行的.
 
-**注意:** 使以下代码与 `typescriptDocs/ModelInitNoAttributes.ts` 保持同步，以确保其类型检查正确。
+[//]: # (注意: 使以下代码与 `typescriptDocs/ModelInitNoAttributes.ts` 保持同步，以确保其类型检查正确.)
 
 ```ts
 import { Sequelize, Model, DataTypes } from 'sequelize';
@@ -245,9 +318,9 @@ import { Sequelize, Model, DataTypes } from 'sequelize';
 const sequelize = new Sequelize('mysql://root:asd123@localhost:3306/mydb');
 
 class User extends Model {
-  public id!: number; // Note that the `null assertion` `!` is required in strict mode.
-  public name!: string;
-  public preferredName!: string | null; // for nullable fields
+  declare id: number;
+  declare name: string;
+  declare preferredName: string | null;
 }
 
 User.init(
@@ -289,7 +362,7 @@ async function doStuffWithUserModel() {
 
 在 v5 之前的 Sequelize 版本中, 定义模型的默认方式涉及使用 `sequelize.define`. 仍然可以使用它来定义模型, 也可以使用接口在这些模型中添加类型.
 
-**注意:** 使以下代码与 `typescriptDocs/Define.ts` 保持同步，以确保其类型检查正确。
+[//]: # (注意: 使以下代码与 `typescriptDocs/Define.ts` 保持同步，以确保其类型检查正确.)
 
 ```ts
 import { Sequelize, Model, DataTypes, Optional } from 'sequelize';
@@ -330,7 +403,7 @@ async function doStuff() {
 
 如果你对模型上非严格的属性检查命令感到满意，则可以通过定义 Instance 来扩展 `Model` 而无需泛型类型中的任何属性, 从而节省一些代码.
 
-**注意:** 使以下代码与 `typescriptDocs/DefineNoAttributes.ts` 保持同步，以确保其类型检查正确。
+[//]: # (注意: 使以下代码与 `typescriptDocs/DefineNoAttributes.ts` 保持同步, 以确保其类型检查正确.)
 
 ```ts
 import { Sequelize, Model, DataTypes } from 'sequelize';
@@ -359,4 +432,96 @@ async function doStuff() {
   });
   console.log(instance.id);
 }
+```
+
+## 实用程序类型
+
+### 请求模型类
+
+`ModelStatic` 旨在用于键入模型 *class*.
+
+以下是请求模型类并返回该类中定义的主键列表的实用方法示例:
+
+```typescript
+import { ModelStatic, ModelAttributeColumnOptions, Model, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
+
+/**
+ * Returns the list of attributes that are part of the model's primary key.
+ */
+export function getPrimaryKeyAttributes(model: ModelStatic<any>): ModelAttributeColumnOptions[] {
+  const attributes: ModelAttributeColumnOptions[] = [];
+
+  for (const attribute of Object.values(model.rawAttributes)) {
+    if (attribute.primaryKey) {
+      attributes.push(attribute);
+    }
+  }
+
+  return attributes;
+}
+
+class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+  id: CreationOptional<number>;
+}
+
+User.init({
+  id: {
+    type: DataTypes.INTEGER.UNSIGNED,
+    autoIncrement: true,
+    primaryKey: true
+  },
+}, { sequelize });
+
+const primaryAttributes = getPrimaryKeyAttributes(User);
+```
+
+### 获取模型的属性
+
+如果您需要访问给定模型的属性列表, 你需要使用 `Attributes<Model>` 和 `CreationAttributes<Model>`.
+
+它们将返回作为参数传递的模型的属性(和创建属性).
+
+不要将它们与 `InferAttributes` 和 `InferCreationAttributes` 混淆. 这两种实用程序类型应该只被使用
+在模型的定义中自动从模型的公共类字段创建属性列表. 它们仅适用于基于类的模型定义(使用 `Model.init` 时).
+
+`Attributes<Model>` 和 `CreationAttributes<Model>` 将返回任何模型的属性列表, 无论它们是如何创建的(无论是 `Model.init` 还是 `Sequelize#define`).
+
+这是一个请求模型类和属性名称的实用函数示例; 并返回相应的属性元数据.
+
+```typescript
+import {
+  ModelStatic,
+  ModelAttributeColumnOptions,
+  Model,
+  InferAttributes,
+  InferCreationAttributes,
+  CreationOptional,
+  Attributes
+} from 'sequelize';
+
+export function getAttributeMetadata<M extends Model>(model: ModelStatic<M>, attributeName: keyof Attributes<M>): ModelAttributeColumnOptions {
+  const attribute = model.rawAttributes[attributeName];
+  if (attribute == null) {
+    throw new Error(`Attribute ${attributeName} does not exist on model ${model.name}`);
+  }
+
+  return attribute;
+}
+
+class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+  id: CreationOptional<number>;
+}
+
+User.init({
+  id: {
+    type: DataTypes.INTEGER.UNSIGNED,
+    autoIncrement: true,
+    primaryKey: true
+  },
+}, { sequelize });
+
+const idAttributeMeta = getAttributeMetadata(User, 'id'); // works!
+
+// @ts-expect-error
+const nameAttributeMeta = getAttributeMetadata(User, 'name'); // fails because 'name' is not an attribute of User
 ```

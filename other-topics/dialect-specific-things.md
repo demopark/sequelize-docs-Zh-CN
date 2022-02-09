@@ -17,6 +17,8 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 })
 ```
 
+`dialectOptions` 直接传递给 MySQL 连接构造函数. 完整的选项列表可以在 [MySQL 文档](https://www.npmjs.com/package/mysql#connection-options) 中找到.
+
 ### MariaDB
 
 Sequelize 对于 MariaDB 使用的基础连接器库是 [mariadb](https://www.npmjs.com/package/mariadb) npm 软件包.
@@ -32,6 +34,8 @@ const sequelize = new Sequelize('database', 'username', 'password', {
   }
 });
 ```
+
+`dialectOptions` 直接传递给 MariaDB 连接构造函数. 完整的选项列表可以在 [MariaDB 文档](https://mariadb.com/kb/en/nodejs-connection-options/) 中找到.
 
 ### SQLite
 
@@ -51,6 +55,10 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 });
 ```
 
+以下字段可以传递给 SQLite `dialectOptions`:
+
+- `readWriteMode`: 设置 SQLite 连接的打开模式. 潜在值由 sqlite3 包提供, 并且能包括 sqlite3.OPEN_READONLY, sqlite3.OPEN_READWRITE 或 sqlite3.OPEN_CREATE. 查阅 [SQLite C 接口文档]( https://www.sqlite.org/c3ref/open.html) 以获取更多详细信息.
+
 ### PostgreSQL
 
 Sequelize 对于 PostgreSQL 使用的基础连接器库是 [pg](https://www.npmjs.com/package/pg) npm 软件包(版本7.0.0或更高版本). 还需要模块 [pg-hstore](https://www.npmjs.com/package/pg-hstore).
@@ -66,12 +74,40 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 });
 ```
 
+以下字段可以传递给 Postgres `dialectOptions`:
+
+- `application_name`: pg_stat_activity 中的应用程序名称. 参阅 [Postgres 文档](https://www.postgresql.org/docs/current/runtime-config-logging.html#GUC-APPLICATION-NAME) 获取更多详细信息.
+- `ssl`: SSL 参数. 参阅 [`pg` 文档](https://node-postgres.com/features/ssl) 获取更多详细信息.
+- `client_encoding`: // 设置 'auto' 根据客户端 LC_CTYPE 环境变量确定语言环境. 参阅 [Postgres 文档](https://www.postgresql.org/docs/current/multibyte.html) 获取更多详细信息.
+- `keepAlive`: 启用 TCP KeepAlive 的布尔值. 参阅 [`pg` 更新记录](https://github.com/brianc/node-postgres/blob/master/CHANGELOG.md#v600) 获取更多详细信息.
+- `statement_timeout`: 在设定的时间后超时查询(以毫秒为单位). 添加于 pg v7.3. 参阅 [Postgres 文档](https://www.postgresql.org/docs/current/runtime-config-client.html#GUC-STATEMENT-TIMEOUT) 获取更多详细信息.
+- `idle_in_transaction_session_timeout`: 终止超过指定持续时间(以毫秒为单位)的空闲事务会话. 参阅 [Postgres 文档](https://www.postgresql.org/docs/current/runtime-config-client.html#GUC-IDLE-IN-TRANSACTION-SESSION-TIMEOUT) 获取更多详细信息.
+
 要通过 Unix 域套接字进行连接,请在 `host` 参数中指定套接字目录的路径. 套接字路径必须以 `/` 开头.
 
 ```js
 const sequelize = new Sequelize('database', 'username', 'password', {
   dialect: 'postgres',
   host: '/path/to/socket_directory'
+});
+```
+
+sequelize 中默认的 `client_min_messages` 配置是 `WARNING`.
+
+### Redshift
+
+大多数配置与上面的 PostgreSQL 相同.
+
+Redshift 不支持 `client_min_messages`, 需要 'ignore' 跳过配置:
+
+```js
+const sequelize = new Sequelize('database', 'username', 'password', {
+  dialect: 'postgres',
+  dialectOptions: {
+    // 你的 pg 参数
+    // ...
+    clientMinMessages: 'ignore' // 不区分大小写
+  }
 });
 ```
 
@@ -95,6 +131,8 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 });
 ```
 
+完整的选项列表可以在 [tedious 文档](https://tediousjs.github.io/tedious/api-connection.html#function_newConnection) 中找到.
+
 #### MSSQL 域账户
 
 为了连接域帐户,请使用以下格式.
@@ -116,6 +154,39 @@ const sequelize = new Sequelize('database', null, null, {
     }
   }
 })
+```
+
+### Snowflake (实验性)
+
+Sequelize 用于 Snowflake 的底层连接器库是 [snowflake-sdk](https://www.npmjs.com/package/snowflake-sdk) npm 包.
+
+为了与帐户连接, 请使用以下格式:
+
+```js
+const sequelize = new Sequelize('database', null, null, {
+  dialect: 'snowflake',
+  dialectOptions: {
+    // 把你的snowflake帐户放在这里,
+    account: 'myAccount',  // my-app.us-east-1
+
+    // 下面的选项是可选的
+    role: 'myRole',
+    warehouse: 'myWarehouse',
+    schema: 'mySchema'
+  },
+  // 和其他方言一样
+  username: 'myUserName',
+  password: 'myPassword',
+  database: 'myDatabaseName'
+})
+```
+
+**注意** 没有提供测试沙箱, 因此 snowflake 集成测试不是 pipeline 的一部分. 核心团队也很难进行分类和调试. 这种方言现在需要由 snowflake 用户/社区维护.
+
+用于运行集成测试:
+
+```sh
+SEQ_ACCOUNT=myAccount SEQ_USER=myUser SEQ_PW=myPassword SEQ_ROLE=myRole SEQ_DB=myDatabaseName SEQ_SCHEMA=mySchema SEQ_WH=myWareHouse npm run test-integration-snowflake
 ```
 
 ## 数据类型: TIMESTAMP WITHOUT TIME ZONE - 仅限  PostgreSQL

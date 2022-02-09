@@ -2,7 +2,7 @@
 
 Sequelize 允许你为模型的属性定义自定义获取器和设置器.
 
-Sequelize 还允许你指定所谓的 *虚拟属性*,它们是 Sequelize 模型上的属性,这些属性在基础 SQL 表中实际上并不存在,而是由 Sequelize 自动填充.它们对于简化代码非常有用.
+Sequelize 还允许你指定所谓的 *虚拟属性*,它们是 Sequelize 模型上的属性,这些属性在基础 SQL 表中实际上并不存在,而是由 Sequelize 自动填充. 它们对于创建自定义属性非常有用, 这也可以简化您的代码.
 
 ## 获取器
 
@@ -156,9 +156,9 @@ const user = await User.create({ firstName: 'John', lastName: 'Doe' });
 console.log(user.fullName); // 'John Doe'
 ```
 
-## `getterMethods` 和 `setterMethods`
+## 在 Sequelize v7 中已弃用：`getterMethods` 和 `setterMethods`
 
-Sequelize 在模型定义中还提供了 `getterMethods` 和 `setterMethods` 参数,以指定看起来像但与虚拟属性不完全相同的事物. 不鼓励使用此方法,并且将来可能会不建议使用(建议直接使用虚拟属性).
+Sequelize 在模型定义中还提供了 `getterMethods` 和 `setterMethods` 参数,以指定看起来像但与虚拟属性不完全相同的事物. 不鼓励使用此方法,并且将来可能会**不建议**使用(建议直接使用虚拟属性).
 
 示例:
 

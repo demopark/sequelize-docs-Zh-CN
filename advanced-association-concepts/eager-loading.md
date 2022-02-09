@@ -378,7 +378,7 @@ await sequelize.sync();
 const foo = await Foo.create({ name: 'foo' });
 const bar = await Bar.create({ name: 'bar' });
 await foo.addBar(bar);
-const fetchedFoo = Foo.findOne({ include: Bar });
+const fetchedFoo = await Foo.findOne({ include: Bar });
 console.log(JSON.stringify(fetchedFoo, null, 2));
 ```
 
@@ -416,13 +416,15 @@ Foo.findAll({
 });
 ```
 
-如果你不需要联结表中的任何内容,则可以显式地为 `attributes` 参数提供一个空数组,在这种情况下,将不会获取任何内容,甚至不会创建额外的属性：
+如果你不需要联结表中的任何内容,则可以在 `include` 选项的 `through` 内显式地为 `attributes` 参数提供一个空数组,在这种情况下,将不会获取任何内容,甚至不会创建额外的属性：
 
 ```js
 Foo.findOne({
   include: {
     model: Bar,
-    attributes: []
+    through: {
+      attributes: []
+    }
   }
 });
 ```

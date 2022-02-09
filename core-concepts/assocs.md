@@ -612,6 +612,22 @@ const taskTitles = (await project.getTasks({
 * `fooInstance.removeBars()`
 * `fooInstance.createBar()`
 
+对于 belongsToMany 关系, 默认情况下, `getBars()` 将返回连接表中的所有字段. 请注意, 任何 `include` 参数都将应用于目标 `Bar` 对象, 因此无法像使用 `find` 方法进行预加载时那样尝试为连接表设置参数. 要选择要包含的连接表的哪些属性, `getBars()` 支持一个 `joinTableAttributes` 选项, 其使用类似于在 `include` 中设置 `through.attributes`.  例如, 设定 Foo belongsToMany Bar, 以下都将输出没有连接表字段的结果:
+
+```js
+const foo = Foo.findByPk(id, {
+  include: [{
+    model: Bar,
+    through: { attributes: [] }
+  }]
+})
+console.log(foo.bars)
+
+const foo = Foo.findByPk(id)
+console.log(foo.getBars({ joinTableAttributes: [] }))
+```
+
+
 ### 注意: 方法名称
 
 如上面的示例所示,Sequelize 赋予这些特殊方法的名称是由前缀(例如,get,add,set)和模型名称(首字母大写)组成的. 必要时,可以使用复数形式,例如在 `fooInstance.setBars()` 中. 同样,不规则复数也由 Sequelize 自动处理. 例如,`Person` 变成 `People` 或者 `Hypothesis` 变成 `Hypotheses`.

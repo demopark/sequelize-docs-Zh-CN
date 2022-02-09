@@ -116,7 +116,24 @@ Book.removeHook('afterCreate', 'notifyUsers');
 
 ## 全局 / 通用 hooks
 
-全局 hook 是所有模型运行的 hook. 他们可以为所有模型定义所需的行为,对于插件特别有用. 可以用两种方式定义它们,它们的语义略有不同：
+全局 hook 是所有模型运行的 hook. 它们对于插件特别有用, 并且可以为所有模型定义您想要的行为. 例如允许在您的模型上使用 `sequelize.define` 自定义时间戳:
+
+```js
+const User = sequelize.define('User', {}, {
+    tableName: 'users',
+    hooks : {
+        beforeCreate : (record, options) => {
+            record.dataValues.createdAt = new Date().toISOString().replace(/T/, ' ').replace(/\..+/g, '');
+            record.dataValues.updatedAt = new Date().toISOString().replace(/T/, ' ').replace(/\..+/g, '');
+        },
+        beforeUpdate : (record, options) => {
+            record.dataValues.updatedAt = new Date().toISOString().replace(/T/, ' ').replace(/\..+/g, '');
+        }
+    }
+});
+```
+
+它们可以通过多种方式定义, 语义略有不同:
 
 ### 默认 Hooks (在 Sequelize 构造函数参数)
 
@@ -367,7 +384,8 @@ User.addHook('afterCreate', async (user, options) => {
 await sequelize.transaction(async t => {
   await User.create({
     username: 'someguy',
-    mood: 'happy',
+    mood: 'happy'
+  }, {
     transaction: t
   });
 });

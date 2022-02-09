@@ -87,6 +87,32 @@ await jane.save();
 // 现在该名称已在数据库中更新为 "Ada"！
 ```
 
+您可以使用 [`set`](https://sequelize.org/master/class/lib/model.js~Model.html#instance-method-set) 方法一次更新多个字段:
+
+```js
+const jane = await User.create({ name: "Jane" });
+
+jane.set({
+  name: "Ada",
+  favoriteColor: "blue"
+});
+// 如上, 数据库中还是 "Jane" 和 "green"
+await jane.save();
+// 数据库现在将 "Ada" 和 "blue" 作为 name 和 favoriteColor
+```
+
+请注意, 此处的 `save()` 也将保留在此实例上所做的任何其他更改, 而不仅仅是之前的 `set` 调用中的更改.如果要更新一组特定的字段, 可以使用[`update`](https://sequelize.org/master/class/lib/model.js~Model.html#instance-method-update):
+
+```js
+const jane = await User.create({ name: "Jane" });
+jane.favoriteColor = "blue"
+await jane.update({ name: "Ada" })
+// 数据库现在将 "Ada" 作为 name，但仍然有默认的 "green" 作为 favoriteColor
+await jane.save()
+// 数据库现在将 "Ada" 作为 name，但仍然有默认的 "blue" 作为 favoriteColor
+```
+
+
 ## 删除实例
 
 你可以通过调用 [`destroy`](https://sequelize.org/master/class/lib/model.js~Model.html#instance-method-destroy) 来删除实例:
