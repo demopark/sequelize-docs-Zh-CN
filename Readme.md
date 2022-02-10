@@ -14,40 +14,38 @@
 [![License](https://badgen.net/github/license/sequelize/sequelize)](https://github.com/sequelize/sequelize/blob/main/LICENSE)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
-> 此项目同步自 [sequelize](https://github.com/sequelize) / [sequelize](https://github.com/sequelize/sequelize) 项目中的  docs. 除特殊情况, 将保持每月一次的同步频率.
+> 此项目同步自 [sequelize](https://github.com/sequelize) / [sequelize](https://github.com/sequelize/sequelize) 项目中的  docs.
 > 
 > 更新日志请参阅: [CHANGELOG](CHANGELOG.md)
 
 Sequelize 是一个基于 promise 的 [Node.js](https://nodejs.org/zh-cn/about/) [ORM 工具](https://en.wikipedia.org/wiki/Object-relational_mapping), 目前支持 [Postgres](https://en.wikipedia.org/wiki/PostgreSQL), [MySQL](https://en.wikipedia.org/wiki/MySQL), [MariaDB](https://en.wikipedia.org/wiki/MariaDB), [SQLite](https://en.wikipedia.org/wiki/SQLite) 以及 [Microsoft SQL Server](https://en.wikipedia.org/wiki/Microsoft_SQL_Server), [Amazon Redshift](https://docs.aws.amazon.com/redshift/index.html) 和 [Snowflake’s Data Cloud](https://docs.snowflake.com/en/user-guide/intro-key-concepts.html). 它具有强大的事务支持, 关联关系, 预读和延迟加载,读取复制等功能.
 
-Sequelize 遵从 [语义版本控制](http://semver.org). 支持 Node v10 及更高版本以便使用 ES6 功能.
+Sequelize 遵从 [语义版本控制](http://semver.org) 和 [官方 Node.js LTS 版本](https://nodejs.org/en/about/releases/). Sequelize v7 版本正式支持 Node.js `^12.22.0`, `^14.17,0`, `^16.0.0`. 其他版本或可正常工作.
 
 你目前正在查看 Sequelize 的**教程和指南**.你可能还对[API 参考](http://docs.sequelizejs.com/identifiers) (英文)感兴趣.
 
 # 赞赏支持
 ![赞赏支持](https://raw.githubusercontent.com/demopark/electron-api-demos-Zh_CN/master/assets/img/td.png)
 
-# 数据库引擎支持
 
-## v6
-|  引擎 |  支持的最低版本 |
-| :------------: | :------------: |
-|  Postgre | [9.5 ](https://www.postgresql.org/docs/9.5/ ) |
-|  MySQL |  [5.7](https://dev.mysql.com/doc/refman/5.7/en/) |
-|  MariaDB |  [10.1](https://mariadb.com/kb/en/changes-improvements-in-mariadb-101/) |
-|  Microsoft SQL |  `12.0.2000` |
-|  SQLite |  [3.0](https://www.sqlite.org/version3.html) 
+## 文档版本
 
-## 版本
+- [v7 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/master)(开发版本)
 
-### [v6 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/master)(现行版本)
+- [v6 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/v6)(保持更新)
 
-### [v5 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/v5)(计划停止)
+- [v5 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/v5)(停止更新)
 
-### [v4 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/v4)(停止更新)
+- [v4 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/v4)(停止更新)
 
+## 主要版本变更日志
 
-## 文档(v6)
+在此处可以找到主要版本的升级信息：
+
+- [从 v5 升级到 v6](other-topics/upgrade-to-v6.md)
+- [从 v6 升级到 v7](other-topics/upgrade-to-v7.md)
+
+## 文档(v7)
 
 ### 核心概念
 
@@ -90,7 +88,33 @@ Sequelize 遵从 [语义版本控制](http://semver.org). 支持 Node v10 及更
 - [Migrations - 迁移](other-topics/migrations.md)
 - [TypeScript](other-topics/typescript.md)
 - [Resources - 资源](other-topics/resources.md)
-- [Upgrade to v6 - 升级到 V6](other-topics/upgrade-to-v6.md)
+
+## 安装
+
+```sh
+# 使用 npm
+npm i sequelize # 这将安装最新版本的 Sequelize
+# 使用 yarn
+yarn add sequelize
+```
+
+```sh
+# 用于支持数据库方言的库:
+# 使用 npm
+npm i pg pg-hstore # PostgreSQL
+npm i mysql2 # MySQL
+npm i mariadb # MariaDB
+npm i sqlite3 # SQLite
+npm i tedious # Microsoft SQL Server
+npm i ibm_db # DB2
+# 使用 yarn
+yarn add pg pg-hstore # PostgreSQL
+yarn add mysql2 # MySQL
+yarn add mariadb # MariaDB
+yarn add sqlite3 # SQLite
+yarn add tedious # Microsoft SQL Server
+yarn add ibm_db # DB2
+```
 
 ## 简单示例
 

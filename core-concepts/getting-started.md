@@ -7,18 +7,29 @@
 Sequelize 的使用可以通过 [npm](https://www.npmjs.com/package/sequelize) (或 [yarn](https://yarnpkg.com/package/sequelize)).
 
 ```sh
-npm install --save sequelize
+# 使用 npm
+npm i sequelize # 这将安装最新版本的 Sequelize
+# 使用 yarn
+yarn add sequelize
 ```
 
 你还必须手动为所选数据库安装驱动程序：
 
 ```sh
-# 选择以下之一:
-$ npm install --save pg pg-hstore # Postgres
-$ npm install --save mysql2
-$ npm install --save mariadb
-$ npm install --save sqlite3
-$ npm install --save tedious # Microsoft SQL Server
+# 使用 npm
+npm i pg pg-hstore # PostgreSQL
+npm i mysql2 # MySQL
+npm i mariadb # MariaDB
+npm i sqlite3 # SQLite
+npm i tedious # Microsoft SQL Server
+npm i ibm_db # DB2
+# 使用 yarn
+yarn add pg pg-hstore # PostgreSQL
+yarn add mysql2 # MySQL
+yarn add mariadb # MariaDB
+yarn add sqlite3 # SQLite
+yarn add tedious # Microsoft SQL Server
+yarn add ibm_db # DB2
 ```
 
 ## 连接到数据库

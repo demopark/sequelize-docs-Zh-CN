@@ -4,7 +4,7 @@
 
 ### MySQL
 
-Sequelize 对于 MySQL 使用的基础连接器库是 [mysql2](https://www.npmjs.com/package/mysql2) npm 软件包(1.5.2 或更高版本).
+Sequelize 对于 MySQL 使用的基础连接器库是 [mysql2](https://www.npmjs.com/package/mysql2) 软件包(1.5.2 或更高版本).
 
 你可以使用 Sequelize 构造函数中的 `dialectOptions` 为其提供自定义参数：
 
@@ -21,7 +21,7 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 
 ### MariaDB
 
-Sequelize 对于 MariaDB 使用的基础连接器库是 [mariadb](https://www.npmjs.com/package/mariadb) npm 软件包.
+Sequelize 对于 MariaDB 使用的基础连接器库是 [mariadb](https://www.npmjs.com/package/mariadb) 软件包.
 
 你可以使用 Sequelize 构造函数中的 `dialectOptions` 为其提供自定义参数：
 
@@ -39,7 +39,7 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 
 ### SQLite
 
-Sequelize 对于 SQLite 使用的基础连接器库是 [sqlite3](https://www.npmjs.com/package/sqlite3) npm 程序包(版本4.0.0或更高版本).
+Sequelize 对于 SQLite 使用的基础连接器库是 [sqlite3](https://www.npmjs.com/package/sqlite3) 程序包(版本4.0.0或更高版本).
 
 你可以在 Sequelize 构造函数中使用 `storage` 参数指定存储文件(对于内存中的SQLite实例,请使用 `:memory:`).
 
@@ -61,7 +61,7 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 
 ### PostgreSQL
 
-Sequelize 对于 PostgreSQL 使用的基础连接器库是 [pg](https://www.npmjs.com/package/pg) npm 软件包(版本7.0.0或更高版本). 还需要模块 [pg-hstore](https://www.npmjs.com/package/pg-hstore).
+Sequelize 对于 PostgreSQL 使用的基础连接器库是 [pg](https://www.npmjs.com/package/pg) 软件包(版本7.0.0或更高版本). 还需要模块 [pg-hstore](https://www.npmjs.com/package/pg-hstore).
 
 你可以使用 Sequelize 构造函数中的 `dialectOptions` 为其提供自定义参数：
 
@@ -113,7 +113,11 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 
 ### MSSQL
 
-Sequelize 用于 MSSQL 的基础连接器库是 [tedious](https://www.npmjs.com/package/tedious) npm 软件包(版本6.0.0或更高版本).
+支持的 MS SQL 版本从 MS SQL 2017（版本 14）到最新版本.
+
+#### Tedious
+
+Sequelize 默认用于 MSSQL 的基础连接器库是 [tedious](https://www.npmjs.com/package/tedious) npm 软件包(版本6.0.0或更高版本).
 
 你可以使用 Sequelize 构造函数中的 `dialectOptions.options` 为其提供自定义参数：
 
@@ -158,7 +162,7 @@ const sequelize = new Sequelize('database', null, null, {
 
 ### Snowflake (实验性)
 
-Sequelize 用于 Snowflake 的底层连接器库是 [snowflake-sdk](https://www.npmjs.com/package/snowflake-sdk) npm 包.
+Sequelize 用于 Snowflake 的底层连接器库是 [snowflake-sdk](https://www.npmjs.com/package/snowflake-sdk) 包.
 
 为了与帐户连接, 请使用以下格式:
 
@@ -186,7 +190,10 @@ const sequelize = new Sequelize('database', null, null, {
 用于运行集成测试:
 
 ```sh
+# using npm
 SEQ_ACCOUNT=myAccount SEQ_USER=myUser SEQ_PW=myPassword SEQ_ROLE=myRole SEQ_DB=myDatabaseName SEQ_SCHEMA=mySchema SEQ_WH=myWareHouse npm run test-integration-snowflake
+# using yarn
+SEQ_ACCOUNT=myAccount SEQ_USER=myUser SEQ_PW=myPassword SEQ_ROLE=myRole SEQ_DB=myDatabaseName SEQ_SCHEMA=mySchema SEQ_WH=myWareHouse yarn test-integration-snowflake
 ```
 
 ## 数据类型: TIMESTAMP WITHOUT TIME ZONE - 仅限  PostgreSQL
