@@ -175,7 +175,7 @@ const sequelize = new Sequelize('sqlite::memory:', {
 
 ### 直接提供表名
 
-你也可以直接直接告诉 Sequelize 表名称：
+你也可以直接告诉 Sequelize 表名称：
 
 ```js
 sequelize.define('User', {
