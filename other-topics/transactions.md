@@ -13,7 +13,7 @@ Sequelize 支持两种使用事务的方式：
 让我们从一个例子开始:
 
 ```js
-// 首先,我们开始一个事务并将其保存到变量中
+// 首先, 我们从你的连接开始一个事务并将其保存到一个变量中
 const t = await sequelize.transaction();
 
 try {

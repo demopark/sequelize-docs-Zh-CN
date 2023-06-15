@@ -91,7 +91,7 @@ sequelize.define('foo', {
       not: /^[a-z]+$/i,         // 不匹配 RegExp
       not: ["^[a-z]+$",'i'],    // 与上面相同,但是以字符串构造 RegExp
       isEmail: true,            // 检查 email 格式 (foo@bar.com)
-      isUrl: true,              // 检查 url 格式 (http://foo.com)
+      isUrl: true,              // 检查 url 格式 (https://foo.com)
       isIP: true,               // 检查 IPv4 (129.89.23.1) 或 IPv6 格式
       isIPv4: true,             // 检查 IPv4 格式 (129.89.23.1)
       isIPv6: true,             // 检查 IPv6 格式
@@ -196,7 +196,7 @@ User.init({
         if (value === null && this.age !== 10) {
           throw new Error("除非年龄为10,否则名称不能为 null");
         }
-      })
+      }
     }
   }
 }, { sequelize });

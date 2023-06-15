@@ -156,9 +156,12 @@ const user = await User.create({ firstName: 'John', lastName: 'Doe' });
 console.log(user.fullName); // 'John Doe'
 ```
 
-## 在 Sequelize v7 中已弃用：`getterMethods` 和 `setterMethods`
+## 已弃用：`getterMethods` 和 `setterMethods`
 
-Sequelize 在模型定义中还提供了 `getterMethods` 和 `setterMethods` 参数,以指定看起来像但与虚拟属性不完全相同的事物. 不鼓励使用此方法,并且将来可能会**不建议**使用(建议直接使用虚拟属性).
+**注意：** 此功能已在 Sequelize 7 中移除. 你应该考虑使用任一 VIRTUAL 属性或原生 getter & setters 类替代.
+
+
+Sequelize 在模型定义中还提供了 `getterMethods` 和 `setterMethods` 参数,以指定看起来像但与虚拟属性不完全相同的事物. 不鼓励使用此方法,并且将来可能会**弃用**(建议直接使用虚拟属性).
 
 示例:
 

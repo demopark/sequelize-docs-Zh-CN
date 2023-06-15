@@ -11,15 +11,12 @@ Sequelize 提供了自己的 TypeScript 定义.
 
 ## 安装
 
-为了避免非 TS 用户的安装膨胀,你必须手动安装以下键入程序包:
-
-- `@types/node` (在 node 项目中这是通常是必须的)
-- `@types/validator`
+为了避免与不同的 Node 版本发生冲突. 你必须手动安装 [`@types/node`](https://www.npmjs.com/package/@types/node).
 
 ## 使用
 
 **重要**: 您必须在类属性类型上使用 `declare` 以确保 TypeScript 不会触发这些类属性.
-参阅 [公共类字段的注意事项](./model-basics.html#caveat-with-public-class-fields)
+参阅 [公共类字段的注意事项](../core-concepts/model-basics.md)
 
 Sequelize Models 接受两种通用类型来定义模型的属性和创建属性是什么样的:
 
@@ -40,7 +37,7 @@ type UserCreationAttributes = Optional<UserAttributes, 'id'>;
 
 class User extends Model<UserAttributes, UserCreationAttributes> {
   declare id: number;
-  declare string: number;
+  declare name: string;
   // other attributes...
 }
 ```
@@ -57,7 +54,7 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   // 'CreationOptional' is a special type that marks the field as optional
   // when creating an instance of the model (such as using Model.create()).
   declare id: CreationOptional<number>;
-  declare string: number;
+  declare name: string;
   // other attributes...
 }
 ```
@@ -67,14 +64,33 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
 - 静态字段和方法.
 - 方法（任何类型为函数的东西）.
 - 类型使用铭记类型 `NonAttribute` 的那些.
-- 像这样使用 AttributesOf 排除的那些: `InferAttributes<User, { omit: 'properties' | 'to' | 'omit' }>`.
+- 像这样使用 InferAttributes 排除的那些: `InferAttributes<User, { omit: 'properties' | 'to' | 'omit' }>`.
 - 由 Model 超类声明的那些（但不是中间类！）.
   如果您的属性之一与 `Model` 的属性之一同名, 请更改其名称.
   无论如何, 这样做可能会导致问题.
 - Getter & setter 不会被自动排除. 将它们的 return / parameter 类型设置为 `NonAttribute`,
   或将它们添加到 `omit` 以排除它们.
 
-`InferCreationAttributes` 的工作方式与 `AttributesOf` 相同, 但有一个例外: 使用 `CreationOptional` 类型键入的属性将被标记为可选.
+`InferCreationAttributes` 的工作方式与 `InferAttributes` 相同, 但有一个例外: 使用 `CreationOptional` 类型键入的属性将被标记为可选.
+
+请注意，接受 `null` 或 `undefined` 的属性不需要使用 `CreationOptional`:
+
+```typescript
+class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+  declare firstName: string;
+
+  // 不需要在 lastName 上使用 CreationOptional
+  // 因为可为 null 的属性在 User.create() 中始终是可选的
+  declare lastName: string | null;
+}
+
+// ...
+
+await User.create({
+  firstName: 'Zoé',
+  // 省略姓氏, 但这仍然有效！
+});
+```
 
 您只需要在类实例字段或 getter 上使用 `CreationOptional` 和 `NonAttribute`.
 

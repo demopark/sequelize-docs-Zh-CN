@@ -19,6 +19,7 @@ $ npm install --save mysql2
 $ npm install --save mariadb
 $ npm install --save sqlite3
 $ npm install --save tedious # Microsoft SQL Server
+$ npm install --save oracledb # Oracle Database
 ```
 
 ## 连接到数据库
@@ -41,11 +42,11 @@ const sequelize = new Sequelize({
 // 方法 3: 分别传递参数 (其它数据库)
 const sequelize = new Sequelize('database', 'username', 'password', {
   host: 'localhost',
-  dialect: /* 选择 'mysql' | 'mariadb' | 'postgres' | 'mssql' 其一 */
+  dialect: /* one of 'mysql' | 'postgres' | 'sqlite' | 'mariadb' | 'mssql' | 'db2' | 'snowflake' | 'oracle' */
 });
 ```
 
-Sequelize 构造函数接受很多参数. 它们记录在 [API 参考](https://sequelize.org/master/class/lib/sequelize.js~Sequelize.html#instance-constructor-constructor)中.
+Sequelize 构造函数接受很多参数. 它们记录在 [API 参考](https://sequelize.org/api/v6/class/src/sequelize.js~Sequelize.html#instance-constructor-constructor)中.
 
 ### 测试连接
 
@@ -63,6 +64,8 @@ try {
 ### 关闭连接
 
 默认情况下,Sequelize 将保持连接打开状态,并对所有查询使用相同的连接. 如果你需要关闭连接,请调用 `sequelize.close()`(这是异步的并返回一个 Promise).
+
+**注意:** 一旦 `sequelize.close()` 被调用, 就不可能打开新的连接. 你将需要创建一个新的 Sequelize 实例以再次访问你的数据库.
 
 ## 术语约定
 

@@ -41,27 +41,34 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 
 Sequelize 对于 SQLite 使用的基础连接器库是 [sqlite3](https://www.npmjs.com/package/sqlite3) npm 程序包(版本4.0.0或更高版本).
 
+由于 sqlite3@^4 的安全漏洞, 如果无法更新到 sqlite3@^5.0.3, 建议使用 [@vscode/sqlite3](https://www.npmjs.com/package/@vscode/sqlite3) 分支.
+
 你可以在 Sequelize 构造函数中使用 `storage` 参数指定存储文件(对于内存中的SQLite实例,请使用 `:memory:`).
 
 你可以使用 Sequelize 构造函数中的 `dialectOptions` 为其提供自定义参数：
 
 ```js
+import { Sequelize } from 'sequelize';
+import SQLite from 'sqlite3';
+
 const sequelize = new Sequelize('database', 'username', 'password', {
   dialect: 'sqlite',
-  storage: 'path/to/database.sqlite' // 或 ':memory:'
+  storage: 'path/to/database.sqlite', // 或 ':memory:'
   dialectOptions: {
     // 你的 sqlite3 参数
-  }
+    // 下面是配置数据库打开模式的示例:
+    mode: SQLite.OPEN_READWRITE | SQLite.OPEN_CREATE | SQLite.OPEN_FULLMUTEX,
+  },
 });
 ```
 
 以下字段可以传递给 SQLite `dialectOptions`:
 
-- `readWriteMode`: 设置 SQLite 连接的打开模式. 潜在值由 sqlite3 包提供, 并且能包括 sqlite3.OPEN_READONLY, sqlite3.OPEN_READWRITE 或 sqlite3.OPEN_CREATE. 查阅 [SQLite C 接口文档]( https://www.sqlite.org/c3ref/open.html) 以获取更多详细信息.
+- `mode`: 设置 SQLite 连接的打开模式. 潜在值由 `sqlite3` 包提供, 并且能包括 `SQLite.OPEN_READONLY`, `SQLite.OPEN_READWRITE`, 或 `SQLite.OPEN_CREATE`. 查阅 [sqlite3 API 参考](https://github.com/TryGhost/node-sqlite3/wiki/API) 和 [SQLite C 接口文档]( https://www.sqlite.org/c3ref/open.html) 以获取更多详细信息.
 
 ### PostgreSQL
 
-Sequelize 对于 PostgreSQL 使用的基础连接器库是 [pg](https://www.npmjs.com/package/pg) npm 软件包(版本7.0.0或更高版本). 还需要模块 [pg-hstore](https://www.npmjs.com/package/pg-hstore).
+Sequelize 对于 PostgreSQL 使用的基础连接器库是 [pg](https://www.npmjs.com/package/pg) npm 软件包(对于 Node 10 和 12, 请使用 pg 版本 7.0.0 或更高版本.  对于 Node 14 及更高版本, 需要根据 [pg 文档](https://node-postgres.com/#version-compatibility) 使用 pg 8.2.x 或更高版本). 还需要模块 [pg-hstore](https://www.npmjs.com/package/pg-hstore).
 
 你可以使用 Sequelize 构造函数中的 `dialectOptions` 为其提供自定义参数：
 
@@ -188,6 +195,48 @@ const sequelize = new Sequelize('database', null, null, {
 ```sh
 SEQ_ACCOUNT=myAccount SEQ_USER=myUser SEQ_PW=myPassword SEQ_ROLE=myRole SEQ_DB=myDatabaseName SEQ_SCHEMA=mySchema SEQ_WH=myWareHouse npm run test-integration-snowflake
 ```
+
+### Oracle 数据库
+
+Sequelize for Oracle 使用的底层连接器库是 [node-oracledb](https://www.npmjs.com/package/oracledb) 包. 
+请参阅 [Releases](/releases#oracle-support-table) 查看支持哪些版本的 Oracle 数据库和 node-oracledb.
+
+node-oracledb 需要 [Oracle Instant Client](https://www.oracle.com/database/technologies/instant-client/downloads.html) 才能工作. 你可以使用 node-oracledb [快速入门](https://oracle.github.io/node-oracledb/INSTALL.html#quickstart) 链接进行安装.
+
+下面是一个带有与 Oracle 数据库相关的参数的 Sequelize 构造函数.
+
+```js
+const sequelize = new Sequelize('servicename', 'username', 'password', {
+  dialect: 'oracle',
+  host: 'hostname',
+  port: 'port number', // 可选
+});
+```
+
+Oracle 数据库的默认端口号是 1521.
+
+Sequelize 还允许以 URL 格式传递凭据:
+
+```js
+const sequelize = new Sequelize('oracle://user:pass@hostname:port/servicename');
+```
+
+你可以使用 `dialectOptions.connectString` 将连接字符串、网络服务名称或连接描述符传递给 Sequelize 构造函数:
+
+```js
+const sequelize = new Sequelize({
+  dialect: 'oracle',
+  username: 'user',
+  password: 'password',
+  dialectOptions: {
+    connectString: 'inst1'
+  }
+});
+```
+
+请注意, `database`, `host` 和 `port` 将被覆盖, 连接字符串中的值将用于身份验证.
+
+有关连接字符串的更多信息, 请参阅[连接字符串](https://node-oracledb.readthedocs.io/en/latest/user_guide/connection_handling.html#connectionstrings).
 
 ## 数据类型: TIMESTAMP WITHOUT TIME ZONE - 仅限  PostgreSQL
 

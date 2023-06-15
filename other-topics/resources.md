@@ -14,7 +14,7 @@
 * [sequelize-ui](https://github.com/tomjschuster/sequelize-ui) - Online tool for building models, relations and more.
 * [sequelizer](https://github.com/andyforever/sequelizer) - A GUI Desktop App for generating Sequelize models. Support for Mysql, Mariadb, Postgres, Sqlite, Mssql.
 * [sequelize-auto](https://github.com/sequelize/sequelize-auto) Generating models for SequelizeJS via the command line is another choice.
-* [pg-generator](http://www.pg-generator.com/builtin-templates/sequelize/) - Auto generate/scaffold Sequelize models for PostgreSQL database.
+* [pg-generator](https://www.pg-generator.com/builtin-templates/sequelize/) - Auto generate/scaffold Sequelize models for PostgreSQL database.
 * [sequelizejs-decorators](https://www.npmjs.com/package/sequelizejs-decorators) decorators for composing sequelize models
 
 ### Autoloader
@@ -54,6 +54,7 @@
 ### Migrations
 
 * [umzug](https://github.com/sequelize/umzug)
+* [sequelizemm](https://github.com/hasinoorit/sequelizemm) - CLI tool to generate a migration script from models
 
 ### Slugification
 
@@ -68,3 +69,6 @@
 * [sequelize-deep-update](https://www.npmjs.com/package/sequelize-deep-update) - Update a sequelize instance and its included associated instances with new properties.
 * [sequelize-noupdate-attributes](https://www.npmjs.com/package/sequelize-noupdate-attributes) - Adds no update/readonly attributes support to models.
 * [sqlcommenter-sequelize](https://github.com/google/sqlcommenter/tree/master/nodejs/sqlcommenter-nodejs/packages/sqlcommenter-sequelize) A [sqlcommenter](https://google.github.io/sqlcommenter/) plugin with [support for Sequelize](https://google.github.io/sqlcommenter/node/sequelize/) to augment SQL statements with comments that can be used later to correlate application code with SQL statements.
+* [automated-express-backend](https://github.com/ruyd/automated-express-backend) - Sample Sequelize Backend with runtime generation of API
+* [@rematter/paranoid-sql](https://www.npmjs.com/package/@rematter/paranoid-sql) - Add conditions to verify rows are not soft deleted.
+* [@rematter/sequelize-paranoid-delete](https://www.npmjs.com/package/@rematter/sequelize-paranoid-delete) - Enables onDelete when using paranoid mode.

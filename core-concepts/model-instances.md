@@ -26,7 +26,7 @@ const User = sequelize.define("user", {
 
 ## 创建实例
 
-尽管模型是一个类,但是你不应直接使用 `new` 运算符来创建实例. 相反,应该使用 [`build`](https://sequelize.org/master/class/lib/model.js~Model.html#static-method-build) 方法：
+尽管模型是一个类,但是你不应直接使用 `new` 运算符来创建实例. 相反,应该使用 [`build`](https://sequelize.org/api/v6/class/src/model.js~Model.html#static-method-build) 方法：
 
 ```js
 const jane = User.build({ name: "Jane" });
@@ -34,7 +34,7 @@ console.log(jane instanceof User); // true
 console.log(jane.name); // "Jane"
 ```
 
-但是,以上代码根本无法与数据库通信(请注意,它甚至不是异步的)！ 这是因为 [`build`](https://sequelize.org/master/class/lib/model.js~Model.html#static-method-build) 方法仅创建一个对象,该对象 *表示* *可以* 映射到数据库的数据. 为了将这个实例真正保存(即持久保存)在数据库中,应使用 [`save`](https://sequelize.org/master/class/lib/model.js~Model.html#instance-method-save) 方法：
+但是,以上代码根本无法与数据库通信(请注意,它甚至不是异步的)！ 这是因为 [`build`](https://sequelize.org/api/v6/class/src/model.js~Model.html#static-method-build) 方法仅创建一个对象,该对象 *表示* *可以* 映射到数据库的数据. 为了将这个实例真正保存(即持久保存)在数据库中,应使用 [`save`](https://sequelize.org/api/v6/class/src/model.js~Model.html#instance-method-save) 方法：
 
 ```js
 await jane.save();
@@ -45,7 +45,7 @@ console.log('Jane 已保存到数据库!');
 
 ### 非常有用的捷径: `create` 方法
 
-Sequelize提供了 [`create`](https://sequelize.org/master/class/lib/model.js~Model.html#static-method-create) 方法,该方法将上述的 `build` 方法和 `save` 方法合并为一个方法：
+Sequelize提供了 [`create`](https://sequelize.org/api/v6/class/src/model.js~Model.html#static-method-create) 方法,该方法将上述的 `build` 方法和 `save` 方法合并为一个方法：
 
 ```js
 const jane = await User.create({ name: "Jane" });
@@ -87,7 +87,7 @@ await jane.save();
 // 现在该名称已在数据库中更新为 "Ada"！
 ```
 
-您可以使用 [`set`](https://sequelize.org/master/class/lib/model.js~Model.html#instance-method-set) 方法一次更新多个字段:
+您可以使用 [`set`](https://sequelize.org/api/v6/class/src/model.js~Model.html#instance-method-set) 方法一次更新多个字段:
 
 ```js
 const jane = await User.create({ name: "Jane" });
@@ -101,7 +101,7 @@ await jane.save();
 // 数据库现在将 "Ada" 和 "blue" 作为 name 和 favoriteColor
 ```
 
-请注意, 此处的 `save()` 也将保留在此实例上所做的任何其他更改, 而不仅仅是之前的 `set` 调用中的更改.如果要更新一组特定的字段, 可以使用[`update`](https://sequelize.org/master/class/lib/model.js~Model.html#instance-method-update):
+请注意, 此处的 `save()` 也将保留在此实例上所做的任何其他更改, 而不仅仅是之前的 `set` 调用中的更改.如果要更新一组特定的字段, 可以使用[`update`](https://sequelize.org/api/v6/class/src/model.js~Model.html#instance-method-update):
 
 ```js
 const jane = await User.create({ name: "Jane" });
@@ -115,7 +115,7 @@ await jane.save()
 
 ## 删除实例
 
-你可以通过调用 [`destroy`](https://sequelize.org/master/class/lib/model.js~Model.html#instance-method-destroy) 来删除实例:
+你可以通过调用 [`destroy`](https://sequelize.org/api/v6/class/src/model.js~Model.html#instance-method-destroy) 来删除实例:
 
 ```js
 const jane = await User.create({ name: "Jane" });
@@ -126,7 +126,7 @@ await jane.destroy();
 
 ## 重载实例
 
-你可以通过调用 [`reload`](https://sequelize.org/master/class/lib/model.js~Model.html#instance-method-reload) 从数据库中重新加载实例:
+你可以通过调用 [`reload`](https://sequelize.org/api/v6/class/src/model.js~Model.html#instance-method-reload) 从数据库中重新加载实例:
 
 ```js
 const jane = await User.create({ name: "Jane" });
@@ -169,7 +169,7 @@ Also, if only a few attributes have changed when you call `save`, only those fie
 
 ## 递增和递减整数值
 
-为了递增/递减实例的值而不会遇到并发问题,Sequelize提供了 [`increment`](https://sequelize.org/master/class/lib/model.js~Model.html#instance-method-increment) 和 [`decrement`](https://sequelize.org/master/class/lib/model.js~Model.html#instance-method-decrement) 实例方法.
+为了递增/递减实例的值而不会遇到并发问题,Sequelize提供了 [`increment`](https://sequelize.org/api/v6/class/src/model.js~Model.html#instance-method-increment) 和 [`decrement`](https://sequelize.org/api/v6/class/src/model.js~Model.html#instance-method-decrement) 实例方法.
 
 ```js
 const jane = await User.create({ name: "Jane", age: 100 });

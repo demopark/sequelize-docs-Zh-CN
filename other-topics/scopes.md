@@ -51,7 +51,7 @@ Project.init({
 });
 ```
 
-你也可以在定义模型后通过调用 [`YourModel.addScope`](https://sequelize.org/master/class/lib/model.js~Model.html#static-method-addScope) 添加作用域. 这对于具有包含的作用域特别有用,其中在定义另一个模型时可能未定义包含中的模型.
+你也可以在定义模型后通过调用 [`YourModel.addScope`](https://sequelize.org/api/v6/class/src/model.js~Model.html#static-method-addScope) 添加作用域. 这对于具有包含的作用域特别有用,其中在定义另一个模型时可能未定义包含中的模型.
 
 始终应用默认作用域. 这意味着,使用上面的模型定义,`Project.findAll()` 将创建以下查询：
 
@@ -144,7 +144,7 @@ SELECT * FROM projects WHERE active = true AND deleted = true
 调用多个合并作用域时,后续合并作用域中的键将覆盖先前合并作用域中的键(类似于 [Object.assign](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)),除了将合并的 `where` 和 `include` 之外. 考虑两个作用域：
 
 ```js
-YourMode.addScope('scope1', {
+YourModel.addScope('scope1', {
   where: {
     firstName: 'bob',
     age: {
@@ -153,10 +153,10 @@ YourMode.addScope('scope1', {
   },
   limit: 2
 });
-YourMode.addScope('scope2', {
+YourModel.addScope('scope2', {
   where: {
     age: {
-      [Op.gt]: 30
+      [Op.lt]: 30
     }
   },
   limit: 10
@@ -166,10 +166,26 @@ YourMode.addScope('scope2', {
 使用 `.scope('scope1', 'scope2')` 将产生以下 WHERE 子句：
 
 ```sql
-WHERE firstName = 'bob' AND age > 30 LIMIT 10
+WHERE firstName = 'bob' AND age < 30 LIMIT 10
 ```
 
-注意 `limit` 和 `age` 如何被 `scope2` 覆盖,而保留 `firstName`.`limit`, `offset`, `order`, `paranoid`, `lock` 和 `raw` 字段被覆盖,而 `where` 则被浅合并(这意味着相同的键将被覆盖).包含的合并策略将在后面讨论.
+注意 `limit` 和 `age` 如何被 `scope2` 覆盖,而保留 `firstName`.`limit`, `offset`, `order`, `paranoid`, `lock` 和 `raw` 字段被覆盖,而 `where` 则被浅合并(这意味着相同的键将被覆盖).
+如果标志 `whereMergeStrategy` 设置为 `and` (在模型上或在 sequelize 实例上), `where` 字段将使用 `and` 运算符合并.
+
+例如，如果 `YourModel` 被初始化为:
+
+```js
+YourModel.init({ /* attributes */ }, {
+  // ... other init options
+  whereMergeStrategy: 'and',
+});
+```
+
+使用 `.scope('scope1', 'scope2')` 将产生以下 WHERE 子句:
+
+```sql
+WHERE firstName = 'bob' AND age > 20 AND age < 30 LIMIT 10
+```
 
 注意,多个应用作用域的 `attributes` 键以始终保留 `attributes.exclude` 的方式合并. 这允许合并多个合并作用域,并且永远不会泄漏最终合并作用域中的敏感字段.
 

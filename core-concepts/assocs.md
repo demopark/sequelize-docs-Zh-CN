@@ -401,9 +401,9 @@ console.log('Amount of Sails:', awesomeCaptain.ship.amountOfSails);
   // 这里没有什么特别的东西
   ```
 
-* 或使用关联模型可用的 *[特殊方法/混合](＃special-methods-mixins-to-instances)* ,这将在本文稍后进行解释.
+* 或使用关联模型可用的 *[特殊方法/混合](＃添加到实例的特殊方法)* ,这将在本文稍后进行解释.
 
-**注意:** [`save()`实例方法](https://sequelize.org/master/class/lib/model.js~Model.html#instance-method-save) 并不知道关联关系. 如果你修改了 *父级* 对象预先加载的 *子级* 的值,那么在父级上调用 `save()` 将会忽略子级上发生的修改.
+**注意:** [`save()`实例方法](https://sequelize.org/api/v6/class/src/model.js~Model.html#instance-method-save) 并不知道关联关系. 如果你修改了 *父级* 对象预先加载的 *子级* 的值,那么在父级上调用 `save()` 将会忽略子级上发生的修改.
 
 ## 关联别名 & 自定义外键
 
@@ -435,7 +435,7 @@ console.log((await Ship.findAll({ include: Captain })).toJSON());
 console.log((await Ship.findAll({ include: 'captain' })).toJSON());
 
 // 同样,实例获得用于延迟加载的 `getCaptain()` 方法：
-const ship = Ship.findOne();
+const ship = await Ship.findOne();
 console.log((await ship.getCaptain()).toJSON());
 ```
 
@@ -452,7 +452,7 @@ console.log((await Ship.findAll({ include: Captain })).toJSON());
 console.log((await Ship.findAll({ include: 'Captain' })).toJSON());
 
 // 同样,实例获得用于延迟加载的 `getCaptain()` 方法:
-const ship = Ship.findOne();
+const ship = await Ship.findOne();
 console.log((await ship.getCaptain()).toJSON());
 ```
 
@@ -478,13 +478,13 @@ console.log((await Ship.findAll({
 })).toJSON());
 
 // 同样,实例获得用于延迟加载的 `getLeader()`方法:
-const ship = Ship.findOne();
+const ship = await Ship.findOne();
 console.log((await ship.getLeader()).toJSON());
 ```
 
 当你需要在同一模型之间定义两个不同的关联时,别名特别有用. 例如,如果我们有`Mail` 和 `Person` 模型,则可能需要将它们关联两次,以表示邮件的 `sender` 和 `receiver`. 在这种情况下,我们必须为每个关联使用别名,因为否则,诸如 `mail.getPerson()` 之类的调用将是模棱两可的. 使用 `sender` 和 `receiver` 别名,我们将有两种可用的可用方法：`mail.getSender()` 和 `mail.getReceiver()`,它们都返回一个`Promise<Person>`.
 
-在为 `hasOne` 或 `belongsTo` 关联定义别名时,应使用单词的单数形式(例如上例中的 `leader`). 另一方面,在为 `hasMany` 和 `belongsToMany` 定义别名时,应使用复数形式. [高级多对多关联指南](advanced-association-concepts/advanced-many-to-many.md)中介绍了定义多对多关系(带有`belongsToMany`)的别名.
+在为 `hasOne` 或 `belongsTo` 关联定义别名时,应使用单词的单数形式(例如上例中的 `leader`). 另一方面,在为 `hasMany` 和 `belongsToMany` 定义别名时,应使用复数形式. [高级多对多关联指南](../advanced-association-concepts/advanced-many-to-many.md)中介绍了定义多对多关系(带有`belongsToMany`)的别名.
 
 ### 两者都做
 
@@ -506,7 +506,7 @@ console.log((await Ship.findAll({
 })).toJSON());
 
 // 同样,实例获得用于延迟加载的 `getLeader()` 方法:
-const ship = Ship.findOne();
+const ship = await Ship.findOne();
 console.log((await ship.getLeader()).toJSON());
 ```
 

@@ -6,11 +6,11 @@
 [![Build Status](https://github.com/sequelize/sequelize/workflows/CI/badge.svg)](https://github.com/sequelize/sequelize/actions?query=workflow%3ACI)
 [![npm downloads](https://badgen.net/npm/dm/sequelize)](https://www.npmjs.com/package/sequelize)
 [![sponsor](https://img.shields.io/opencollective/all/sequelize?label=sponsors)](https://opencollective.com/sequelize)
-[![Last commit](https://badgen.net/github/last-commit/sequelize/sequelize)](https://github.com/sequelize/sequelize)
+[![Last commit](https://badgen.net/github/last-commit/sequelize/sequelize/v6)](https://github.com/sequelize/sequelize)
 [![Merged PRs](https://badgen.net/github/merged-prs/sequelize/sequelize)](https://github.com/sequelize/sequelize)
 [![GitHub stars](https://badgen.net/github/stars/sequelize/sequelize)](https://github.com/sequelize/sequelize)
-[![Slack Status](http://sequelize-slack.herokuapp.com/badge.svg)](http://sequelize-slack.herokuapp.com/)
-[![node](https://badgen.net/npm/node/sequelize)](https://www.npmjs.com/package/sequelize)
+[![Slack Status](https://img.shields.io/badge/Slack-4A154B?logo=slack&logoColor=white)](https://sequelize.org/slack)
+[![node](https://badgen.net/npm/node/sequelize/)](https://www.npmjs.com/package/sequelize)
 [![License](https://badgen.net/github/license/sequelize/sequelize)](https://github.com/sequelize/sequelize/blob/main/LICENSE)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
@@ -18,13 +18,12 @@
 > 
 > 更新日志请参阅: [CHANGELOG](CHANGELOG.md)
 
-Sequelize 是一个基于 promise 的 [Node.js](https://nodejs.org/zh-cn/about/) [ORM 工具](https://en.wikipedia.org/wiki/Object-relational_mapping), 目前支持 [Postgres](https://en.wikipedia.org/wiki/PostgreSQL), [MySQL](https://en.wikipedia.org/wiki/MySQL), [MariaDB](https://en.wikipedia.org/wiki/MariaDB), [SQLite](https://en.wikipedia.org/wiki/SQLite) 以及 [Microsoft SQL Server](https://en.wikipedia.org/wiki/Microsoft_SQL_Server), [Amazon Redshift](https://docs.aws.amazon.com/redshift/index.html) 和 [Snowflake’s Data Cloud](https://docs.snowflake.com/en/user-guide/intro-key-concepts.html). 它具有强大的事务支持, 关联关系, 预读和延迟加载,读取复制等功能.
+Sequelize 是一个基于 promise 的 [Node.js](https://nodejs.org/zh-cn/about/) [ORM 工具](https://en.wikipedia.org/wiki/Object-relational_mapping), 目前支持 [Postgres](https://en.wikipedia.org/wiki/PostgreSQL), [MySQL](https://en.wikipedia.org/wiki/MySQL), [MariaDB](https://en.wikipedia.org/wiki/MariaDB), [SQLite](https://en.wikipedia.org/wiki/SQLite) 以及 [Microsoft SQL Server](https://en.wikipedia.org/wiki/Microsoft_SQL_Server), [Oracle Database](https://en.wikipedia.org/wiki/Oracle_Database), [Amazon Redshift](https://docs.aws.amazon.com/redshift/index.html) 和 [Snowflake’s Data Cloud](https://docs.snowflake.com/en/user-guide/intro-key-concepts.html). 它具有强大的事务支持, 关联关系, 预读和延迟加载,读取复制等功能.
 
 Sequelize 遵从 [语义版本控制](http://semver.org). 支持 Node v10 及更高版本以便使用 ES6 功能.
 
-你目前正在查看 Sequelize 的**教程和指南**.你可能还对[API 参考](http://docs.sequelizejs.com/identifiers) (英文)感兴趣.
+你目前正在查看 Sequelize 的**教程和指南**.你可能还对[API 参考](https://sequelize.org/api/v6/identifiers.html) (英文)感兴趣.
 
-# 赞赏支持
 ![赞赏支持](https://raw.githubusercontent.com/demopark/electron-api-demos-Zh_CN/master/assets/img/td.png)
 
 # 数据库引擎支持
@@ -40,9 +39,11 @@ Sequelize 遵从 [语义版本控制](http://semver.org). 支持 Node v10 及更
 
 ## 版本
 
-### [v6 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/master)(现行版本)
+### [v7 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/master)(保持更新)
 
-### [v5 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/v5)(计划停止)
+### [v6 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/v6)(保持更新)
+
+### [v5 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/v5)(停止更新)
 
 ### [v4 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/v4)(停止更新)
 
@@ -114,5 +115,5 @@ User.init({
 })();
 ```
 
-请通过 [Getting started - 入门](core-concepts/getting-started.md) 来学习更多相关内容. 如果你想要学习 Sequelize API 请通过 [API 参考](http://docs.sequelizejs.com/identifiers) (英文).
+请通过 [Getting started - 入门](core-concepts/getting-started.md) 来学习更多相关内容. 如果你想要学习 Sequelize API 请通过 [API 参考](https://sequelize.org/api/v6/identifiers.html) (英文).
 

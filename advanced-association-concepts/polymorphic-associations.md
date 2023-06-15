@@ -234,7 +234,7 @@ Found comment #1 with image commentable: { id: 1,
 
 ```js
 class Tag extends Model {
-  getTaggables(options) {
+ async getTaggables(options) {
     const images = await this.getImages(options);
     const videos = await this.getVideos(options);
     // 在单个 taggables 数组中合并 images 和 videos
@@ -377,7 +377,7 @@ Tag.belongsToMany(Video, {
 
 我们还可以在目标模型上应用关联作用域. 我们甚至可以同时进行.
 
-为了说明这一点,请考虑上述示例在标签和可标记之间的扩展,其中每个标签都有一个状态. 这样,为了获取图像的所有待处理标签,我们可以在 `Image` 和 `Tag` 之间建立另一个 `belognsToMany` 关系,这一次在联结模型上应用作用域,在目标模型上应用另一个作用域：
+为了说明这一点,请考虑上述示例在标签和可标记之间的扩展,其中每个标签都有一个状态. 这样,为了获取图像的所有待处理标签,我们可以在 `Image` 和 `Tag` 之间建立另一个 `belongsToMany` 关系,这一次在联结模型上应用作用域,在目标模型上应用另一个作用域：
 
 ```js
 Image.belongsToMany(Tag, {

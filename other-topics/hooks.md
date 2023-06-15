@@ -6,7 +6,7 @@ Hooks(也称为生命周期事件)是在执行 sequelize 中的调用之前和�
 
 ## 可用的 hooks
 
-Sequelize 提供了很多 hook. 完整列表可以直接在[源代码 - lib/hooks.js](https://github.com/sequelize/sequelize/blob/v6/lib/hooks.js#L7) 中找到.
+Sequelize 提供了很多 hook. 完整列表可以直接在[源代码 - src/hooks.js](https://github.com/sequelize/sequelize/blob/v6/src/hooks.js#L7) 中找到.
 
 ## Hooks 触发顺序
 
@@ -320,6 +320,68 @@ await Users.bulkCreate([
 });
 ```
 
+## 例外情况
+
+只有 __Model 方法__ 触发 hook. 这意味着在许多情况下, Sequelize 将与数据库交互而不触发 hook.
+这些包括但不限于:
+
+- 由于 `ON DELETE CASCADE` 约束而被数据库删除的实例, 除非 `hooks` 参数为 true.
+- 由于 `SET NULL` 或者 `SET DEFAULT` 约束, 实例正在被数据库更新.
+- [Raw 查询](../core-concepts/raw-queries.md).
+- 所有 QueryInterface 方法.
+
+如果你需要对这些事件做出处理，请考虑改用数据库的本机触发器和通知系统.
+
+## 级联删除的 Hooks
+
+如上面 `例外情况` 中所示, 由于 `ON DELETE CASCADE` 约束, 当数据库删除实例时, Sequelize 不会触发hook.
+
+但是, 如果你在定义关联时将 `hooks` 参数设置为 `true`, Sequelize 将为已删除的实例触发 `beforeDestroy` 和 `afterDestroy` hook。
+
+**注意**
+
+由于以下原因, 不鼓励使用此参数:
+
+- 此参数需要许多额外的查询. 而 `destroy` 方法通常执行单个查询. 如果启用此参数, 将执行一个额外的 `SELECT` 查询, 以及一个额外的 `DELETE` 查询, 用于选择返回的每一行.
+- 如果你没有在事务中运行此查询. 当发生错误时，最终可能会删除一些行, 而一些行没有被删除.
+- 此参数仅在使用 `destroy` 的 *实例* 版本时有效. 静态版本不会触发 hook，即使使用 `individualHooks` 也是如此.
+- 此参数在 `paranoid` 模式下不起作用.
+- 如果你只在拥有外键的模型上定义关联, 则此参数将不起作用. 你还需要定义反向关联.
+
+此参数被视为遗留选项. 如果你需要收到数据库更改通知, 我们强烈建议您使用数据库的触发器和通知系统.
+
+以下是如何使用此参数的示例:
+
+```ts
+import { Model } from 'sequelize';
+
+const sequelize = new Sequelize({ /* options */ });
+
+class User extends Model {}
+
+User.init({}, { sequelize });
+
+class Post extends Model {}
+
+Post.init({}, { sequelize });
+Post.beforeDestroy(() => {
+  console.log('Post has been destroyed');
+});
+
+// 这里 "hooks" 参数将导致 "beforeDestroy" 和 "afterDestroy"
+// highlight-next-line
+User.hasMany(Post, { onDelete: 'cascade', hooks: true });
+
+await sequelize.sync({ force: true });
+
+const user = await User.create();
+const post = await Post.create({ userId: user.id });
+
+// 这里将输出 "Post has been destroyed"
+await user.destroy();
+```
+
+
 ## 关联
 
 在大多数情况下,hook 在关联时对实例的作用相同.
@@ -327,33 +389,6 @@ await Users.bulkCreate([
 ### 一对一和一对多关联
 
 * 当使用 `add`/`set` mixin 方法时,`beforeUpdate` 和 `afterUpdate` hook 将运行.
-
-* `beforeDestroy` 和 `afterDestroy` hook 只会在具有 `onDelete: 'CASCADE'` 和 `hooks: true` 的关联上被调用. 例如
-
-```js
-class Projects extends Model {}
-Projects.init({
-  title: DataTypes.STRING
-}, { sequelize });
-
-class Tasks extends Model {}
-Tasks.init({
-  title: DataTypes.STRING
-}, { sequelize });
-
-Projects.hasMany(Tasks, { onDelete: 'CASCADE', hooks: true });
-Tasks.belongsTo(Projects);
-```
-
-该代码将在 Tasks 模型上运行 `beforeDestroy` 和 `afterDestroy` hook.
-
-默认情况下,Sequelize 将尝试尽可能优化你的查询. 当在删除时调用级联时,Sequelize 将简单地执行：
-
-```sql
-DELETE FROM `table` WHERE associatedIdentifier = associatedIdentifier.primaryKey
-```
-
-但是,添加 `hooks: true` 会明确告诉 Sequelize 优化与你无关. 然后,Sequelize 首先将对关联的对象执行 `SELECT` 并逐个销毁每个实例,以便能够正确调用 hook(使用正确的参数).
 
 ### 多对多关联
 

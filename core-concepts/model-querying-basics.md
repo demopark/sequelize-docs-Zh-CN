@@ -16,7 +16,7 @@ const jane = await User.create({ firstName: "Jane", lastName: "Doe" });
 console.log("Jane's auto-generated ID:", jane.id);
 ```
 
-[`Model.create()`](https://sequelize.org/master/class/lib/model.js~Model.html#static-method-create) 方法是使用 [`Model.build()`](https://sequelize.org/master/class/lib/model.js~Model.html#static-method-build) 构建未保存实例并使用 [`instance.save()`](https://sequelize.org/master/class/lib/model.js~Model.html#instance-method-save) 保存实例的简写形式.
+[`Model.create()`](https://sequelize.org/api/v6/class/src/model.js~Model.html#static-method-create) 方法是使用 [`Model.build()`](https://sequelize.org/api/v6/class/src/model.js~Model.html#static-method-build) 构建未保存实例并使用 [`instance.save()`](https://sequelize.org/api/v6/class/src/model.js~Model.html#instance-method-save) 保存实例的简写形式.
 
 也可以定义在 `create` 方法中的属性. 如果你基于用户填写的表单创建数据库条目,这将特别有用. 例如,使用它可以允许你将 `User` 模型限制为仅设置用户名和地址,而不设置管理员标志 (例如, `isAdmin`)：
 
@@ -32,7 +32,7 @@ console.log(user.isAdmin); // false
 
 ## 简单 SELECT 查询
 
-你可以使用 [`findAll`](https://sequelize.org/master/class/lib/model.js~Model.html#static-method-findAll) 方法从数据库中读取整个表：
+你可以使用 [`findAll`](https://sequelize.org/api/v6/class/src/model.js~Model.html#static-method-findAll) 方法从数据库中读取整个表：
 
 ```js
 // 查询所有用户
@@ -71,7 +71,7 @@ Model.findAll({
 SELECT foo, bar AS baz, qux FROM ...
 ```
 
-你可以使用 [`sequelize.fn`](https://sequelize.org/master/class/lib/sequelize.js~Sequelize.html#static-method-fn) 进行聚合：
+你可以使用 [`sequelize.fn`](https://sequelize.org/api/v6/class/src/sequelize.js~Sequelize.html#static-method-fn) 进行聚合：
 
 ```js
 Model.findAll({
@@ -260,11 +260,11 @@ Post.findAll({
       [Op.iRegexp]: '^[h|a|t]',                // ~* '^[h|a|t]' (仅 PG)
       [Op.notIRegexp]: '^[h|a|t]',             // !~* '^[h|a|t]' (仅 PG)
 
-      [Op.any]: [2, 3],                        // ANY ARRAY[2, 3]::INTEGER (仅 PG)
+      [Op.any]: [2, 3],                        // ANY (ARRAY[2, 3]::INTEGER[]) (PG only)
       [Op.match]: Sequelize.fn('to_tsquery', 'fat & rat') // 匹配文本搜索字符串 'fat' 和 'rat' (仅 PG)
 
       // 在 Postgres 中, Op.like/Op.iLike/Op.notLike 可以结合 Op.any 使用:
-      [Op.like]: { [Op.any]: ['cat', 'hat'] }  // LIKE ANY ARRAY['cat', 'hat']
+      [Op.like]: { [Op.any]: ['cat', 'hat'] }  // LIKE ANY (ARRAY['cat', 'hat'])
 
       // 还有更多的仅限 postgres 的范围运算符,请参见下文
     }
@@ -375,7 +375,7 @@ Post.findAll({
 // SELECT ... FROM "posts" AS "post" WHERE char_length("content") = 7
 ```
 
-请注意方法 [`sequelize.fn`](https://sequelize.org/master/class/lib/sequelize.js~Sequelize.html#static-method-fn) 和 [`sequelize.col`](https://sequelize.org/master/class/lib/sequelize.js~Sequelize.html#static-method-col) 的用法,应分别用于指定 SQL 函数调用和列. 应该使用这些方法,而不是传递纯字符串(例如 `char_length(content)`),因为 Sequelize 需要以不同的方式对待这种情况(例如,使用其他符号转义方法).
+请注意方法 [`sequelize.fn`](https://sequelize.org/api/v6/class/src/sequelize.js~Sequelize.html#static-method-fn) 和 [`sequelize.col`](https://sequelize.org/api/v6/class/src/sequelize.js~Sequelize.html#static-method-col) 的用法,应分别用于指定 SQL 函数调用和列. 应该使用这些方法,而不是传递纯字符串(例如 `char_length(content)`),因为 Sequelize 需要以不同的方式对待这种情况(例如,使用其他符号转义方法).
 
 如果你需要更复杂的东西怎么办？
 
@@ -516,7 +516,7 @@ console.log(captains[0].id); // 1 // (或另一个自动生成的值)
 
 ```js
 const Foo = sequelize.define('foo', {
-  bar: {
+  name: {
     type: DataTypes.TEXT,
     validate: {
       len: [4, 6]

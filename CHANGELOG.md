@@ -1,7 +1,10 @@
 # 更新记录
 
+## 2023-06-15
+* v6 分支同步翻译到 v6 文档 6.32.0
+
 ## 2022-02-9
-* master 分支同步翻译到 v6 文档 6.16.0
+* v6 分支同步翻译到 v6 文档 6.16.0
 
 ## 2021-10-8
 * master 分支同步翻译到 v6 文档 6.6.5
@@ -68,7 +71,9 @@
 ### 更新
 * 同步官方最新文档版本 4.13.8
 * 翻译 getting-started.md
-* 翻译 models-definition.md* 翻译 models-usage.md* 翻译 querying.md
+* 翻译 models-definition.md
+* 翻译 models-usage.md
+* 翻译 querying.md
 
 ## 2017-07-14
 

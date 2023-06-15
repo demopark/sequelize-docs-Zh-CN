@@ -72,6 +72,31 @@ Timeline.create({ range: [null, new Date(Date.UTC(2016, 0, 1))] });
 Timeline.create({ range: [-Infinity, new Date(Date.UTC(2016, 0, 1))] });
 ```
 
+## 网络地址
+
+<DialectTableFilter>
+
+| Sequelize DataType | PostgreSQL                                                               | MariaDB | MySQL | MSSQL | SQLite | Snowflake | db2 | ibmi |
+|--------------------|--------------------------------------------------------------------------|---------|-------|-------|--------|-----------|-----|------|
+| `CIDR`             | [`CIDR`](https://www.postgresql.org/docs/9.1/datatype-net-types.html)    | ❌       | ❌     | ❌     | ❌      | ❌         | ❌   | ❌    |
+| `INET`             | [`INET`](https://www.postgresql.org/docs/9.1/datatype-net-types.html)    | ❌       | ❌     | ❌     | ❌      | ❌         | ❌   | ❌    |
+| `MACADDR`          | [`MACADDR`](https://www.postgresql.org/docs/9.1/datatype-net-types.html) | ❌       | ❌     | ❌     | ❌      | ❌         | ❌   | ❌    |
+
+</DialectTableFilter>
+
+## Arrays (仅 PostgreSQL)
+
+```typescript
+// 定义 DataTypes.SOMETHING 的数组.
+DataTypes.ARRAY(/* DataTypes.SOMETHING */)
+
+// 示例
+// VARCHAR(255)[]
+DataTypes.ARRAY(DataTypes.STRING)
+// VARCHAR(255)[][]
+DataTypes.ARRAY(DataTypes.ARRAY(DataTypes.STRING))
+```
+
 ## BLOB
 
 ```js
@@ -102,9 +127,9 @@ sequelize.define('foo', {
 });
 ```
 
-## JSON (仅限 SQLite, MySQL, MariaDB 和 PostgreSQL)
+## JSON (仅限 SQLite, MySQL, MariaDB, Oracle 和 PostgreSQL)
 
-仅 SQLite,MySQL,MariaDB 和 PostgreSQL 支持 `DataTypes.JSON` 数据类型. 但是,对 MSSQL 的支持最少(请参见下文).
+仅 SQLite, MySQL, MariaDB, Oracle 和 PostgreSQL 支持 `DataTypes.JSON` 数据类型. 但是,对 MSSQL 的支持最少(请参见下文).
 
 ### PostgreSQL 的注意事项
 
@@ -143,7 +168,7 @@ await Foo.findOne({
     meta: {
       [Op.contains]: {
         site: {
-          url: 'http://google.com'
+          url: 'https://google.com'
         }
       }
     }
@@ -177,16 +202,25 @@ await User.findAll({
 })
 ```
 
-## 其他
+## 其他数据类型
 
-```js
-DataTypes.ARRAY(/* DataTypes.SOMETHING */)  // 定义一个 DataTypes.SOMETHING 数组. 仅限 PostgreSQL.
+<DialectTableFilter>
 
-DataTypes.CIDR                        // CIDR                  仅限 PostgreSQL
-DataTypes.INET                        // INET                  仅限 PostgreSQL
-DataTypes.MACADDR                     // MACADDR               仅限 PostgreSQL
+| Sequelize DataType                                                                       | PostgreSQL                                                                | [MariaDB](https://mariadb.com/kb/en/geometry-types/) | [MySQL](https://dev.mysql.com/doc/refman/8.0/en/spatial-type-overview.html) | MSSQL | SQLite | Snowflake | db2 | ibmi |
+|------------------------------------------------------------------------------------------|---------------------------------------------------------------------------|------------------------------------------------------|-----------------------------------------------------------------------------|-------|--------|-----------|-----|------|
+| [`GEOMETRY`](https://sequelize.org/api/v6/class/src/data-types.js~geometry)   | [`GEOMETRY`](https://postgis.net/workshops/postgis-intro/geometries.html) | `GEOMETRY`                                           | `GEOMETRY`                                                                  | ❌     | ❌      | ❌         | ❌   | ❌    |
+| `GEOMETRY('POINT')`                                                                      | `GEOMETRY(POINT)`                                                         | `POINT`                                              | `POINT`                                                                     | ❌     | ❌      | ❌         | ❌   | ❌    |
+| `GEOMETRY('POINT', 4326)`                                                                | `GEOMETRY(POINT,4326)`                                                    | ❌                                                    | ❌                                                                           | ❌     | ❌      | ❌         | ❌   | ❌    |
+| `GEOMETRY('POLYGON')`                                                                    | `GEOMETRY(POLYGON)`                                                       | `POLYGON`                                            | `POLYGON`                                                                   | ❌     | ❌      | ❌         | ❌   | ❌    |
+| `GEOMETRY('LINESTRING')`                                                                 | `GEOMETRY(LINESTRING)`                                                    | `LINESTRING`                                         | `LINESTRING`                                                                | ❌     | ❌      | ❌         | ❌   | ❌    |
+| [`GEOGRAPHY`](https://sequelize.org/api/v6/class/src/data-types.js~geography) | [`GEOGRAPHY`](https://postgis.net/workshops/postgis-intro/geography.html) | ❌                                                    | ❌                                                                           | ❌     | ❌      | ❌         | ❌   | ❌    |
+| `HSTORE`                                                                                 | [`HSTORE`](https://www.postgresql.org/docs/9.1/hstore.html)               | ❌                                                    | ❌                                                                           | ❌     | ❌      | ❌         | ❌   | ❌    |
 
-DataTypes.GEOMETRY                    // 空间列. 仅限 PostgreSQL (使用 PostGIS) 或 MySQL.
-DataTypes.GEOMETRY('POINT')           // 具有几何类型的空间列.仅限 PostgreSQL (使用 PostGIS) 或 MySQL.
-DataTypes.GEOMETRY('POINT', 4326)     // 具有几何类型和 SRID 的空间列.仅限 PostgreSQL (使用 PostGIS) 或 MySQL.
-```
+</DialectTableFilter>
+
+**注意**
+
+在 Postgres 中, GEOMETRY 和 GEOGRAPHY 类型由 [PostGIS 扩展](https://postgis.net/workshops/postgis-intro/geometries.html) 实现.
+
+在 Postgres 中, 如果你使用 `DataTypes.HSTORE` 则必须安装 [pg-hstore](https://www.npmjs.com/package/pg-hstore) 包.
+

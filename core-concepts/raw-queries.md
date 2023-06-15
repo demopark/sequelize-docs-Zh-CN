@@ -1,6 +1,6 @@
 # Raw Queries - 原始查询
 
-由于常常使用简单的方式来执行原始/已经准备好的SQL查询,因此可以使用 `sequelize.query` 方法.
+由于常常使用简单的方式来执行原始/已经准备好的SQL查询,因此可以使用 [`sequelize.query`](https://sequelize.org/api/v6/class/src/sequelize.js~Sequelize.html#instance-method-query) 方法.
 
 默认情况下,函数将返回两个参数 - 一个结果数组,以及一个包含元数据(例如受影响的行数等)的对象. 请注意,由于这是一个原始查询,所以元数据都是具体的方言. 某些方言返回元数据 "within" 结果对象(作为数组上的属性). 但是,将永远返回两个参数,但对于MSSQL和MySQL,它将是对同一对象的两个引用.
 
@@ -18,7 +18,7 @@ const users = await sequelize.query("SELECT * FROM `users`", { type: QueryTypes.
 
 ```
 
-还有其他几种查询类型可用. [详细了解来源](https://github.com/sequelize/sequelize/blob/main/src/query-types.ts).
+还有其他几种查询类型可用. [详细了解来源](https://github.com/sequelize/sequelize/blob/v6/src/query-types.js).
 
 第二种选择是模型. 如果传递模型,返回的数据将是该模型的实例.
 
@@ -31,7 +31,7 @@ const projects = await sequelize.query('SELECT * FROM projects', {
 // 现在,`projects` 的每个元素都是 Project 的一个实例
 ```
 
-查看 [Query API 参考](class/lib/sequelize.js~Sequelize.html#instance-method-query)中的更多参数. 以下是一些例子:
+查看 [Query API 参考](https://sequelize.org/api/v6/class/src/sequelize.js~Sequelize.html#instance-method-query)中的更多参数. 以下是一些例子:
 
 ```js
 const { QueryTypes } = require('sequelize');

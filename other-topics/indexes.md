@@ -1,6 +1,6 @@
 # Indexes - 索引
 
-Sequelize 支持在模型定义上添加索引,该索引将在 [`sequelize.sync()`](https://sequelize.org/master/class/lib/sequelize.js~Sequelize.html#instance-method-sync) 上创建
+Sequelize 支持在模型定义上添加索引,该索引将在 [`sequelize.sync()`](https://sequelize.org/api/v6/class/src/sequelize.js~Sequelize.html#instance-method-sync) 上创建
 
 ```js
 const User = sequelize.define('User', { /* 属性 */ }, {
@@ -35,7 +35,7 @@ const User = sequelize.define('User', { /* 属性 */ }, {
       fields: [
         'author',
         {
-          attribute: 'title',
+          name: 'title',
           collate: 'en_US',
           order: 'DESC',
           length: 5

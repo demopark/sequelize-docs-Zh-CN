@@ -4,7 +4,7 @@
 
 ## 概念
 
-模型是 Sequelize 的本质. 模型是代表数据库中表的抽象. 在 Sequelize 中,它是一个 [Model](https://sequelize.org/master/class/lib/model.js~Model.html) 的扩展类.
+模型是 Sequelize 的本质. 模型是代表数据库中表的抽象. 在 Sequelize 中,它是一个 [Model](https://sequelize.org/api/v6/class/src/model.js~Model.html) 的扩展类.
 
 该模型告诉 Sequelize 有关它代表的实体的几件事,例如数据库中表的名称以及它具有的列(及其数据类型).
 
@@ -14,8 +14,8 @@ Sequelize 中的模型有一个名称. 此名称不必与它在数据库中表�
 
 在 Sequelize 中可以用两种等效的方式定义模型：
 
-* 调用 [`sequelize.define(modelName, attributes, options)`](https://sequelize.org/master/class/lib/sequelize.js~Sequelize.html#instance-method-define)
-* 扩展 [Model](https://sequelize.org/master/class/lib/model.js~Model.html) 并调用 [`init(attributes, options)`](https://sequelize.org/master/class/lib/model.js~Model.html#static-method-init)
+* 调用 [`sequelize.define(modelName, attributes, options)`](https://sequelize.org/api/v6/class/src/sequelize.js~Sequelize.html#instance-method-define)
+* 扩展 [Model](https://sequelize.org/api/v6/class/src/model.js~Model.html) 并调用 [`init(attributes, options)`](https://sequelize.org/api/v6/class/src/model.js~Model.html#static-method-init)
 
 定义模型后,可通过其模型名称在 `sequelize.models` 中使用该模型.
 
@@ -23,7 +23,7 @@ Sequelize 中的模型有一个名称. 此名称不必与它在数据库中表�
 
 定义该模型的两种方法如下所示. 定义后,我们可以使用 `sequelize.models.User` 访问模型.
 
-### 使用 [`sequelize.define`](https://sequelize.org/master/class/lib/sequelize.js~Sequelize.html#instance-method-define):
+### 使用 [`sequelize.define`](https://sequelize.org/api/v6/class/src/sequelize.js~Sequelize.html#instance-method-define):
 
 ```js
 const { Sequelize, DataTypes } = require('sequelize');
@@ -47,7 +47,7 @@ const User = sequelize.define('User', {
 console.log(User === sequelize.models.User); // true
 ```
 
-### 扩展 [Model](https://sequelize.org/master/class/lib/model.js~Model.html)
+### 扩展 [Model](https://sequelize.org/api/v6/class/src/model.js~Model.html)
 
 ```js
 const { Sequelize, DataTypes, Model } = require('sequelize');
@@ -189,7 +189,7 @@ sequelize.define('User', {
 
 定义模型时,你要告诉 Sequelize 有关数据库中表的一些信息. 但是,如果该表实际上不存在于数据库中怎么办？ 如果存在,但具有不同的列,较少的列或任何其他差异,该怎么办？
 
-这就是模型同步的来源.可以通过调用一个异步函数(返回一个Promise)[`model.sync(options)`](https://sequelize.org/master/class/lib/model.js~Model.html#static-method-sync). 通过此调用,Sequelize 将自动对数据库执行 SQL 查询. 请注意,这仅更改数据库中的表,而不更改 JavaScript 端的模型.
+这就是模型同步的来源.可以通过调用一个异步函数(返回一个Promise)[`model.sync(options)`](https://sequelize.org/api/v6/class/src/model.js~Model.html#static-method-sync). 通过此调用,Sequelize 将自动对数据库执行 SQL 查询. 请注意,这仅更改数据库中的表,而不更改 JavaScript 端的模型.
 
 * `User.sync()` - 如果表不存在,则创建该表(如果已经存在,则不执行任何操作)
 * `User.sync({ force: true })` - 将创建表,如果表已经存在,则将其首先删除
@@ -204,7 +204,7 @@ console.log("用户模型表刚刚(重新)创建！");
 
 ### 一次同步所有模型
 
-你可以使用 [`sequelize.sync()`](https://sequelize.org/master/class/lib/sequelize.js~Sequelize.html#instance-method-sync) 自动同步所有模型. 示例：
+你可以使用 [`sequelize.sync()`](https://sequelize.org/api/v6/class/src/sequelize.js~Sequelize.html#instance-method-sync) 自动同步所有模型. 示例：
 
 ```js
 await sequelize.sync({ force: true });
@@ -238,7 +238,7 @@ sequelize.sync({ force: true, match: /_test$/ });
 
 ### 生产环境同步
 
-如上所示,`sync({ force: true })` 和 `sync({ alter: true })` 可能是破坏性操作. 因此,不建议将它们用于生产级软件中. 相反,应该在 [Sequelize CLI](https://github.com/sequelize/cli) 的帮助下使用高级概念 [Migrations](migrations.html)(迁移) 进行同步.
+如上所示,`sync({ force: true })` 和 `sync({ alter: true })` 可能是破坏性操作. 因此,不建议将它们用于生产级软件中. 相反,应该在 [Sequelize CLI](https://github.com/sequelize/cli) 的帮助下使用高级概念 [Migrations](../other-topics/migrations.md)(迁移) 进行同步.
 
 ## 时间戳
 
@@ -317,7 +317,7 @@ sequelize.define('Foo', {
 
 ## 数据类型
 
-你在模型中定义的每一列都必须具有数据类型. Sequelize 提供[很多内置数据类型](https://github.com/sequelize/sequelize/blob/main/lib/data-types.js). 要访问内置数据类型,必须导入 `DataTypes`：
+你在模型中定义的每一列都必须具有数据类型. Sequelize 提供[很多内置数据类型](https://github.com/sequelize/sequelize/blob/v6/src/data-types.js). 要访问内置数据类型,必须导入 `DataTypes`：
 
 ```js
 const { DataTypes } = require("sequelize"); // 导入内置数据类型

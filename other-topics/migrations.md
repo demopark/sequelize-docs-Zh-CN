@@ -121,7 +121,7 @@ npx sequelize-cli db:migrate:undo
 npx sequelize-cli db:migrate:undo:all --to XXXXXXXXXXXXXX-create-posts.js
 ```
 
-### 创建第一个种子
+## 创建第一个种子
 
 假设我们希望在默认情况下将一些数据插入到几个表中. 如果我们跟进前面的例子,我们可以考虑为 `User` 表创建演示用户.
 
@@ -559,6 +559,23 @@ module.exports = {
 ```text
 npx sequelize-cli db:migrate --url 'mysql://root:password@mysql_host.com/database_name'
 ```
+
+如果将 `package.json` 脚本与 npm 一起使用, 请确保在使用标志时在命令中使用额外的 `--`.
+
+示例:
+
+```json
+// package.json
+
+...
+  "scripts": {
+    "migrate:up": "npx sequelize-cli db:migrate",
+    "migrate:undo": "npx sequelize-cli db:migrate:undo"
+  },
+...
+```
+
+像这样使用命令: `npm run migrate:up -- --url <url>`
 
 ### 程序用法
 

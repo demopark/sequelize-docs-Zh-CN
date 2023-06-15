@@ -14,4 +14,4 @@ const sequelize = new Sequelize(/* ... */, {
 });
 ```
 
-在 [Sequelize 构造函数的 API 参考](https://sequelize.org/master/class/lib/sequelize.js~Sequelize.html#instance-constructor-constructor)中了解更多信息. 如果要从多个进程连接到数据库,则必须为每个进程创建一个实例,但是每个实例的最大连接池大小应达到最大总大小. 例如,如果你希望最大连接池大小为90,并且有三个进程,则每个进程的 Sequelize 实例的最大连接池大小应为30.
+在 [Sequelize 构造函数的 API 参考](https://sequelize.org/api/v6/class/src/sequelize.js~Sequelize.html#instance-constructor-constructor)中了解更多信息. 如果要从多个进程连接到数据库,则必须为每个进程创建一个实例,但是每个实例的最大连接池大小应达到最大总大小. 例如,如果你希望最大连接池大小为90,并且有三个进程,则每个进程的 Sequelize 实例的最大连接池大小应为30.
