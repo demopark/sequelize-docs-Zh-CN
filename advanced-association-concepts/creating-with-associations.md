@@ -11,21 +11,21 @@
 ```js
 class Product extends Model {}
 Product.init({
-  title: Sequelize.STRING
+  title: DataTypes.STRING
 }, { sequelize, modelName: 'product' });
 class User extends Model {}
 User.init({
-  firstName: Sequelize.STRING,
-  lastName: Sequelize.STRING
+  firstName: DataTypes.STRING,
+  lastName: DataTypes.STRING
 }, { sequelize, modelName: 'user' });
 class Address extends Model {}
 Address.init({
   type: DataTypes.STRING,
-  line1: Sequelize.STRING,
-  line2: Sequelize.STRING,
-  city: Sequelize.STRING,
-  state: Sequelize.STRING,
-  zip: Sequelize.STRING,
+  line1: DataTypes.STRING,
+  line2: DataTypes.STRING,
+  city: DataTypes.STRING,
+  state: DataTypes.STRING,
+  zip: DataTypes.STRING,
 }, { sequelize, modelName: 'address' });
 
 // 我们保存关联设置调用的返回值,以便以后使用
@@ -87,7 +87,7 @@ return Product.create({
 ```js
 class Tag extends Model {}
 Tag.init({
-  name: Sequelize.STRING
+  name: DataTypes.STRING
 }, { sequelize, modelName: 'tag' });
 
 Product.hasMany(Tag);

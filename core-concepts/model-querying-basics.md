@@ -16,7 +16,7 @@ const jane = await User.create({ firstName: "Jane", lastName: "Doe" });
 console.log("Jane's auto-generated ID:", jane.id);
 ```
 
-[`Model.create()`](https://sequelize.org/master/class/lib/model.js~Model.html#static-method-create) 方法是使用 [`Model.build()`](https://sequelize.org/master/class/lib/model.js~Model.html#static-method-build) 构建未保存实例并使用 [`instance.save()`](https://sequelize.org/master/class/lib/model.js~Model.html#instance-method-save) 保存实例的简写形式.
+[`Model.create()`](/api/v7/classes/Model.html#create) 方法是使用 [`Model.build()`](/api/v7/classes/Model.html#build) 构建未保存实例并使用 [`instance.save()`](/api/v7/classes/Model.html#save) 保存实例的简写形式.
 
 也可以定义在 `create` 方法中的属性. 如果你基于用户填写的表单创建数据库条目,这将特别有用. 例如,使用它可以允许你将 `User` 模型限制为仅设置用户名和地址,而不设置管理员标志 (例如, `isAdmin`)：
 
@@ -32,7 +32,7 @@ console.log(user.isAdmin); // false
 
 ## 简单 SELECT 查询
 
-你可以使用 [`findAll`](https://sequelize.org/master/class/lib/model.js~Model.html#static-method-findAll) 方法从数据库中读取整个表：
+你可以使用 [`findAll`](/api/v7/classes/Model.html#findAll) 方法从数据库中读取整个表：
 
 ```js
 // 查询所有用户
@@ -71,13 +71,15 @@ Model.findAll({
 SELECT foo, bar AS baz, qux FROM ...
 ```
 
-你可以使用 [`sequelize.fn`](https://sequelize.org/master/class/lib/sequelize.js~Sequelize.html#static-method-fn) 进行聚合：
+你可以使用 [`fn`](/api/v7/index.html#fn) 进行聚合：
 
 ```js
+import { fn, col } from '@sequelize/core';
+
 Model.findAll({
   attributes: [
     'foo',
-    [sequelize.fn('COUNT', sequelize.col('hats')), 'n_hats'],
+    [fn('COUNT', col('hats')), 'n_hats'],
     'bar'
   ]
 });
@@ -92,11 +94,13 @@ SELECT foo, COUNT(hats) AS n_hats, bar FROM ...
 有时,如果只想添加聚合,那么列出模型的所有属性可能会很麻烦：
 
 ```js
+import { fn, col } from '@sequelize/core';
+
 // 这是获取帽子数量的烦人方法(每列都有)
 Model.findAll({
   attributes: [
     'id', 'foo', 'bar', 'baz', 'qux', 'hats', // 我们必须列出所有属性...
-    [sequelize.fn('COUNT', sequelize.col('hats')), 'n_hats'] // 添加聚合...
+    [fn('COUNT', col('hats')), 'n_hats'] // 添加聚合...
   ]
 });
 
@@ -104,7 +108,7 @@ Model.findAll({
 Model.findAll({
   attributes: {
     include: [
-      [sequelize.fn('COUNT', sequelize.col('hats')), 'n_hats']
+      [fn('COUNT', col('hats')), 'n_hats']
     ]
   }
 });
@@ -129,7 +133,7 @@ SELECT id, foo, bar, qux FROM ...
 
 ## 应用 WHERE 子句
 
-`where` 参数用于过滤查询.`where` 子句有很多运算符,可以从 [`Op`](../variable/index.html#static-variable-Op) 中以 Symbols 的形式使用.
+`where` 参数用于过滤查询.`where` 子句有很多运算符,可以从 [`Op`](/api/v7/index.html#Op) 中以 Symbols 的形式使用.
 
 ### 基础
 
@@ -145,7 +149,8 @@ Post.findAll({
 可以看到没有显式传递任何运算符(来自`Op`),因为默认情况下 Sequelize 假定进行相等比较. 上面的代码等效于：
 
 ```js
-const { Op } = require("sequelize");
+const { Op } = require('@sequelize/core');
+
 Post.findAll({
   where: {
     authorId: {
@@ -171,7 +176,8 @@ Post.findAll({
 就像在第一个示例中 Sequelize 推断出 `Op.eq` 运算符一样,在这里 Sequelize 推断出调用者希望对两个检查使用 `AND`. 上面的代码等效于：
 
 ```js
-const { Op } = require("sequelize");
+const { Op } = require('@sequelize/core');
+
 Post.findAll({
   where: {
     [Op.and]: [
@@ -186,7 +192,8 @@ Post.findAll({
 `OR` 可以通过类似的方式轻松执行：
 
 ```js
-const { Op } = require("sequelize");
+const { Op } = require('@sequelize/core');
+
 Post.findAll({
   where: {
     [Op.or]: [
@@ -201,7 +208,8 @@ Post.findAll({
 由于以上的 `OR` 涉及相同字段 ,因此 Sequelize 允许你使用稍有不同的结构,该结构更易读并且作用相同：
 
 ```js
-const { Op } = require("sequelize");
+const { Op } = require('@sequelize/core');
+
 Post.destroy({
   where: {
     authorId: {
@@ -217,7 +225,8 @@ Post.destroy({
 Sequelize 提供了多种运算符.
 
 ```js
-const { Op } = require("sequelize");
+const { Op, literal, fn } = require('@sequelize/core');
+
 Post.findAll({
   where: {
     [Op.and]: [{ a: 5 }, { b: 6 }],            // (a = 5) AND (b = 6)
@@ -243,7 +252,7 @@ Post.findAll({
 
       // 其它操作符
 
-      [Op.all]: sequelize.literal('SELECT 1'), // > ALL (SELECT 1)
+      [Op.all]: literal('SELECT 1'), // > ALL (SELECT 1)
 
       [Op.in]: [1, 2],                         // IN [1, 2]
       [Op.notIn]: [1, 2],                      // NOT IN [1, 2]
@@ -260,11 +269,11 @@ Post.findAll({
       [Op.iRegexp]: '^[h|a|t]',                // ~* '^[h|a|t]' (仅 PG)
       [Op.notIRegexp]: '^[h|a|t]',             // !~* '^[h|a|t]' (仅 PG)
 
-      [Op.any]: [2, 3],                        // ANY ARRAY[2, 3]::INTEGER (仅 PG)
-      [Op.match]: Sequelize.fn('to_tsquery', 'fat & rat') // 匹配文本搜索字符串 'fat' 和 'rat' (仅 PG)
+      [Op.any]: [2, 3],                        // ANY (ARRAY[2, 3]::INTEGER[]) (仅 PG)
+      [Op.match]: fn('to_tsquery', 'fat & rat') // 匹配文本搜索字符串 'fat' 和 'rat' (仅 PG)
 
       // 在 Postgres 中, Op.like/Op.iLike/Op.notLike 可以结合 Op.any 使用:
-      [Op.like]: { [Op.any]: ['cat', 'hat'] }  // LIKE ANY ARRAY['cat', 'hat']
+      [Op.like]: { [Op.any]: ['cat', 'hat'] }  // LIKE ANY (ARRAY['cat', 'hat'])
 
       // 还有更多的仅限 postgres 的范围运算符,请参见下文
     }
@@ -292,7 +301,7 @@ Post.findAll({
 #### 使用 `Op.and` 和 `Op.or` 示例
 
 ```js
-const { Op } = require("sequelize");
+const { Op } = require('@sequelize/core');
 
 Foo.findAll({
   where: {
@@ -369,21 +378,25 @@ WHERE (
 如果你想得到类似 `WHERE char_length("content") = 7` 的结果怎么办？
 
 ```js
+import { where, fn, col } from '@sequelize/core';
+
 Post.findAll({
-  where: sequelize.where(sequelize.fn('char_length', sequelize.col('content')), 7)
+  where: where(fn('char_length', col('content')), 7)
 });
 // SELECT ... FROM "posts" AS "post" WHERE char_length("content") = 7
 ```
 
-请注意方法 [`sequelize.fn`](https://sequelize.org/master/class/lib/sequelize.js~Sequelize.html#static-method-fn) 和 [`sequelize.col`](https://sequelize.org/master/class/lib/sequelize.js~Sequelize.html#static-method-col) 的用法,应分别用于指定 SQL 函数调用和列. 应该使用这些方法,而不是传递纯字符串(例如 `char_length(content)`),因为 Sequelize 需要以不同的方式对待这种情况(例如,使用其他符号转义方法).
+请注意方法 [`fn`](/api/v7/index.html#fn) 和 [`col`](/api/v7/index.html#col) 的用法,应分别用于指定 SQL 函数调用和列. 应该使用这些方法,而不是传递纯字符串(例如 `char_length(content)`),因为 Sequelize 需要以不同的方式对待这种情况(例如,使用其他符号转义方法).
 
 如果你需要更复杂的东西怎么办？
 
 ```js
+import { where, fn, col, Op } from '@sequelize/core';
+
 Post.findAll({
   where: {
     [Op.or]: [
-      sequelize.where(sequelize.fn('char_length', sequelize.col('content')), 7),
+      where(fn('char_length', col('content')), 7),
       {
         content: {
           [Op.like]: 'Hello%'
@@ -392,7 +405,7 @@ Post.findAll({
       {
         [Op.and]: [
           { status: 'draft' },
-          sequelize.where(sequelize.fn('char_length', sequelize.col('content')), {
+          where(fn('char_length', col('content')), {
             [Op.gt]: 10
           })
         ]
@@ -420,6 +433,77 @@ WHERE (
 )
 ```
 
+### 查询 JSON
+
+可以通过三种不同的方式查询 JSON:
+
+```js
+// 嵌套对象
+await Foo.findOne({
+  where: {
+    meta: {
+      video: {
+        url: {
+          [Op.ne]: null
+        }
+      }
+    }
+  }
+});
+
+// 嵌套键
+await Foo.findOne({
+  where: {
+    "meta.audio.length": {
+      [Op.gt]: 20
+    }
+  }
+});
+
+// 内容物
+await Foo.findOne({
+  where: {
+    meta: {
+      [Op.contains]: {
+        site: {
+          url: 'https://google.com'
+        }
+      }
+    }
+  }
+});
+```
+
+#### MSSQL
+
+MSSQL 没有 JSON 数据类型, 但是自 SQL Server 2016 以来, 它确实通过某些函数为存储为字符串的 JSON 提供了一些支持. 使用这些函数, 你将能够查询存储在字符串中的 JSON, 但任何返回值都将 需要单独解析.
+
+```js
+import { where, fn, col } from '@sequelize/core';
+
+// ISJSON - 测试字符串是否包含有效的 JSON
+await User.findAll({
+  where: where(fn('ISJSON', col('userDetails')), 1)
+});
+
+// JSON_VALUE - 从 JSON 字符串中提取标量值
+await User.findAll({
+  attributes: [[ fn('JSON_VALUE', col('userDetails'), '$.address.Line1'), 'address line 1']]
+});
+
+// JSON_VALUE - 从 JSON 字符串查询标量值
+await User.findAll({
+  where: where(fn('JSON_VALUE', col('userDetails'), '$.address.Line1'), '14, Foo Street')
+});
+
+// JSON_QUERY - 提取一个对象或数组
+await User.findAll({
+  attributes: [[ fn('JSON_QUERY', col('userDetails'), '$.address'), 'full address']]
+});
+```
+
+
+
 ### 仅限 Postgres 的范围运算符
 
 可以使用所有支持的运算符查询范围类型.
@@ -445,7 +529,8 @@ WHERE (
 例如:
 
 ```js
-const { Sequelize, Op } = require("sequelize");
+const { Sequelize, Op } = require('@sequelize/core');
+
 const sequelize = new Sequelize('sqlite::memory:', {
   operatorsAliases: {
     $gt: Op.gt
@@ -556,19 +641,21 @@ Sequelize 提供了 `order` and `group` 参数,来与 `ORDER BY` 和 `GROUP BY` 
 `order` 参数采用一系列 *项* 来让 sequelize 方法对查询进行排序. 这些 *项* 本身是 `[column, direction]` 形式的数组. 该列将被正确转义,并且将在有效方向列表中进行验证(例如 `ASC`, `DESC`, `NULLS FIRST` 等).
 
 ```js
+import { where, fn, col, literal } from '@sequelize/core';
+
 Subtask.findAll({
   order: [
     // 将转义 title 并针对有效方向列表进行降序排列
     ['title', 'DESC'],
 
     // 将按最大年龄进行升序排序
-    sequelize.fn('max', sequelize.col('age')),
+    fn('max', col('age')),
 
     // 将按最大年龄进行降序排序
-    [sequelize.fn('max', sequelize.col('age')), 'DESC'],
+    [fn('max', col('age')), 'DESC'],
 
     // 将按 otherfunction(`col1`, 12, 'lalala') 进行降序排序
-    [sequelize.fn('otherfunction', sequelize.col('col1'), 12, 'lalala'), 'DESC'],
+    [fn('otherfunction', col('col1'), 12, 'lalala'), 'DESC'],
 
     // 将使用模型名称作为关联名称按关联模型的 createdAt 排序.
     [Task, 'createdAt', 'DESC'],
@@ -596,13 +683,13 @@ Subtask.findAll({
   ],
 
   // 将按最大年龄降序排列
-  order: sequelize.literal('max(age) DESC'),
+  order: literal('max(age) DESC'),
 
   // 如果忽略方向,则默认升序,将按最大年龄升序排序
-  order: sequelize.fn('max', sequelize.col('age')),
+  order: fn('max', col('age')),
 
   // 如果省略方向,则默认升序, 将按年龄升序排列
-  order: sequelize.col('age'),
+  order: col('age'),
 
   // 将根据方言随机排序(但不是 fn('RAND') 或 fn('RANDOM'))
   order: sequelize.random()
@@ -615,13 +702,13 @@ Foo.findOne({
     // 将返回 `username` DESC
     ['username', 'DESC'],
     // 将返回 max(`age`)
-    sequelize.fn('max', sequelize.col('age')),
+    fn('max', col('age')),
     // 将返回 max(`age`) DESC
-    [sequelize.fn('max', sequelize.col('age')), 'DESC'],
+    [fn('max', col('age')), 'DESC'],
     // 将返回 otherfunction(`col1`, 12, 'lalala') DESC
-    [sequelize.fn('otherfunction', sequelize.col('col1'), 12, 'lalala'), 'DESC'],
+    [fn('otherfunction', col('col1'), 12, 'lalala'), 'DESC'],
     // 将返回 otherfunction(awesomefunction(`col`)) DESC, 这种嵌套可能是无限的!
-    [sequelize.fn('otherfunction', sequelize.fn('awesomefunction', sequelize.col('col'))), 'DESC']
+    [fn('otherfunction', fn('awesomefunction', col('col'))), 'DESC']
   ]
 });
 ```
@@ -633,8 +720,8 @@ Foo.findOne({
 * 一个具有 `raw` 字段的对象:
   * `raw` 内容将不加引用地逐字添加
   * 其他所有内容都将被忽略,如果未设置 `raw`,查询将失败
-* 调用 `Sequelize.fn` (这将在 SQL 中生成一个函数调用)
-* 调用 `Sequelize.col` (这将引用列名)
+* 调用 `fn()` (这将在 SQL 中生成一个函数调用)
+* 调用 `col()` (这将引用列名)
 
 ### 分组
 
@@ -702,7 +789,7 @@ await User.sum('age', { where: { age: { [Op.gt]: 5 } } }); // 50
 
 ### `increment`, `decrement`
 
-Sequelize 还提供了 `increment` 简便方法。
+Sequelize 还提供了 `increment` 简便方法. 
 
 假设我们有一个用户, 他的年龄是 10 岁.
 
@@ -710,3 +797,25 @@ Sequelize 还提供了 `increment` 简便方法。
 await User.increment({age: 5}, { where: { id: 1 } }) // 将年龄增加到15岁
 await User.increment({age: -5}, { where: { id: 1 } }) // 将年龄降至5岁
 ```
+
+### literal (原生 SQL)
+
+Sequelize 并不总是能够以干净的方式支持每个 SQL 特性. 有时自己编写 SQL 查询会更好.
+
+这可以通过两种方式完成:
+
+- 要么自己写一个完整的 [原始查询](../core-concepts/raw-queries.md),
+- 或者使用 Sequelize 提供的 [`literal()`](/api/v7/index.html#literal) 函数, 在 Sequelize 构建的查询中的几乎任何位置插入原始 SQL.
+
+```typescript
+import { literal } from '@sequelize/core';
+
+User.findAll({
+  where: literal('id = $id'),
+  bind: {
+    id: 5,
+  },
+});
+```
+
+`literal()` 在你的查询中支持 [替换](../core-concepts/raw-queries.md) 和 [绑定参数](../core-concepts/raw-queries.md) 作为安全包含用户输入的方式.

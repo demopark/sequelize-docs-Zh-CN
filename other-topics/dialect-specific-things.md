@@ -1,67 +1,10 @@
 # Dialect-Specific Things - 方言特定事项
 
-## 基础连接器库
-
-### MySQL
-
-Sequelize 对于 MySQL 使用的基础连接器库是 [mysql2](https://www.npmjs.com/package/mysql2) 软件包(1.5.2 或更高版本).
-
-你可以使用 Sequelize 构造函数中的 `dialectOptions` 为其提供自定义参数：
-
-```js
-const sequelize = new Sequelize('database', 'username', 'password', {
-  dialect: 'mysql',
-  dialectOptions: {
-    // 你的 mysql2 参数
-  }
-})
-```
-
-`dialectOptions` 直接传递给 MySQL 连接构造函数. 完整的选项列表可以在 [MySQL 文档](https://www.npmjs.com/package/mysql#connection-options) 中找到.
-
-### MariaDB
-
-Sequelize 对于 MariaDB 使用的基础连接器库是 [mariadb](https://www.npmjs.com/package/mariadb) 软件包.
-
-你可以使用 Sequelize 构造函数中的 `dialectOptions` 为其提供自定义参数：
-
-```js
-const sequelize = new Sequelize('database', 'username', 'password', {
-  dialect: 'mariadb',
-  dialectOptions: {
-    // 你的 mariadb 参数
-    // connectTimeout: 1000
-  }
-});
-```
-
-`dialectOptions` 直接传递给 MariaDB 连接构造函数. 完整的选项列表可以在 [MariaDB 文档](https://mariadb.com/kb/en/nodejs-connection-options/) 中找到.
-
-### SQLite
-
-Sequelize 对于 SQLite 使用的基础连接器库是 [sqlite3](https://www.npmjs.com/package/sqlite3) 程序包(版本4.0.0或更高版本).
-
-你可以在 Sequelize 构造函数中使用 `storage` 参数指定存储文件(对于内存中的SQLite实例,请使用 `:memory:`).
-
-你可以使用 Sequelize 构造函数中的 `dialectOptions` 为其提供自定义参数：
-
-```js
-const sequelize = new Sequelize('database', 'username', 'password', {
-  dialect: 'sqlite',
-  storage: 'path/to/database.sqlite' // 或 ':memory:'
-  dialectOptions: {
-    // 你的 sqlite3 参数
-  }
-});
-```
-
-以下字段可以传递给 SQLite `dialectOptions`:
-
-- `readWriteMode`: 设置 SQLite 连接的打开模式. 潜在值由 sqlite3 包提供, 并且能包括 sqlite3.OPEN_READONLY, sqlite3.OPEN_READWRITE 或 sqlite3.OPEN_CREATE. 查阅 [SQLite C 接口文档]( https://www.sqlite.org/c3ref/open.html) 以获取更多详细信息.
+## 底层连接器库
 
 ### PostgreSQL
 
-Sequelize 对于 PostgreSQL 使用的基础连接器库是 [pg](https://www.npmjs.com/package/pg) 软件包(版本7.0.0或更高版本). 还需要模块 [pg-hstore](https://www.npmjs.com/package/pg-hstore).
+Sequelize for PostgreSQL 使用的底层连接器库是 [pg](https://www.npmjs.com/package/pg) 包.查看 [Releases](https://sequelize.org/releases/#postgresql-support-table) 查看支持哪些版本的 PostgreSQL 和 pg. 
 
 你可以使用 Sequelize 构造函数中的 `dialectOptions` 为其提供自定义参数：
 
@@ -94,11 +37,16 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 
 sequelize 中默认的 `client_min_messages` 配置是 `WARNING`.
 
-### Redshift
+### Amazon Redshift
+
+**注意**
+
+虽然 Redshift 基于 PostgreSQL, 但它不支持与 PostgreSQL 相同的功能集. 
+我们的 PostgreSQL 实施未针对 Redshift 进行集成测试, 并且支持有限.
 
 大多数配置与上面的 PostgreSQL 相同.
 
-Redshift 不支持 `client_min_messages`, 需要 'ignore' 跳过配置:
+Redshift 不支持 `client_min_messages`, 你必须要设置 'ignore' 来跳过配置:
 
 ```js
 const sequelize = new Sequelize('database', 'username', 'password', {
@@ -111,13 +59,44 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 });
 ```
 
-### MSSQL
+### MariaDB
 
-支持的 MS SQL 版本从 MS SQL 2017（版本 14）到最新版本.
+Sequelize 对于 MariaDB 使用的基础连接器库是 [mariadb](https://www.npmjs.com/package/mariadb) 软件包.请参阅 [Releases](https://sequelize.org/releases/#mariadb-support-table) 查看支持哪些版本的 MariaDB 和 mariadb (npm).
 
-#### Tedious
+你可以使用 Sequelize 构造函数中的 `dialectOptions` 为其提供自定义参数：
 
-Sequelize 默认用于 MSSQL 的基础连接器库是 [tedious](https://www.npmjs.com/package/tedious) npm 软件包(版本6.0.0或更高版本).
+```js
+const sequelize = new Sequelize('database', 'username', 'password', {
+  dialect: 'mariadb',
+  dialectOptions: {
+    // 你的 mariadb 参数
+    // connectTimeout: 1000
+  }
+});
+```
+
+`dialectOptions` 直接传递给 MariaDB 连接构造函数. 完整的选项列表可以在 [MariaDB 文档](https://mariadb.com/kb/en/nodejs-connection-options/) 中找到.
+
+### MySQL
+
+Sequelize 对于 MySQL 使用的基础连接器库是 [mysql2](https://www.npmjs.com/package/mysql2) 软件包.查看 [Releases](https://sequelize.org/releases/#mysql-support-table) 查看支持哪些版本的 MySQL 和 mysql2.
+
+你可以使用 Sequelize 构造函数中的 `dialectOptions` 为其提供自定义参数：
+
+```js
+const sequelize = new Sequelize('database', 'username', 'password', {
+  dialect: 'mysql',
+  dialectOptions: {
+    // 你的 mysql2 参数
+  }
+})
+```
+
+`dialectOptions` 直接传递给 MySQL 连接构造函数. 完整的选项列表可以在 [MySQL 文档](https://www.npmjs.com/package/mysql#connection-options) 中找到.
+
+### Microsoft SQL Server (mssql)
+
+Sequelize for MSSQL 使用的底层连接器库是 [tedious](https://www.npmjs.com/package/tedious) 包. 请参阅 [Releases](https://sequelize.org/releases/#microsoft-sql-server-mssql-support-table) 查看支持哪些版本的 SQL Server & tedious.
 
 你可以使用 Sequelize 构造函数中的 `dialectOptions.options` 为其提供自定义参数：
 
@@ -160,9 +139,40 @@ const sequelize = new Sequelize('database', null, null, {
 })
 ```
 
-### Snowflake (实验性)
+### SQLite
 
-Sequelize 用于 Snowflake 的底层连接器库是 [snowflake-sdk](https://www.npmjs.com/package/snowflake-sdk) 包.
+Sequelize 对于 SQLite 使用的基础连接器库是 [sqlite3](https://www.npmjs.com/package/sqlite3) 程序包.请参阅 [Releases](https://sequelize.org/releases/#sqlite-support-table) 查看支持哪些版本的 sqlite3.
+
+你可以在 Sequelize 构造函数中使用 `storage` 参数指定存储文件(对于内存中的SQLite实例,请使用 `:memory:`).
+
+你可以使用 Sequelize 构造函数中的 `dialectOptions` 为其提供自定义参数：
+
+```js
+import { Sequelize } from 'sequelize';
+import SQLite from 'sqlite3';
+
+const sequelize = new Sequelize('database', 'username', 'password', {
+  dialect: 'sqlite',
+  storage: 'path/to/database.sqlite', // 或 ':memory:'
+  dialectOptions: {
+    // 你的 sqlite3 参数
+    // 对于实例, 这是配置数据库打开模式的方法:
+    mode: SQLite.OPEN_READWRITE | SQLite.OPEN_CREATE | SQLite.OPEN_FULLMUTEX,
+  }
+});
+```
+
+以下字段可以传递给 SQLite `dialectOptions`:
+
+- `mode`: 设置 SQLite 连接的打开模式. 潜在值由 `sqlite3` 包提供, 并且包括 `SQLite.OPEN_READONLY`, `SQLite.OPEN_READWRITE`, 或 `SQLite.OPEN_CREATE`. 请参阅 [sqlite3 的 API 参考](https://github.com/TryGhost/node-sqlite3/wiki/API) 和 [SQLite C 接口文档](https://www.sqlite.org/c3ref/open.html) 获取更多细节.
+
+### Snowflake
+
+**注意**
+
+虽然这种方言包含在 Sequelize 中, 但是对 Snowflake 的支持是有限的, 因为它不是由核心团队处理的.
+
+Sequelize 用于 Snowflake 的底层连接器库是 [snowflake-sdk](https://www.npmjs.com/package/snowflake-sdk) 包.请参阅 [Releases](https://sequelize.org/releases/#snowflake-support-table) 查看支持哪些版本的 Snowflake 和 snowflake-sdk.
 
 为了与帐户连接, 请使用以下格式:
 
@@ -182,19 +192,52 @@ const sequelize = new Sequelize('database', null, null, {
   username: 'myUserName',
   password: 'myPassword',
   database: 'myDatabaseName'
-})
+});
 ```
 
 **注意** 没有提供测试沙箱, 因此 snowflake 集成测试不是 pipeline 的一部分. 核心团队也很难进行分类和调试. 这种方言现在需要由 snowflake 用户/社区维护.
 
 用于运行集成测试:
 
-```sh
+```bash
 # using npm
 SEQ_ACCOUNT=myAccount SEQ_USER=myUser SEQ_PW=myPassword SEQ_ROLE=myRole SEQ_DB=myDatabaseName SEQ_SCHEMA=mySchema SEQ_WH=myWareHouse npm run test-integration-snowflake
 # using yarn
 SEQ_ACCOUNT=myAccount SEQ_USER=myUser SEQ_PW=myPassword SEQ_ROLE=myRole SEQ_DB=myDatabaseName SEQ_SCHEMA=mySchema SEQ_WH=myWareHouse yarn test-integration-snowflake
 ```
+
+### Db2
+
+**注意**
+
+虽然这种方言包含在 Sequelize 中, 但对 Db2 的支持是有限的, 因为它不是由核心团队处理的.
+
+Sequelize for Db2 使用的底层连接器库是 [ibm_db](https://www.npmjs.com/package/ibm_db) npm 包.
+请参阅 [Releases](https://sequelize.org/releases/#db2-support-table) 以查看支持哪些版本的 DB2 和 ibm_db.
+
+### Db2 for IBM i
+
+**注意**
+
+虽然这种方言包含在 Sequelize 中, 但对 *Db2 for IBM i* 的支持是有限的, 因为它不是由核心团队处理的.
+
+Sequelize 为 *Db2 for IBM i* 使用的底层连接器库是 [odbc](https://www.npmjs.com/package/odbc) npm 包.
+请参阅 [Releases](https://sequelize.org/releases/#db2-for-ibm-i-support-table) 查看支持哪些版本的 IBMi 和 odbc.
+
+要了解有关将 ODBC 与 IBM i 结合使用的更多信息, 请参阅 [IBM i 和 ODBC 文档](https://ibmi-oss-docs.readthedocs.io/en/latest/odbc/README.html).
+
+将参数传递给构造函数时, `database` 的概念被映射到 ODBC 的 `DSN`. 你可以使用  `dialectOptions.odbcConnectionString` 为 Sequelize 提供额外的连接字符串参数. 然后, 此连接字符串会附加在参数中找到 `database`, `username`, 和 `password` 的值:
+
+```js
+const sequelize = new Sequelize('MY_DSN', 'username', 'password', {
+  dialect: 'ibmi',
+  dialectOptions: {
+    odbcConnectionString: 'CMT=1;NAM=0;...'
+  },
+});
+```
+
+上述配置生成的最终连接字符串类似于`CMT=1;NAMING=0;...;DSN=MY_DSN;UID=username;PWD=password;`. 此外, `host` 参数将映射 `SYSTEM=` 连接字符串键.
 
 ## 数据类型: TIMESTAMP WITHOUT TIME ZONE - 仅限  PostgreSQL
 
@@ -220,12 +263,12 @@ Array(Enum)类型需要特殊处理. 每当 Sequelize 与数据库对话时,它�
 表提示通过指定某些参数来覆盖 MSSQL 查询优化器的默认行为. 它们仅影响该子句中引用的表或视图.
 
 ```js
-const { TableHints } = require('sequelize');
+const { TableHints } = require('@sequelize/core');
 Project.findAll({
   // 添加表提示 NOLOCK
   tableHint: TableHints.NOLOCK
   // 这将生成 SQL 'WITH (NOLOCK)'
-})
+});
 ```
 
 ## 索引提示 - 仅限 MySQL/MariaDB
@@ -235,7 +278,7 @@ Project.findAll({
 索引提示[将覆盖 MySQL 查询优化器的默认行为](https://dev.mysql.com/doc/refman/5.7/en/index-hints.html).
 
 ```js
-const { IndexHints } = require("sequelize");
+const { IndexHints } = require('@sequelize/core');
 Project.findAll({
   indexHints: [
     { type: IndexHints.USE, values: ['index_project_on_name'] }
@@ -278,7 +321,7 @@ const Person = sequelize.define('person', { /* 属性 */ }, {
 ```js
 const sequelize = new Sequelize(db, user, pw, {
   define: { engine: 'MYISAM' }
-})
+});
 ```
 
 ## 表注释 - 仅限 MySQL/MariaDB/PostgreSQL
@@ -290,7 +333,7 @@ class Person extends Model {}
 Person.init({ /* 属性 */ }, {
   comment: "I'm a table comment!",
   sequelize
-})
+});
 ```
 
 调用 `sync()` 时将设置注释.

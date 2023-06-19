@@ -1,5 +1,8 @@
 # 更新记录
 
+## 2023-06-19
+* master 分支同步到 7.0.0-alpha.23
+
 ## 2022-02-10
 * master 分支同步翻译到 v7 文档 7.1.0
 * v6 文档启用单独分支
@@ -72,7 +75,9 @@
 ### 更新
 * 同步官方最新文档版本 4.13.8
 * 翻译 getting-started.md
-* 翻译 models-definition.md* 翻译 models-usage.md* 翻译 querying.md
+* 翻译 models-definition.md
+* 翻译 models-usage.md
+* 翻译 querying.md
 
 ## 2017-07-14
 

@@ -2,13 +2,15 @@
 
 ## `underscored` 参数
 
-Sequelize 为模型提供了 `underscored` 参数. 设为 `true` 时,此参数会将所有属性的 `field` 参数设置为其名称的 [snake_case](https://en.wikipedia.org/wiki/Snake_case) 版本. 这也适用于由关联和其他自动生成的字段自动生成的外键. 例：
+Sequelize 为模型提供了 `underscored` 参数. 设为 `true` 时,此参数会将所有属性的 `field` 参数设置为其名称的 [snake_case](https://en.wikipedia.org/wiki/Snake_case) 版本(除非手动设置). 这也适用于关联自动生成的表名和外键以及其他自动生成的字段. 
+
+示例：
 
 ```js
-const User = sequelize.define('user', { username: Sequelize.STRING }, {
+const User = sequelize.define('User', { username: DataTypes.STRING }, {
   underscored: true
 });
-const Task = sequelize.define('task', { title: Sequelize.STRING }, {
+const Task = sequelize.define('Task', { title: DataTypes.STRING }, {
   underscored: true
 });
 User.hasMany(Task);
@@ -19,12 +21,14 @@ Task.belongsTo(User);
 
 如果没有 `underscored` 参数,Sequelize 会自动定义：
 
+* User 模型的 `Users` 表和 Task 模型的 `Tasks` 表.
 * 每个模型的 `createdAt` 属性,指向每个表中名为 `createdAt` 的列
 * 每个模型的 `updatedAt` 属性,指向每个表中名为 `updatedAt` 的列
 * `Task` 模型中的 `userId` 属性,指向任务表中名为 `userId` 的列
 
 启用 `underscored` 参数后,Sequelize 将改为定义：
 
+* User 模型的 `users` 表和 Task 模型的 `tasks` 表.
 * 每个模型的 `createdAt` 属性,指向每个表中名为 `created_at ` 的列
 * 每个模型的 `updatedAt` 属性,指向每个表中名为 `updated_at ` 的列
 * `Task` 模型中的 `userId` 属性,指向任务表中名为 `user_id ` 的列

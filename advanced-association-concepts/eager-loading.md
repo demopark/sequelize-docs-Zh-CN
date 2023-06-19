@@ -133,7 +133,7 @@ User.findAll({
 User.findAll({
   include: {
     model: Tool,
-    as: 'Instruments'
+    as: 'Instruments',
     where: {
       size: {
         [Op.ne]: 'small'

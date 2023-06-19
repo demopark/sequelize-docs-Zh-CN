@@ -10,7 +10,7 @@ Sequelize 中的 Migration 是一个 javascript 文件,它导出两个函数 `up
 
 要安装 Sequelize CLI,请执行以下操作：
 
-```sh
+```bash
 # using npm
 npm install --save-dev sequelize-cli
 # using yarn
@@ -23,7 +23,7 @@ yarn add sequelize-cli --dev
 
 要创建一个空项目,你需要执行 `init` 命令
 
-```sh
+```bash
 # using npm
 npx sequelize-cli init
 # using yarn
@@ -86,7 +86,7 @@ Sequelize 将为每个方言使用默认的连接端口(例如,对于postgres,�
 
 让我们创建一个名叫 `User` 的模型
 
-```sh
+```bash
 # using npm
 npx sequelize-cli model:generate --name User --attributes firstName:string,lastName:string,email:string
 # using yarn
@@ -100,128 +100,7 @@ yarn sequelize-cli model:generate --name User --attributes firstName:string,last
 
 **注意:** _Sequelize 将只使用模型文件,它是表描述.另一边,迁移文件是该模型的更改,或更具体的是说 CLI 所使用的表. 处理迁移,如提交或日志,以进行数据库的某些更改. _
 
-## 运行迁移
-
-直到这一步,CLI没有将任何东西插入数据库. 我们刚刚为我们的第一个模型 `User` 创建了必需的模型和迁移文件. 现在要在数据库中实际创建该表,需要运行 `db:migrate` 命令.
-
-```sh
-# using npm
-npx sequelize-cli db:migrate
-# using yarn
-yarn sequelize-cli db:migrate
-```
-
-此命令将执行这些步骤
-
-- 将在数据库中确保一个名为 `SequelizeMeta` 的表. 此表用于记录在当前数据库上运行的迁移
-- 开始寻找尚未运行的任何迁移文件. 这可以通过检查 `SequelizeMeta` 表. 在这个例子中,它将运行我们在最后一步中创建的 `XXXXXXXXXXXXXX-create-user.js` 迁移,.
-- 创建一个名为 `Users` 的表,其中包含其迁移文件中指定的所有列.
-
-## 撤消迁移
-
-现在我们的表已创建并保存在数据库中. 通过迁移,只需运行命令即可恢复为旧状态.
-
-你可以使用 `db:migrate:undo`,这个命令将会恢复最近的迁移.
-
-```sh
-# using npm
-npx sequelize-cli db:migrate:undo
-# using yarn
-yarn sequelize-cli db:migrate:undo
-```
-
-通过使用  `db:migrate:undo:all` 命令撤消所有迁移,可以恢复到初始状态. 你还可以通过将其名称传递到 `--to` 选项中来恢复到特定的迁移.
-
-```sh
-# using npm
-npx sequelize-cli db:migrate:undo:all --to XXXXXXXXXXXXXX-create-posts.js
-# using yarn
-yarn sequelize-cli db:migrate:undo:all --to XXXXXXXXXXXXXX-create-posts.js
-```
-
-### 创建第一个种子
-
-假设我们希望在默认情况下将一些数据插入到几个表中. 如果我们跟进前面的例子,我们可以考虑为 `User` 表创建演示用户.
-
-要管理所有数据迁移,你可以使用 `seeders`. 种子文件是数据的一些变化,可用于使用样本数据或测试数据填充数据库表.
-
-让我们创建一个种子文件,它会将一个演示用户添加到我们的 `User` 表中.
-
-```sh
-# using npm
-npx sequelize-cli seed:generate --name demo-user
-# using yarn
-yarn sequelize-cli seed:generate --name demo-user
-```
-
-这个命令将会在 `seeders` 文件夹中创建一个种子文件.文件名看起来像是  `XXXXXXXXXXXXXX-demo-user.js`,它遵循相同的 `up/down` 语义,如迁移文件.
-
-现在我们应该编辑这个文件,将演示用户插入`User`表.
-
-```js
-module.exports = {
-  up: (queryInterface, Sequelize) => {
-    return queryInterface.bulkInsert('Users', [{
-      firstName: 'John',
-      lastName: 'Doe',
-      email: 'example@example.com',
-      createdAt: new Date(),
-      updatedAt: new Date()
-    }]);
-  },
-  down: (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete('Users', null, {});
-  }
-};
-```
-
-## 运行种子
-
-在上一步中,你创建了一个种子文件. 但它还没有保存到数据库. 为此,我们需要运行一个简单的命令.
-
-```sh
-# using npm
-npx sequelize-cli db:seed:all
-# using yarn
-yarn sequelize-cli db:seed:all
-```
-
-这将执行该种子文件,你将有一个演示用户插入 `User` 表.
-
-**注意:** _与使用 `SequelizeMeta` 表的迁移不同,`Seeder` 执行历史记录不会存储在任何地方. 如果你想更改此行为,请阅读 `存储` 部分_
-
-## 撤销种子
-
-Seeders 如果使用了任何存储那么就可以被撤消. 有两个可用的命令
-
-如果你想撤消最近的种子
-
-```sh
-# using npm
-npx sequelize-cli db:seed:undo
-# using yarn
-yarn sequelize-cli db:seed:undo
-```
-
-如果你想撤消特定的种子
-
-```sh
-# using npm
-npx sequelize-cli db:seed:undo --seed name-of-seed-as-in-data
-# using yarn
-yarn sequelize-cli db:seed:undo --seed name-of-seed-as-in-data
-```
-
-如果你想撤消所有的种子
-
-```sh
-# using npm
-npx sequelize-cli db:seed:undo:all
-# using yarn
-yarn sequelize-cli db:seed:undo:all
-```
-
-## 高级专题
+## 编写迁移
 
 以下框架显示了一个典型的迁移文件.
 
@@ -236,13 +115,13 @@ module.exports = {
 }
 ```
 
-我们可以使用 `migration:generate` 生成该文件. 这将在你的迁移文件夹中创建 `xxx-migration-skeleton.js`.
+我们可以使用 `migration:generate` 生成该文件. 这将在你的迁移文件夹中创建 `xxx-migration-example.js`.
 
-```sh
+```bash
 # using npm
-npx sequelize-cli migration:generate --name migration-skeleton
+npx sequelize-cli migration:generate --name migration-example
 # using yarn
-yarn sequelize-cli migration:generate --name migration-skeleton
+yarn sequelize-cli migration:generate --name migration-example
 ```
 
 传递的 `queryInterface` 对象可以用来修改数据库. `Sequelize` 对象存储可用的数据类型,如 `STRING` 或 `INTEGER`. 函数 `up` 或 `down` 应该返回一个 `Promise` . 让我们来看一个例子
@@ -382,7 +261,7 @@ module.exports = {
         'Person',
         ['name', 'bool'],
         {
-          indicesType: 'UNIQUE',
+          type: 'UNIQUE',
           where: { bool : 'true' },
         }
       );
@@ -392,6 +271,127 @@ module.exports = {
     return queryInterface.dropTable('Person');
   }
 }
+```
+
+## 运行迁移
+
+直到这一步,CLI没有将任何东西插入数据库. 我们刚刚为我们的第一个模型 `User` 创建了必需的模型和迁移文件. 现在要在数据库中实际创建该表,需要运行 `db:migrate` 命令.
+
+```bash
+# using npm
+npx sequelize-cli db:migrate
+# using yarn
+yarn sequelize-cli db:migrate
+```
+
+此命令将执行这些步骤
+
+- 将在数据库中确保一个名为 `SequelizeMeta` 的表. 此表用于记录在当前数据库上运行的迁移
+- 开始寻找尚未运行的任何迁移文件. 这可以通过检查 `SequelizeMeta` 表. 在这个例子中,它将运行我们在最后一步中创建的 `XXXXXXXXXXXXXX-create-user.js` 迁移,.
+- 创建一个名为 `Users` 的表,其中包含其迁移文件中指定的所有列.
+
+## 撤消迁移
+
+现在我们的表已创建并保存在数据库中. 通过迁移,只需运行命令即可恢复为旧状态.
+
+你可以使用 `db:migrate:undo`,这个命令将会恢复最近的迁移.
+
+```bash
+# using npm
+npx sequelize-cli db:migrate:undo
+# using yarn
+yarn sequelize-cli db:migrate:undo
+```
+
+通过使用  `db:migrate:undo:all` 命令撤消所有迁移,可以恢复到初始状态. 你还可以通过将其名称传递到 `--to` 选项中来恢复到特定的迁移.
+
+```bash
+# using npm
+npx sequelize-cli db:migrate:undo:all --to XXXXXXXXXXXXXX-create-posts.js
+# using yarn
+yarn sequelize-cli db:migrate:undo:all --to XXXXXXXXXXXXXX-create-posts.js
+```
+
+### 创建第一个种子
+
+假设我们希望在默认情况下将一些数据插入到几个表中. 如果我们跟进前面的例子,我们可以考虑为 `User` 表创建演示用户.
+
+要管理所有数据迁移,你可以使用 `seeders`. 种子文件是数据的一些变化,可用于使用样本数据或测试数据填充数据库表.
+
+让我们创建一个种子文件,它会将一个演示用户添加到我们的 `User` 表中.
+
+```bash
+# using npm
+npx sequelize-cli seed:generate --name demo-user
+# using yarn
+yarn sequelize-cli seed:generate --name demo-user
+```
+
+这个命令将会在 `seeders` 文件夹中创建一个种子文件.文件名看起来像是  `XXXXXXXXXXXXXX-demo-user.js`,它遵循相同的 `up/down` 语义,如迁移文件.
+
+现在我们应该编辑这个文件,将演示用户插入`User`表.
+
+```js
+module.exports = {
+  up: (queryInterface, Sequelize) => {
+    return queryInterface.bulkInsert('Users', [{
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'example@example.com',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }]);
+  },
+  down: (queryInterface, Sequelize) => {
+    return queryInterface.bulkDelete('Users', null, {});
+  }
+};
+```
+
+## 运行种子
+
+在上一步中,你创建了一个种子文件. 但它还没有保存到数据库. 为此,我们需要运行一个简单的命令.
+
+```bash
+# using npm
+npx sequelize-cli db:seed:all
+# using yarn
+yarn sequelize-cli db:seed:all
+```
+
+这将执行该种子文件,你将有一个演示用户插入 `User` 表.
+
+**注意:** _与使用 `SequelizeMeta` 表的迁移不同,`Seeder` 执行历史记录不会存储在任何地方. 如果你想更改此行为,请阅读 `存储` 部分_
+
+## 撤销种子
+
+Seeders 如果使用了任何存储那么就可以被撤消. 有两个可用的命令
+
+如果你想撤消最近的种子
+
+```bash
+# using npm
+npx sequelize-cli db:seed:undo
+# using yarn
+yarn sequelize-cli db:seed:undo
+```
+
+如果你想撤消特定的种子
+
+```bash
+# using npm
+npx sequelize-cli db:seed:undo --seed name-of-seed-as-in-data
+# using yarn
+yarn sequelize-cli db:seed:undo --seed name-of-seed-as-in-data
+```
+
+如果你想撤消所有的种子
+
+```bash
+# using npm
+npx sequelize-cli db:seed:undo:all
+# using yarn
+yarn sequelize-cli db:seed:undo:all
 ```
 
 ### `.sequelizerc` 文件
@@ -503,7 +503,7 @@ module.exports = {
 
 为了在你的迁移和 seeder 中实现更现代的构造,你可以简单地安装 `babel-register` 并在 `.sequelizerc` 开始时 require 它：
 
-```sh
+```bash
 # using npm
 npm i --save-dev babel-register
 # using yarn
@@ -595,12 +595,29 @@ module.exports = {
 
 配置连接字符串作为配置文件定义数据库的 `--config` 参数的替代方法,可以使用 `--url` 参数来传递连接字符串. 例如：
 
-```sh
+```bash
 # using npm
 npx sequelize-cli db:migrate --url 'mysql://root:password@mysql_host.com/database_name'
 # using yarn
 yarn sequelize-cli db:migrate --url 'mysql://root:password@mysql_host.com/database_name'
 ```
+
+如果将 `package.json` 脚本与 npm 一起使用, 请确保在使用标志时在命令中使用额外的 `--`.
+
+示例:
+
+```json
+// package.json
+
+...
+  "scripts": {
+    "migrate:up": "npx sequelize-cli db:migrate",
+    "migrate:undo": "npx sequelize-cli db:migrate:undo"
+  },
+...
+```
+
+像这样使用命令: `npm run migrage:up -- --url <url>`
 
 ### 程序用法
 

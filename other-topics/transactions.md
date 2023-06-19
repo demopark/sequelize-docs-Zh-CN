@@ -4,7 +4,7 @@
 
 Sequelize 支持两种使用事务的方式：
 
-1. **非托管事务:** 提交和回滚事务应由用户手动完成(通过调用适当的 Sequelize 方法).
+1. **非托管事务:** 提交和回滚事务应由用户手动完成(通过调用适当的 Sequelize 方法).请注意, innoDB (MariaDB 和 MySQL) 在出现死锁时仍会自动回滚事务. [在此处阅读更多信息](https://github.com/sequelize/sequelize/pull/12841).
 
 2. **托管事务**: 如果引发任何错误,Sequelize 将自动回滚事务,否则将提交事务. 另外,如果启用了CLS(连续本地存储),则事务回调中的所有查询将自动接收事务对象.
 
@@ -122,7 +122,7 @@ const namespace = cls.createNamespace('my-very-own-namespace');
 要启用 CLS,你必须通过使用 sequelize 构造函数的静态方法来告诉 sequelize 使用哪个命名空间：
 
 ```js
-const Sequelize = require('sequelize');
+const Sequelize = require('@sequelize/core');
 Sequelize.useCLS(namespace);
 
 new Sequelize(....);
@@ -186,7 +186,7 @@ sequelize.transaction((t1) => {
 启动事务时可能使用的隔离级别：
 
 ```js
-const { Transaction } = require('sequelize');
+const { Transaction } = require('@sequelize/core');
 
 // 以下是有效的隔离级别:
 Transaction.ISOLATION_LEVELS.READ_UNCOMMITTED // "READ UNCOMMITTED"
@@ -198,7 +198,7 @@ Transaction.ISOLATION_LEVELS.SERIALIZABLE // "SERIALIZABLE"
 默认情况下,sequelize 使用数据库的隔离级别. 如果要使用其他隔离级别,请传入所需的级别作为第一个参数：
 
 ```js
-const { Transaction } = require('sequelize');
+const { Transaction } = require('@sequelize/core');
 
 await sequelize.transaction({
   isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE
@@ -210,7 +210,7 @@ await sequelize.transaction({
 你还可以使用 Sequelize 构造函数中的一个参数来全局覆盖 `isolationLevel` 设置：
 
 ```js
-const { Sequelize, Transaction } = require('sequelize');
+const { Sequelize, Transaction } = require('@sequelize/core');
 
 const sequelize = new Sequelize('sqlite::memory:', {
   isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE
@@ -275,7 +275,7 @@ await t.commit();
 你可以将 `afterCommit` hook 与模型 hook 结合使用,以了解何时保存实例并在事务外部可用
 
 ```js
-User.afterSave((instance, options) => {
+User.hooks.addListener('afterSave', (instance, options) => {
   if (options.transaction) {
     // 在事务中保存完成,
     // 等待事务提交以通知侦听器实例已保存

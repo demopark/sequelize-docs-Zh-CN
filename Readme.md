@@ -2,29 +2,26 @@
 
 ![](http://docs.sequelizejs.com/manual/asset/logo-small.png)
 
-[![npm version](https://badgen.net/npm/v/sequelize)](https://www.npmjs.com/package/sequelize)
-[![Build Status](https://github.com/sequelize/sequelize/workflows/CI/badge.svg)](https://github.com/sequelize/sequelize/actions?query=workflow%3ACI)
-[![npm downloads](https://badgen.net/npm/dm/sequelize)](https://www.npmjs.com/package/sequelize)
+[![npm version](https://badgen.net/npm/v/@sequelize/core)](https://www.npmjs.com/package/@sequelize/core)
+[![npm downloads](https://badgen.net/npm/dm/@sequelize/core)](https://www.npmjs.com/package/@sequelize/core)
+[![contributors](https://img.shields.io/github/contributors/sequelize/sequelize)](https://github.com/sequelize/sequelize/graphs/contributors)
+[![Open Collective](https://img.shields.io/opencollective/backers/sequelize)](https://opencollective.com/sequelize#section-contributors)
 [![sponsor](https://img.shields.io/opencollective/all/sequelize?label=sponsors)](https://opencollective.com/sequelize)
-[![Last commit](https://badgen.net/github/last-commit/sequelize/sequelize)](https://github.com/sequelize/sequelize)
 [![Merged PRs](https://badgen.net/github/merged-prs/sequelize/sequelize)](https://github.com/sequelize/sequelize)
-[![GitHub stars](https://badgen.net/github/stars/sequelize/sequelize)](https://github.com/sequelize/sequelize)
-[![Slack Status](http://sequelize-slack.herokuapp.com/badge.svg)](http://sequelize-slack.herokuapp.com/)
-[![node](https://badgen.net/npm/node/sequelize)](https://www.npmjs.com/package/sequelize)
-[![License](https://badgen.net/github/license/sequelize/sequelize)](https://github.com/sequelize/sequelize/blob/main/LICENSE)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> 此项目同步自 [sequelize](https://github.com/sequelize) / [sequelize](https://github.com/sequelize/sequelize) 项目中的  docs.
+> 此项目同步自 [sequelize](https://github.com/sequelize) / [sequelize](https://github.com/sequelize/sequelize) 项目.
 > 
 > 更新日志请参阅: [CHANGELOG](CHANGELOG.md)
 
-Sequelize 是一个基于 promise 的 [Node.js](https://nodejs.org/zh-cn/about/) [ORM 工具](https://en.wikipedia.org/wiki/Object-relational_mapping), 目前支持 [Postgres](https://en.wikipedia.org/wiki/PostgreSQL), [MySQL](https://en.wikipedia.org/wiki/MySQL), [MariaDB](https://en.wikipedia.org/wiki/MariaDB), [SQLite](https://en.wikipedia.org/wiki/SQLite) 以及 [Microsoft SQL Server](https://en.wikipedia.org/wiki/Microsoft_SQL_Server), [Amazon Redshift](https://docs.aws.amazon.com/redshift/index.html) 和 [Snowflake’s Data Cloud](https://docs.snowflake.com/en/user-guide/intro-key-concepts.html). 它具有强大的事务支持, 关联关系, 预读和延迟加载,读取复制等功能.
+Sequelize 是一个易用且基于 promise 的 [Node.js](https://nodejs.org/en/about/) [ORM 工具](https://en.wikipedia.org/wiki/Object-relational_mapping) 适用于 [Postgres](https://en.wikipedia.org/wiki/PostgreSQL), [MySQL](https://en.wikipedia.org/wiki/MySQL), [MariaDB](https://en.wikipedia.org/wiki/MariaDB), [SQLite](https://en.wikipedia.org/wiki/SQLite), [DB2](https://en.wikipedia.org/wiki/IBM_Db2_Family), [Microsoft SQL Server](https://en.wikipedia.org/wiki/Microsoft_SQL_Server), [Snowflake](https://www.snowflake.com/), [Oracle DB](https://www.oracle.com/database/) 和 [Db2 for IBM i](https://www.ibm.com/support/pages/db2-ibm-i). 它具有强大的事务支持, 关联关系, 预读和延迟加载,读取复制等功能.
 
-Sequelize 遵从 [语义版本控制](http://semver.org) 和 [官方 Node.js LTS 版本](https://nodejs.org/en/about/releases/). Sequelize v7 版本正式支持 Node.js `^12.22.0`, `^14.17,0`, `^16.0.0`. 其他版本或可正常工作.
+Sequelize 遵从 [语义版本控制](http://semver.org) 和 [官方 Node.js LTS 版本](https://nodejs.org/en/about/releases/). Sequelize v7 版本正式支持 Node.js `^14.17,0`, `^16.0.0`. 其他版本或可正常工作.
 
-你目前正在查看 Sequelize 的**教程和指南**.你可能还对[API 参考](http://docs.sequelizejs.com/identifiers) (英文)感兴趣.
+你目前正在查看 Sequelize 的**教程和指南**.你可能还对[API 参考](https://sequelize.org/api/v7/) (英文)感兴趣.
 
-# 赞赏支持
+
 ![赞赏支持](https://raw.githubusercontent.com/demopark/electron-api-demos-Zh_CN/master/assets/img/td.png)
 
 
@@ -45,7 +42,9 @@ Sequelize 遵从 [语义版本控制](http://semver.org) 和 [官方 Node.js LTS
 - [从 v5 升级到 v6](other-topics/upgrade-to-v6.md)
 - [从 v6 升级到 v7](other-topics/upgrade-to-v7.md)
 
-## 文档(v7)
+## 文档(v7-alpha)
+
+**注意** 由于当前alpha阶段api调整, 文档中的API参考指向尚未确定. 可前往 [V7 API 参考](https://sequelize.org/api/v7/)自行查询.
 
 ### 核心概念
 
@@ -93,7 +92,7 @@ Sequelize 遵从 [语义版本控制](http://semver.org) 和 [官方 Node.js LTS
 
 ```sh
 # 使用 npm
-npm i sequelize # 这将安装最新版本的 Sequelize
+npm install sequelize # 这将安装最新版本的 Sequelize
 # 使用 yarn
 yarn add sequelize
 ```
@@ -107,6 +106,8 @@ npm i mariadb # MariaDB
 npm i sqlite3 # SQLite
 npm i tedious # Microsoft SQL Server
 npm i ibm_db # DB2
+npm i odbc # IBM i
+
 # 使用 yarn
 yarn add pg pg-hstore # PostgreSQL
 yarn add mysql2 # MySQL
@@ -114,11 +115,41 @@ yarn add mariadb # MariaDB
 yarn add sqlite3 # SQLite
 yarn add tedious # Microsoft SQL Server
 yarn add ibm_db # DB2
+yarn add odbc # IBM i
 ```
 
 ## 简单示例
 
-```js
+#### TypeScript
+
+```javascript
+import { Sequelize, Model, DataTypes, InferAttributes, InferCreationAttributes } from 'sequelize';
+
+const sequelize = new Sequelize('sqlite::memory:');
+
+class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+  declare username: string | null;
+  declare birthday: Date | null;
+}
+
+User.init({
+  username: DataTypes.STRING,
+  birthday: DataTypes.DATE
+}, { sequelize, modelName: 'user' });
+
+(async () => {
+  await sequelize.sync();
+  const jane = await User.create({
+    username: 'janedoe',
+    birthday: new Date(1980, 6, 20),
+  });
+  console.log(jane.toJSON());
+})();
+```
+
+#### JavaScript (CJS)
+
+```javascript
 const { Sequelize, Model, DataTypes } = require('sequelize');
 const sequelize = new Sequelize('sqlite::memory:');
 

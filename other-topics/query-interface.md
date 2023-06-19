@@ -4,14 +4,14 @@ Sequelize 实例使用一种称为 **查询接口** 的东西来以与方言无�
 
 因此,查询接口中的方法是较低级的方法; 仅当找不到其他方法来使用 Sequelize 的高级 API 时,才应使用它们. 当然,它们比直接运行原始查询(即,手工编写SQL)的级别更高.
 
-本指南展示了一些示例,但是要获取其功能的完整列表以及每种方法的详细用法,请查看[查询接口 API](https://sequelize.org/master/class/lib/dialects/abstract/query-interface.js~QueryInterface.html).
+本指南展示了一些示例,但是要获取其功能的完整列表以及每种方法的详细用法,请查看[查询接口 API](/api/v7/classes/QueryInterface.html).
 
 ## 获取查询界面
 
-从现在开始,我们将 `queryInterface` 称为 [查询接口](https://sequelize.org/master/class/lib/dialects/abstract/query-interface.js~QueryInterface.html) 类的单例实例,该实例可在你的 Sequelize 实例上使用：
+从现在开始,我们将 `queryInterface` 称为 [查询接口](/api/v7/classes/QueryInterface.html) 类的单例实例,该实例可在你的 Sequelize 实例上使用：
 
 ```js
-const { Sequelize, DataTypes } = require('sequelize');
+const { Sequelize, DataTypes } = require('@sequelize/core');
 const sequelize = new Sequelize(/* ... */);
 const queryInterface = sequelize.getQueryInterface();
 ```
@@ -149,4 +149,4 @@ DROP TABLE `Person_backup`;
 
 ## 其它
 
-如本指南开头所述,Sequelize 中的查询接口还有很多！ 查看 [查询接口 API](https://sequelize.org/master/class/lib/dialects/abstract/query-interface.js~QueryInterface.html),以获取可以完成的操作的完整列表.
+如本指南开头所述,Sequelize 中的查询接口还有很多！ 查看 [查询接口 API](/api/v7/classes/QueryInterface.html),以获取可以完成的操作的完整列表.

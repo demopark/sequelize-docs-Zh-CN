@@ -4,18 +4,30 @@
 
 ## 安装
 
-Sequelize 的使用可以通过 [npm](https://www.npmjs.com/package/sequelize) (或 [yarn](https://yarnpkg.com/package/sequelize)).
+Sequelize 的使用可以通过 [npm](https://www.npmjs.com/package/@sequelize/core) (或 [yarn](https://yarnpkg.com/package/@sequelize/core)).
 
-```sh
-# 使用 npm
-npm i sequelize # 这将安装最新版本的 Sequelize
-# 使用 yarn
-yarn add sequelize
+以下命令将安装 Sequelize v7. 如果你正在寻找 Sequelize v6(发布为 `sequelize` 而不是 `@sequelize/core`), 
+[访问 v6 文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/v6)
+
+```bash
+# 这将安装 v6 最新版本的 Sequelize
+npm i sequelize
+
+# 这将安装 v7 最新 alpha 版本的 Sequelize
+npm i @sequelize/core
 ```
 
-你还必须手动为所选数据库安装驱动程序：
+```bash
+# 这将安装 v6 最新版本的 Sequelize
+yarn add sequelize
 
-```sh
+# 这将安装 v7 最新 alpha 版本的 Sequelize
+yarn add @sequelize/core
+```
+
+接下来, 你还必须手动为所选数据库安装驱动程序：
+
+```bash
 # 使用 npm
 npm i pg pg-hstore # PostgreSQL
 npm i mysql2 # MySQL
@@ -23,6 +35,8 @@ npm i mariadb # MariaDB
 npm i sqlite3 # SQLite
 npm i tedious # Microsoft SQL Server
 npm i ibm_db # DB2
+npm i odbc # IBM i
+
 # 使用 yarn
 yarn add pg pg-hstore # PostgreSQL
 yarn add mysql2 # MySQL
@@ -30,14 +44,15 @@ yarn add mariadb # MariaDB
 yarn add sqlite3 # SQLite
 yarn add tedious # Microsoft SQL Server
 yarn add ibm_db # DB2
+yarn add odbc # IBM i
 ```
 
 ## 连接到数据库
 
 要连接到数据库,必须创建一个 Sequelize 实例. 这可以通过将连接参数分别传递到 Sequelize 构造函数或通过传递一个连接 URI 来完成：
 
-```js
-const { Sequelize } = require('sequelize');
+```javascript
+const { Sequelize } = require('@sequelize/core');
 
 // 方法 1: 传递一个连接 URI
 const sequelize = new Sequelize('sqlite::memory:') // Sqlite 示例
@@ -52,11 +67,13 @@ const sequelize = new Sequelize({
 // 方法 3: 分别传递参数 (其它数据库)
 const sequelize = new Sequelize('database', 'username', 'password', {
   host: 'localhost',
-  dialect: /* 选择 'mysql' | 'mariadb' | 'postgres' | 'mssql' 其一 */
+  // 选择一种支持的数据库:
+  // 'mysql', 'mariadb', 'postgres', 'mssql', 'sqlite', 'snowflake', 'db2' or 'ibmi'
+  dialect: 'postgres'
 });
 ```
 
-Sequelize 构造函数接受很多参数. 它们记录在 [API 参考](https://sequelize.org/master/class/lib/sequelize.js~Sequelize.html#instance-constructor-constructor)中.
+Sequelize 构造函数接受很多参数. 它们记录在 [API 参考](https://sequelize.org/api/v7/classes/Sequelize.html#constructor)中.
 
 ### 测试连接
 
@@ -75,6 +92,8 @@ try {
 
 默认情况下,Sequelize 将保持连接打开状态,并对所有查询使用相同的连接. 如果你需要关闭连接,请调用 `sequelize.close()`(这是异步的并返回一个 Promise).
 
+**注意:** 一旦 `sequelize.close()` 被调用, 就不可能打开新的连接. 你将需要创建一个新的 Sequelize 实例以再次访问你的数据库.
+
 ## 术语约定
 
 请注意,在上面的示例中,`Sequelize` 是指库本身,而 `sequelize` 是指 Sequelize 的实例,它表示与一个数据库的连接. 这是官方推荐的约定,在整个文档中都将遵循.
@@ -84,7 +103,7 @@ try {
 我们鼓励你在阅读 Sequelize 文档时在本地运行代码示例. 这将帮助你更快地学习. 最简单的方法是使用 SQLite 方言：
 
 ```js
-const { Sequelize, Op, Model, DataTypes } = require("sequelize");
+const { Sequelize, Op, Model, DataTypes } = require('@sequelize/core');
 const sequelize = new Sequelize("sqlite::memory:");
 
 // 这是代码! 它是可用的!

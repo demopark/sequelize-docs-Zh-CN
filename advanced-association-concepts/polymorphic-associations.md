@@ -106,7 +106,7 @@ Video.hasMany(Comment, {
 });
 Comment.belongsTo(Video, { foreignKey: 'commentableId', constraints: false });
 
-Comment.addHook("afterFind", findResult => {
+Comment.hooks.addListener("afterFind", findResult => {
   if (!Array.isArray(findResult)) findResult = [findResult];
   for (const instance of findResult) {
     if (instance.commentableType === "image" && instance.image !== undefined) {

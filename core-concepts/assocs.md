@@ -159,7 +159,7 @@ Bar.belongsTo(Foo, {
 例如,要使用 `UUID` 作为外键数据类型而不是默认值(`INTEGER`),只需执行以下操作：
 
 ```js
-const { DataTypes } = require("Sequelize");
+const { DataTypes } = require('@sequelize/core');
 
 Foo.hasOne(Bar, {
   foreignKey: {
@@ -309,7 +309,7 @@ CREATE TABLE IF NOT EXISTS "ActorMovies" (
 
 与一对一和一对多关系不同,对于多对多关系,`ON UPDATE` 和 `ON DELETE` 的默认值为 `CASCADE`.
 
-当模型中不存在主键时，Belongs-to-Many 将创建一个唯一键. 可以使用 **uniqueKey**  参数覆盖此唯一键名. 若不希望产生唯一键, 可以使用 ***unique: false*** 参数.
+当模型中不存在主键时, Belongs-to-Many 将创建一个唯一键. 可以使用 **uniqueKey**  参数覆盖此唯一键名. 若不希望产生唯一键, 可以使用 ***unique: false*** 参数.
 
 ```js
 Project.belongsToMany(User, { through: UserProjects, uniqueKey: 'my_custom_unique' })
@@ -401,9 +401,9 @@ console.log('Amount of Sails:', awesomeCaptain.ship.amountOfSails);
   // 这里没有什么特别的东西
   ```
 
-* 或使用关联模型可用的 *[特殊方法/混合](＃special-methods-mixins-to-instances)* ,这将在本文稍后进行解释.
+* 或使用关联模型可用的 *[特殊方法/混合]* ,这将在本文稍后进行解释.
 
-**注意:** [`save()`实例方法](https://sequelize.org/master/class/lib/model.js~Model.html#instance-method-save) 并不知道关联关系. 如果你修改了 *父级* 对象预先加载的 *子级* 的值,那么在父级上调用 `save()` 将会忽略子级上发生的修改.
+**注意:** [`save()` 实例方法](/api/v7/classes/Model.html#save) 并不知道关联关系. 如果你修改了 *父级* 对象预先加载的 *子级* 的值,那么在父级上调用 `save()` 将会忽略子级上发生的修改.
 
 ## 关联别名 & 自定义外键
 

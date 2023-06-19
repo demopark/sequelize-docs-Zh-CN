@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a report to help improve（翻译问题反馈）
+about: Create a report to help improve(翻译问题反馈)
 title: ''
 labels: 'bug'
 assignees: ''

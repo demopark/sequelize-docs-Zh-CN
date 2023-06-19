@@ -3,7 +3,7 @@
 在表之间添加约束意味着使用 `sequelize.sync` 时必须在数据库中以一定顺序创建表. 如果 `Task` 具有对 `User` 的引用,则必须先创建 `User` 表,然后才能创建 `Task` 表. 有时这可能会导致循环引用,而 Sequelize 无法找到同步的顺序. 想象一下文档和版本的情况. 一个文档可以有多个版本,为方便起见,文档引用了其当前版本.
 
 ```js
-const { Sequelize, Model, DataTypes } = require("sequelize");
+const { Sequelize, Model, DataTypes } = require('@sequelize/core');
 
 class Document extends Model {}
 Document.init({
@@ -70,17 +70,17 @@ CREATE TABLE IF NOT EXISTS "versions" (
 ```js
 class Trainer extends Model {}
 Trainer.init({
-  firstName: Sequelize.STRING,
-  lastName: Sequelize.STRING
+  firstName: DataTypes.STRING,
+  lastName: DataTypes.STRING
 }, { sequelize, modelName: 'trainer' });
 
 // 在我们调用 Trainer.hasMany(series) 之后,
 // Series 将会有一个 trainerId = Trainer.id 外参考键
 class Series extends Model {}
 Series.init({
-  title: Sequelize.STRING,
-  subTitle: Sequelize.STRING,
-  description: Sequelize.TEXT,
+  title: DataTypes.STRING,
+  subTitle: DataTypes.STRING,
+  description: DataTypes.TEXT,
   // 设置与 `Trainer` 的外键关系(hasMany)
   trainerId: {
     type: DataTypes.INTEGER,
@@ -95,9 +95,9 @@ Series.init({
 // Video 将具有 seriesId = Series.id 外参考键
 class Video extends Model {}
 Video.init({
-  title: Sequelize.STRING,
-  sequence: Sequelize.INTEGER,
-  description: Sequelize.TEXT,
+  title: DataTypes.STRING,
+  sequence: DataTypes.INTEGER,
+  description: DataTypes.TEXT,
   // 设置与 `Series` 的关系(hasOne)
   seriesId: {
     type: DataTypes.INTEGER,

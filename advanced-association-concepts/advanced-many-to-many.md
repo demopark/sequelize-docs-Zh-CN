@@ -481,7 +481,7 @@ someUser.getProfiles({ joinTableAttributes: ['selfGranted'] });
 ```js
 const Player = sequelize.define('Player', { username: DataTypes.STRING });
 const Team = sequelize.define('Team', { name: DataTypes.STRING });
-const Game = sequelize.define('Game', { name: DataTypes.INTEGER });
+const Game = sequelize.define('Game', { name: DataTypes.STRING });
 ```
 
 现在的问题是：如何关联它们？
@@ -537,13 +537,13 @@ GameTeam.hasMany(PlayerGameTeam);
 上面的关联正是我们想要的. 这是一个完整的可运行示例：
 
 ```js
-const { Sequelize, Op, Model, DataTypes } = require('sequelize');
+const { Sequelize, Op, Model, DataTypes } = require('@sequelize/core');
 const sequelize = new Sequelize('sqlite::memory:', {
   define: { timestamps: false } // 在这个例子中只是为了减少混乱
 });
 const Player = sequelize.define('Player', { username: DataTypes.STRING });
 const Team = sequelize.define('Team', { name: DataTypes.STRING });
-const Game = sequelize.define('Game', { name: DataTypes.INTEGER });
+const Game = sequelize.define('Game', { name: DataTypes.STRING });
 
 // 我们在 Game 和 Team 游戏和团队之间应用超级多对多关系
 const GameTeam = sequelize.define('GameTeam', {

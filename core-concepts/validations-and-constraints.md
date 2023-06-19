@@ -5,7 +5,7 @@
 对于本教程,将假定以下设置：
 
 ```js
-const { Sequelize, Op, Model, DataTypes } = require("sequelize");
+const { Sequelize, Op, Model, DataTypes } = require('@sequelize/core');
 const sequelize = new Sequelize("sqlite::memory:");
 
 const User = sequelize.define("user", {
@@ -91,7 +91,7 @@ sequelize.define('foo', {
       not: /^[a-z]+$/i,         // 不匹配 RegExp
       not: ["^[a-z]+$",'i'],    // 与上面相同,但是以字符串构造 RegExp
       isEmail: true,            // 检查 email 格式 (foo@bar.com)
-      isUrl: true,              // 检查 url 格式 (http://foo.com)
+      isUrl: true,              // 检查 url 格式 (https://foo.com)
       isIP: true,               // 检查 IPv4 (129.89.23.1) 或 IPv6 格式
       isIPv4: true,             // 检查 IPv4 格式 (129.89.23.1)
       isIPv6: true,             // 检查 IPv6 格式
@@ -187,7 +187,7 @@ User.init({
 ```js
 class User extends Model {}
 User.init({
-  age: Sequelize.INTEGER,
+  age: DataTypes.INTEGER,
   name: {
     type: DataTypes.STRING,
     allowNull: true,
@@ -232,8 +232,8 @@ User.init({
 ```js
 class Place extends Model {}
 Place.init({
-  name: Sequelize.STRING,
-  address: Sequelize.STRING,
+  name: DataTypes.STRING,
+  address: DataTypes.STRING,
   latitude: {
     type: DataTypes.INTEGER,
     validate: {

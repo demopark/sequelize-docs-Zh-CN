@@ -51,7 +51,7 @@ Project.init({
 });
 ```
 
-你也可以在定义模型后通过调用 [`YourModel.addScope`](https://sequelize.org/master/class/lib/model.js~Model.html#static-method-addScope) 添加作用域. 这对于具有包含的作用域特别有用,其中在定义另一个模型时可能未定义包含中的模型.
+你也可以在定义模型后通过调用 [`YourModel.addScope`](/api/v7/classes/Model.html#addScope) 添加作用域. 这对于具有包含的作用域特别有用,其中在定义另一个模型时可能未定义包含中的模型.
 
 始终应用默认作用域. 这意味着,使用上面的模型定义,`Project.findAll()` 将创建以下查询：
 
@@ -156,7 +156,7 @@ YourMode.addScope('scope1', {
 YourMode.addScope('scope2', {
   where: {
     age: {
-      [Op.gt]: 30
+      [Op.lt]: 30
     }
   },
   limit: 10
@@ -166,10 +166,10 @@ YourMode.addScope('scope2', {
 使用 `.scope('scope1', 'scope2')` 将产生以下 WHERE 子句：
 
 ```sql
-WHERE firstName = 'bob' AND age > 30 LIMIT 10
+WHERE firstName = 'bob' AND age > 20 AND age < 30 LIMIT 10
 ```
 
-注意 `limit` 和 `age` 如何被 `scope2` 覆盖,而保留 `firstName`.`limit`, `offset`, `order`, `paranoid`, `lock` 和 `raw` 字段被覆盖,而 `where` 则被浅合并(这意味着相同的键将被覆盖).包含的合并策略将在后面讨论.
+注意 `limit` 是如何被 `scope2` 覆盖的, 而 `firstName` 和 `age` 的两个条件都被保留了下来. `limit`、`offset`、`order`、`paranoid`、`lock` 和 `raw` 字段被覆盖, 而 `where` 字段使用 `AND` 运算符合并. `include` 的合并策略将在后面讨论.
 
 注意,多个应用作用域的 `attributes` 键以始终保留 `attributes.exclude` 的方式合并. 这允许合并多个合并作用域,并且永远不会泄漏最终合并作用域中的敏感字段.
 
@@ -198,10 +198,10 @@ Include 将基于所包含的模型进行递归合并. 这是 v5 上添加的功
 考虑模型 `Foo`, `Bar`, `Baz` 和 `Qux`,它们具有一对多关联,如下所示：
 
 ```js
-const Foo = sequelize.define('Foo', { name: Sequelize.STRING });
-const Bar = sequelize.define('Bar', { name: Sequelize.STRING });
-const Baz = sequelize.define('Baz', { name: Sequelize.STRING });
-const Qux = sequelize.define('Qux', { name: Sequelize.STRING });
+const Foo = sequelize.define('Foo', { name: DataTypes.STRING });
+const Bar = sequelize.define('Bar', { name: DataTypes.STRING });
+const Baz = sequelize.define('Baz', { name: DataTypes.STRING });
+const Qux = sequelize.define('Qux', { name: DataTypes.STRING });
 Foo.hasMany(Bar, { foreignKey: 'fooId' });
 Bar.hasMany(Baz, { foreignKey: 'barId' });
 Baz.hasMany(Qux, { foreignKey: 'bazId' });

@@ -2,7 +2,7 @@
 
 Sequelize 允许你为模型的属性定义自定义获取器和设置器.
 
-Sequelize 还允许你指定所谓的 *虚拟属性*,它们是 Sequelize 模型上的属性,这些属性在基础 SQL 表中实际上并不存在,而是由 Sequelize 自动填充. 它们对于创建自定义属性非常有用, 这也可以简化您的代码.
+Sequelize 还允许你指定所谓的 *虚拟属性*,它们是 Sequelize 模型上的属性,这些属性在基础 SQL 表中实际上并不存在,而是由 Sequelize 自动填充. 它们对于创建自定义属性非常有用, 这也可以简化你的代码.
 
 ## 获取器
 
@@ -132,7 +132,7 @@ console.log(post.getDataValue('content'));
 如果有一种简单的方法能直接获取 *全名* 那会非常好！ 我们可以将 `getters` 的概念与 Sequelize 针对这种情况提供的特殊数据类型结合使用：`DataTypes.VIRTUAL`:
 
 ```js
-const { DataTypes } = require("sequelize");
+const { DataTypes } = require('@sequelize/core');
 
 const User = sequelize.define('user', {
   firstName: DataTypes.TEXT,
@@ -154,48 +154,4 @@ const User = sequelize.define('user', {
 ```js
 const user = await User.create({ firstName: 'John', lastName: 'Doe' });
 console.log(user.fullName); // 'John Doe'
-```
-
-## 在 Sequelize v7 中已弃用：`getterMethods` 和 `setterMethods`
-
-Sequelize 在模型定义中还提供了 `getterMethods` 和 `setterMethods` 参数,以指定看起来像但与虚拟属性不完全相同的事物. 不鼓励使用此方法,并且将来可能会**不建议**使用(建议直接使用虚拟属性).
-
-示例:
-
-```js
-const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = new Sequelize('sqlite::memory:');
-
-const User = sequelize.define('user', {
-  firstName: DataTypes.STRING,
-  lastName: DataTypes.STRING
-}, {
-  getterMethods: {
-    fullName() {
-      return this.firstName + ' ' + this.lastName;
-    }
-  },
-  setterMethods: {
-    fullName(value) {
-      // 注意：这仅用于演示.
-      // 查阅: https://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/
-      const names = value.split(' ');
-      const firstName = names[0];
-      const lastName = names.slice(1).join(' ');
-      this.setDataValue('firstName', firstName);
-      this.setDataValue('lastName', lastName);
-    }
-  }
-});
-
-(async () => {
-  await sequelize.sync();
-  let user = await User.create({ firstName: 'John',  lastName: 'Doe' });
-  console.log(user.fullName); // 'John Doe'
-  user.fullName = 'Someone Else';
-  await user.save();
-  user = await User.findOne();
-  console.log(user.firstName); // 'Someone'
-  console.log(user.lastName); // 'Else'
-})();
 ```

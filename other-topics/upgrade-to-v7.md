@@ -13,8 +13,8 @@ Sequelize v7 将只支持那些与 ES 模块规范兼容的 Node.js 版本,
 
 v7 的主要基础代码更改之一是迁移到 TypeScript.
 结果就是, 以前在 JavaScript 代码库之上的尽力而为猜测的手动类型,
-已被删除, 所有类型现在都直接从实际的 TypeScript 代码中检索。
-您可能会发现许多微小的差异, 但它们应该很容易修复.
+已被删除, 所有类型现在都直接从实际的 TypeScript 代码中检索. 
+你可能会发现许多微小的差异, 但它们应该很容易修复.
 
 ### 对 `ConnectionManager` 的更改
 
@@ -33,15 +33,15 @@ sequelize.connectionManager.getConnection({ type: 'read' });
 
 ### Microsoft SQL Server 支持
 
-Sequelize v7 完全支持 MS SQL Server 2017（版本 14）, Sequelize v6 从 2012（版本 13）开始
+Sequelize v7 完全支持 MS SQL Server 2017(版本 14), Sequelize v6 从 2012(版本 13)开始
 , 符合微软自己的[主流支持](
 https://docs.microsoft.com/en-us/sql/sql-server/end-of-support/sql-server-end-of-life-overview?view=sql-server-ver15#lifecycle-dates).
 
 ### 不会在内部调用重写的模型方法
 
 `Model.findOne` 和 `Model.findAll` 分别被 `Model.findByPk` 和 `Model.findOne` 使用.
-这被认为是一个细节实现, 因此，从 Sequelize v7 开始，
-`Model.findByPk` 或 `Model.findOne` 不会覆盖任何一个在这些方法中的内部调用。
+这被认为是一个细节实现, 因此, 从 Sequelize v7 开始, 
+`Model.findByPk` 或 `Model.findOne` 不会覆盖任何一个在这些方法中的内部调用. 
 
 换句话说, 这样做不会破坏:
 
