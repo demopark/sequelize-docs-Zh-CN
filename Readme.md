@@ -171,3 +171,10 @@ User.init({
 
 请通过 [Getting started - 入门](core-concepts/getting-started.md) 来学习更多相关内容. 如果你想要学习 Sequelize API 请通过 [API 参考](https://sequelize.org/api/v7/) (英文).
 
+## 下载量趋势
+
+[近五年Sequelize下载量趋势](https://npm-compare.com/img/npm-trend/FIVE_YEARS/sequelize.png)
+
+<a href="https://npm-compare.com/sequelize#timeRange=FIVE_YEARS" target="_blank">
+  <img src="https://npm-compare.com/img/npm-trend/FIVE_YEARS/sequelize.png" width="100%" alt="NPM Usage Trend of sequelize" />
+</a>
