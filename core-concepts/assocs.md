@@ -56,7 +56,7 @@ A.belongsToMany(B, { through: 'C', /* 参数 */ });
 如前所述,Sequelize 关联通常成对定义. 综上所述：
 
 * 创建一个 **一对一** 关系, `hasOne` 和 `belongsTo` 关联一起使用;
-* 创建一个 **一对多** 关系, `hasMany` he  `belongsTo` 关联一起使用;
+* 创建一个 **一对多** 关系, `hasMany` 和  `belongsTo` 关联一起使用;
 * 创建一个 **多对多** 关系, 两个 `belongsToMany` 调用一起使用.
   * 注意: 还有一个 *超级多对多* 关系,一次使用六个关联,将在[高级多对多关系指南](../advanced-association-concepts/advanced-many-to-many.md)中进行讨论.
 
