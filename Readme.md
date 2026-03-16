@@ -15,7 +15,7 @@
 > 
 > 更新日志请参阅: [CHANGELOG](CHANGELOG.md)
 > 
-> 由于v7-40之后文档结构调整, 计划重新翻译新版并调整文档结构.
+> 由于v7之后文档结构调整, 计划重新翻译新版并调整文档结构.
 
 Sequelize 是一个易用且基于 promise 的 [Node.js](https://nodejs.org/en/about/) [ORM 工具](https://en.wikipedia.org/wiki/Object-relational_mapping) 适用于 [Postgres](https://en.wikipedia.org/wiki/PostgreSQL), [MySQL](https://en.wikipedia.org/wiki/MySQL), [MariaDB](https://en.wikipedia.org/wiki/MariaDB), [SQLite](https://en.wikipedia.org/wiki/SQLite), [DB2](https://en.wikipedia.org/wiki/IBM_Db2_Family), [Microsoft SQL Server](https://en.wikipedia.org/wiki/Microsoft_SQL_Server), [Snowflake](https://www.snowflake.com/), [Oracle DB](https://www.oracle.com/database/) 和 [Db2 for IBM i](https://www.ibm.com/support/pages/db2-ibm-i). 它具有强大的事务支持, 关联关系, 预读和延迟加载,读取复制等功能.
 
