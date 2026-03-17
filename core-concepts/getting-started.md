@@ -76,8 +76,8 @@ try {
 我们鼓励你在阅读 Sequelize 文档时在本地运行代码示例. 这将帮助你更快地学习. 最简单的方法是使用 SQLite 方言：
 
 ```js
-const { Sequelize, Op, Model, DataTypes } = require("sequelize");
-const sequelize = new Sequelize("sqlite::memory:");
+const { Sequelize, Op, Model, DataTypes } = require(‘sequelize‘);
+const sequelize = new Sequelize(‘sqlite::memory:‘);
 
 // 这是代码! 它是可用的!
 ```
@@ -99,11 +99,11 @@ const sequelize = new Sequelize("sqlite::memory:");
 ```js
 const sequelize = new Sequelize('sqlite::memory:', {
   // 选择一种日志记录参数
-  logging: console.log,                  // 默认值,显示日志函数调用的第一个参数
+  logging: console.log, // 默认值,显示日志函数调用的第一个参数
   logging: (...msg) => console.log(msg), // 显示所有日志函数调用参数
-  logging: false,                        // 禁用日志记录
-  logging: msg => logger.debug(msg),     // 使用自定义记录器(例如Winston 或 Bunyan),显示第一个参数
-  logging: logger.debug.bind(logger)     // 使用自定义记录器的另一种方法,显示所有消息
+  logging: false, // 禁用日志记录
+  logging: msg => logger.debug(msg), // 使用自定义记录器(例如Winston 或 Bunyan),显示第一个参数
+  logging: logger.debug.bind(logger), // 使用自定义记录器的另一种方法,显示所有消息
 });
 ```
 
