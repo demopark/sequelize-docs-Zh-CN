@@ -14,9 +14,7 @@
 [![License](https://badgen.net/github/license/sequelize/sequelize)](https://github.com/sequelize/sequelize/blob/main/LICENSE)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
-> 此项目同步自 [sequelize](https://github.com/sequelize) / [sequelize](https://github.com/sequelize/sequelize) 项目中的  docs. 除特殊情况, 将保持每月一次的同步频率.
-> 
-> 更新日志请参阅: [CHANGELOG](CHANGELOG.md)
+> 此项目同步自 [sequelize](https://github.com/sequelize) / [sequelize](https://github.com/sequelize/sequelize) 项目中的  docs. v6版本基本稳定,不再增加新功能. 后续更新主要以v7为主
 
 Sequelize 是一个基于 promise 的 [Node.js](https://nodejs.org/zh-cn/about/) [ORM 工具](https://en.wikipedia.org/wiki/Object-relational_mapping), 目前支持 [Postgres](https://en.wikipedia.org/wiki/PostgreSQL), [MySQL](https://en.wikipedia.org/wiki/MySQL), [MariaDB](https://en.wikipedia.org/wiki/MariaDB), [SQLite](https://en.wikipedia.org/wiki/SQLite) 以及 [Microsoft SQL Server](https://en.wikipedia.org/wiki/Microsoft_SQL_Server), [Oracle Database](https://en.wikipedia.org/wiki/Oracle_Database), [Amazon Redshift](https://docs.aws.amazon.com/redshift/index.html) 和 [Snowflake’s Data Cloud](https://docs.snowflake.com/en/user-guide/intro-key-concepts.html). 它具有强大的事务支持, 关联关系, 预读和延迟加载,读取复制等功能.
 
@@ -100,16 +98,19 @@ const { Sequelize, Model, DataTypes } = require('sequelize');
 const sequelize = new Sequelize('sqlite::memory:');
 
 class User extends Model {}
-User.init({
-  username: DataTypes.STRING,
-  birthday: DataTypes.DATE
-}, { sequelize, modelName: 'user' });
+User.init(
+  {
+    username: DataTypes.STRING,
+    birthday: DataTypes.DATE,
+  },
+  { sequelize, modelName: 'user' },
+);
 
 (async () => {
   await sequelize.sync();
   const jane = await User.create({
     username: 'janedoe',
-    birthday: new Date(1980, 6, 20)
+    birthday: new Date(1980, 6, 20),
   });
   console.log(jane.toJSON());
 })();
