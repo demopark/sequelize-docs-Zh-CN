@@ -4,22 +4,20 @@
 
 [![npm version](https://badgen.net/npm/v/@sequelize/core)](https://www.npmjs.com/package/@sequelize/core)
 [![npm downloads](https://badgen.net/npm/dm/@sequelize/core)](https://www.npmjs.com/package/@sequelize/core)
-[![contributors](https://img.shields.io/github/contributors/sequelize/sequelize)](https://github.com/sequelize/sequelize/graphs/contributors)
-[![Open Collective](https://img.shields.io/opencollective/backers/sequelize)](https://opencollective.com/sequelize#section-contributors)
 [![sponsor](https://img.shields.io/opencollective/all/sequelize?label=sponsors)](https://opencollective.com/sequelize)
+[![Last commit](https://badgen.net/github/last-commit/sequelize/sequelize/main)](https://github.com/sequelize/sequelize)
 [![Merged PRs](https://badgen.net/github/merged-prs/sequelize/sequelize)](https://github.com/sequelize/sequelize)
-[![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub stars](https://badgen.net/github/stars/sequelize/sequelize)](https://github.com/sequelize/sequelize)
+[![node](https://badgen.net/npm/node/@sequelize/core)](https://www.npmjs.com/package/@sequelize/core)
+[![License](https://badgen.net/github/license/sequelize/sequelize)](https://github.com/sequelize/sequelize/blob/main/LICENSE)
 
 > 此项目同步自 [sequelize](https://github.com/sequelize) / [sequelize](https://github.com/sequelize/sequelize) 项目.
 > 
-> 更新日志请参阅: [CHANGELOG](CHANGELOG.md)
-> 
-> 由于v7之后文档结构调整, 计划重新翻译新版并调整文档结构.
+> 由于v7现阶段处于alpha阶段, 变更较为频繁, 生产环境建议使用v6
 
-Sequelize 是一个易用且基于 promise 的 [Node.js](https://nodejs.org/en/about/) [ORM 工具](https://en.wikipedia.org/wiki/Object-relational_mapping) 适用于 [Postgres](https://en.wikipedia.org/wiki/PostgreSQL), [MySQL](https://en.wikipedia.org/wiki/MySQL), [MariaDB](https://en.wikipedia.org/wiki/MariaDB), [SQLite](https://en.wikipedia.org/wiki/SQLite), [DB2](https://en.wikipedia.org/wiki/IBM_Db2_Family), [Microsoft SQL Server](https://en.wikipedia.org/wiki/Microsoft_SQL_Server), [Snowflake](https://www.snowflake.com/), [Oracle DB](https://www.oracle.com/database/) 和 [Db2 for IBM i](https://www.ibm.com/support/pages/db2-ibm-i). 它具有强大的事务支持, 关联关系, 预读和延迟加载,读取复制等功能.
+Sequelize 是一个易用且基于 promise 的 [Node.js](https://nodejs.org/en/about/) [ORM 工具](https://en.wikipedia.org/wiki/Object-relational_mapping) 适用于 [Postgres](https://en.wikipedia.org/wiki/PostgreSQL), [MySQL](https://en.wikipedia.org/wiki/MySQL), [MariaDB](https://en.wikipedia.org/wiki/MariaDB), [SQLite](https://en.wikipedia.org/wiki/SQLite), [Microsoft SQL Server](https://en.wikipedia.org/wiki/Microsoft_SQL_Server), [Amazon Redshift](https://docs.aws.amazon.com/redshift/index.html) 和 [Snowflake’s Data Cloud](https://docs.snowflake.com/en/user-guide/intro-key-concepts.html). 它具有强大的事务支持, 关联关系, 预读和延迟加载,读取复制等功能.
 
-Sequelize 遵从 [语义版本控制](http://semver.org) 和 [官方 Node.js LTS 版本](https://nodejs.org/en/about/releases/). Sequelize v7 版本正式支持 Node.js `^14.17,0`, `^16.0.0`. 其他版本或可正常工作.
+Sequelize 遵从 [语义版本控制](http://semver.org) 和 [官方 Node.js LTS 版本](https://nodejs.org/en/about/releases/). Sequelize v7 版本正式支持 Node.js `>=18.0.0`.
 
 你目前正在查看 Sequelize 的**教程和指南**.你可能还对[API 参考](https://sequelize.org/api/v7/) (英文)感兴趣.
 
@@ -29,9 +27,9 @@ Sequelize 遵从 [语义版本控制](http://semver.org) 和 [官方 Node.js LTS
 
 ## 文档版本
 
-- [v7 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/master)(开发版本)
+- [v7 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/master)(更新中)
 
-- [v6 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/v6)(保持更新)
+- [v6 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/v6)(视变更情况更新)
 
 - [v5 中文文档](https://github.com/demopark/sequelize-docs-Zh-CN/tree/v5)(停止更新)
 
@@ -90,85 +88,72 @@ Sequelize 遵从 [语义版本控制](http://semver.org) 和 [官方 Node.js LTS
 - [TypeScript](other-topics/typescript.md)
 - [Resources - 资源](other-topics/resources.md)
 
-## 安装
-
-```sh
-# 使用 npm
-npm install sequelize # 这将安装最新版本的 Sequelize
-# 使用 yarn
-yarn add sequelize
-```
-
-```sh
-# 用于支持数据库方言的库:
-# 使用 npm
-npm i pg pg-hstore # PostgreSQL
-npm i mysql2 # MySQL
-npm i mariadb # MariaDB
-npm i sqlite3 # SQLite
-npm i tedious # Microsoft SQL Server
-npm i ibm_db # DB2
-npm i odbc # IBM i
-
-# 使用 yarn
-yarn add pg pg-hstore # PostgreSQL
-yarn add mysql2 # MySQL
-yarn add mariadb # MariaDB
-yarn add sqlite3 # SQLite
-yarn add tedious # Microsoft SQL Server
-yarn add ibm_db # DB2
-yarn add odbc # IBM i
-```
-
 ## 简单示例
 
 #### TypeScript
 
-```javascript
-import { Sequelize, Model, DataTypes, InferAttributes, InferCreationAttributes } from 'sequelize';
-
-const sequelize = new Sequelize('sqlite::memory:');
+```typescript
+import {
+  Sequelize,
+  Model,
+  DataTypes,
+  InferAttributes,
+  InferCreationAttributes,
+} from '@sequelize/core';
+import { Attribute } from '@sequelize/core/decorators-legacy';
+import { SqliteDialect } from '@sequelize/sqlite3';
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+  @Attribute(DataTypes.STRING)
   declare username: string | null;
+
+  @Attribute(DataTypes.DATE)
   declare birthday: Date | null;
 }
 
-User.init({
-  username: DataTypes.STRING,
-  birthday: DataTypes.DATE
-}, { sequelize, modelName: 'user' });
+const sequelize = new Sequelize({
+  dialect: SqliteDialect,
+  models: [User],
+});
 
-(async () => {
-  await sequelize.sync();
-  const jane = await User.create({
-    username: 'janedoe',
-    birthday: new Date(1980, 6, 20),
-  });
-  console.log(jane.toJSON());
-})();
+await sequelize.sync();
+
+const jane = await User.create({
+  username: 'janedoe',
+  birthday: new Date(1980, 6, 20),
+});
+
+console.log(jane.toJSON());
 ```
 
-#### JavaScript (CJS)
+#### JavaScript
 
-```javascript
-const { Sequelize, Model, DataTypes } = require('sequelize');
-const sequelize = new Sequelize('sqlite::memory:');
+```typescript
+import { Sequelize, Model, DataTypes } from '@sequelize/core';
+import { Attribute } from '@sequelize/core/decorators-legacy';
+import { SqliteDialect } from '@sequelize/sqlite3';
 
-class User extends Model {}
-User.init({
-  username: DataTypes.STRING,
-  birthday: DataTypes.DATE
-}, { sequelize, modelName: 'user' });
+class User extends Model {
+  @Attribute(DataTypes.STRING)
+  username;
 
-(async () => {
-  await sequelize.sync();
-  const jane = await User.create({
-    username: 'janedoe',
-    birthday: new Date(1980, 6, 20)
-  });
-  console.log(jane.toJSON());
-})();
+  @Attribute(DataTypes.DATE)
+  birthday;
+}
+
+const sequelize = new Sequelize({
+  dialect: SqliteDialect,
+  models: [User],
+});
+
+await sequelize.sync();
+
+const jane = await User.create({
+  username: 'janedoe',
+  birthday: new Date(1980, 6, 20),
+});
+
+console.log(jane.toJSON());
 ```
 
 请通过 [Getting started - 入门](core-concepts/getting-started.md) 来学习更多相关内容. 如果你想要学习 Sequelize API 请通过 [API 参考](https://sequelize.org/api/v7/) (英文).
