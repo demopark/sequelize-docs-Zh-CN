@@ -48,7 +48,7 @@ Sequelize 遵从 [语义版本控制](http://semver.org) 和 [官方 Node.js LTS
 
 ### 核心概念
 
-- [Getting Started - 入门](core-concepts/getting-started.md)
+- [Getting Started - 入门](./getting-started.md)
 - [Model Basics - 模型基础](core-concepts/model-basics.md)
 - [Model Instances - 模型实例](core-concepts/model-instances.md)
 - [Model Querying - Basics - 模型查询(基础)](core-concepts/model-querying-basics.md)
