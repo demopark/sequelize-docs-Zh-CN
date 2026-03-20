@@ -1,5 +1,3 @@
-sidebar_position: 1000
-
 # 术语表
 
 ## `Sequelize` 与 `sequelize`

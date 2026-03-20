@@ -87,6 +87,7 @@ Sequelize 遵从 [语义版本控制](http://semver.org) 和 [官方 Node.js LTS
 - [Migrations - 迁移](other-topics/migrations.md)
 - [TypeScript](other-topics/typescript.md)
 - [Resources - 资源](other-topics/resources.md)
+- [Terminology - 术语](./terminology.md)
 
 ## 简单示例
 
